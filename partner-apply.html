@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>案例合作諮詢 - 實證媒合平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 核心色彩系統 (延用提案表與詳情頁) --- */
+        :root {
+            --primary-teal: #0089A7;       
+            --primary-dark: #005f73;       
+            --header-bg: #f8fcfc;          
+            --section-bg: #003366;         
+            --text-main: #333;
+            --border-color: #cfd8dc;
+            --white: #ffffff;
+            --bg-body: #f5f5f5;
+            --danger: #e74c3c;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.5; }
+        a { text-decoration: none; color: inherit; }
+
+        /* --- Header --- */
+        .site-header { background: var(--white); padding: 15px 5%; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.4rem; font-weight: 700; color: #003366; display: flex; align-items: center; gap: 10px; }
+
+        /* --- Layout --- */
+        .container { max-width: 1000px; margin: 30px auto 100px; padding: 0 20px; }
+
+        /* --- Context Card --- */
+        .context-card {
+            background: white;
+            border-left: 5px solid var(--primary-teal);
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        .context-title { font-size: 1.2rem; font-weight: 700; color: var(--primary-teal); margin-top: 5px; }
+
+        /* --- Form Structure (仿表格佈局) --- */
+        .form-container { border: 1px solid var(--border-color); background: var(--white); border-radius: 4px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .form-top-bar { background-color: var(--primary-dark); color: white; padding: 12px 20px; font-weight: 500; display: flex; align-items: center; gap: 10px; }
+
+        .form-section-row { display: flex; border-bottom: 1px solid var(--border-color); }
+        .section-header-col { width: 140px; background-color: var(--section-bg); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; padding: 20px 10px; text-align: center; flex-shrink: 0; }
+        .section-content-col { flex-grow: 1; background: white; }
+
+        .input-grid { display: grid; grid-template-columns: 140px 1fr 140px 1fr; }
+        .input-grid-full { display: grid; grid-template-columns: 140px 1fr; }
+
+        .input-label { background-color: var(--header-bg); padding: 15px; font-weight: 500; border-bottom: 1px solid #eee; border-right: 1px solid #eee; display: flex; align-items: center; font-size: 0.95rem; }
+        .required::after { content: "*"; color: var(--danger); margin-left: 4px; }
+        .input-cell { padding: 12px 15px; border-bottom: 1px solid #eee; border-right: 1px solid #eee; }
+        .input-cell:last-child { border-right: none; }
+
+        /* Form Controls */
+        .form-control { width: 100%; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.95rem; font-family: inherit; }
+        textarea.form-control { min-height: 120px; resize: vertical; line-height: 1.6; }
+        
+        .checkbox-group { display: flex; gap: 15px; flex-wrap: wrap; padding: 5px 0; }
+        .checkbox-label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.95rem; }
+        .checkbox-label input { width: 16px; height: 16px; accent-color: var(--primary-teal); }
+
+        .upload-hint { font-size: 0.85rem; color: #888; margin-top: 8px; }
+
+        /* --- Sticky Action Bar --- */
+        .action-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); padding: 15px; z-index: 1000; }
+        .action-container { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; }
+        
+        .btn { padding: 10px 25px; border-radius: 4px; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-cancel { background: #eee; color: #666; }
+        .btn-submit { background: var(--primary-teal); color: white; padding: 10px 40px; }
+        .btn-submit:hover { background: var(--primary-dark); }
+
+        /* RWD */
+        @media (max-width: 800px) {
+            .form-section-row { flex-direction: column; }
+            .section-header-col { width: 100%; padding: 12px; }
+            .input-grid { grid-template-columns: 1fr; }
+            .input-label { background-color: #f1f8e9; border-right: none; }
+            .input-cell { border-right: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <a href="index.html" class="logo"><i class="fa-solid fa-lightbulb"></i> 實證媒合平台</a>
+        <div>
+            <a href="cases.html" style="color:var(--primary-teal);">返回案例專區</a>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div class="context-card">
+            <div style="font-size:0.9rem; color:#666;">您正在諮詢的案例：</div>
+            <div class="context-title">AI 智慧路口：即時號誌優化與行人安全偵測系統</div>
+            <div style="font-size:0.85rem; color:#888; margin-top:5px;">解題團隊：智行科技股份有限公司</div>
+        </div>
+
+        <form class="form-container">
+            <div class="form-top-bar">
+                <i class="fa-solid fa-message"></i> 成功案例諮詢表
+            </div>
+
+            <!-- 1. 諮詢者基本資料 -->
+            <div class="form-section-row">
+                <div class="section-header-col">諮詢者<br>基本資料</div>
+                <div class="section-content-col">
+                    <div class="input-grid">
+                        <div class="input-label required">單位名稱</div>
+                        <div class="input-cell">
+                            <input type="text" class="form-control" placeholder="請輸入機關或企業全銜">
+                        </div>
+                        <div class="input-label required">單位類型</div>
+                        <div class="input-cell">
+                            <select class="form-control">
+                                <option>政府機關</option>
+                                <option>國營事業</option>
+                                <option>一般企業</option>
+                                <option>其他</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-label required">聯絡人姓名</div>
+                        <div class="input-cell">
+                            <input type="text" class="form-control" placeholder="請輸入姓名">
+                        </div>
+                        <div class="input-label required">聯絡職稱</div>
+                        <div class="input-cell">
+                            <input type="text" class="form-control" placeholder="例：經理、課長">
+                        </div>
+
+                        <div class="input-label required">聯絡電話</div>
+                        <div class="input-cell">
+                            <input type="tel" class="form-control" placeholder="02-xxxx-xxxx">
+                        </div>
+                        <div class="input-label required">電子信箱</div>
+                        <div class="input-cell">
+                            <input type="email" class="form-control" placeholder="service@example.com">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 諮詢意向 (更新區塊) -->
+            <div class="form-section-row">
+                <div class="section-header-col">諮詢意向</div>
+                <div class="section-content-col">
+                    <div class="input-grid-full">
+                        <div class="input-label required">諮詢類別<br>(可複選)</div>
+                        <div class="input-cell">
+                            <div class="checkbox-group">
+                                <label class="checkbox-label"><input type="checkbox" name="category"> 技術規格洽談</label>
+                                <label class="checkbox-label"><input type="checkbox" name="category"> 實證場域參訪</label>
+                                <label class="checkbox-label"><input type="checkbox" name="category"> 導入採購諮詢</label>
+                                <label class="checkbox-label"><input type="checkbox" name="category"> 投資/商業合作</label>
+                                <label class="checkbox-label"><input type="checkbox" name="category"> 其他</label>
+                            </div>
+                        </div>
+
+                        <div class="input-label required">具體需求說明</div>
+                        <div class="input-cell">
+                            <textarea class="form-control" placeholder="請簡述您的需求或想要洽談的細節，以利我們為您安排合適的對口人員。"></textarea>
+                        </div>
+
+                        <div class="input-label">附件上傳<br>(如有參考資料)</div>
+                        <div class="input-cell">
+                            <input type="file" class="form-control">
+                            <div class="upload-hint">
+                                支援格式：PDF, DOCX, JPG (限制 10MB 以內)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 聲明事項 -->
+            <div class="form-section-row" style="border-bottom:none;">
+                <div class="section-header-col" style="background:#546e7a;">個資聲明</div>
+                <div class="section-content-col">
+                    <div style="padding: 20px;">
+                        <label class="checkbox-label" style="align-items: flex-start; line-height: 1.6;">
+                            <input type="checkbox" style="margin-top: 5px;">
+                            <span>我已閱讀並同意 <strong>隱私權政策與個人資料保護聲明</strong>，本人同意將以上資訊提供給平台管理單位與執行團隊進行後續聯繫。</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div style="margin-top:20px; text-align:center; color:#666; font-size:0.9rem;">
+            <i class="fa-solid fa-circle-info"></i> 送出後系統將自動通知執行團隊，我們將於 3 個工作天內主動與您聯絡。
+        </div>
+    </div>
+
+    <!-- Sticky Bottom Action Bar -->
+    <div class="action-bar">
+        <div class="action-container">
+            <button type="button" class="btn btn-cancel" onclick="history.back()"><i class="fa-solid fa-xmark"></i> 取消返回</button>
+            <button type="button" class="btn btn-submit" onclick="alert('請確認您的諮詢表單'); location.href='partner-check.html'"><i class="fa-solid fa-paper-plane"></i> 確認送出諮詢</button>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>簽約文件繳交說明 - 政府場域實證</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心變數 (維持一致風格) --- */
+        :root {
+            --primary-teal: #008f95;      /* 主色 */
+            --primary-dark: #006c70;
+            --header-gray: #6c757d;
+            --label-bg: #eef5f5;          /* 表格標籤背景 */
+            --row-even-bg: #fcfcfc;
+            --border-color: #dee2e6;
+            --accent-orange: #e76f51;     /* 截止/倒數 */
+            --text-main: #333;
+            --bg-body: #f8f9fa;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            line-height: 1.6;
+        }
+
+        /* --- 2. Header & Nav --- */
+        .top-bar { background: var(--primary-teal); color: white; padding: 8px 10%; font-size: 0.85rem; display: flex; justify-content: space-between; }
+        .top-bar a { color: white; text-decoration: none; margin-left: 15px; }
+        
+        .site-header { background: white; padding: 15px 10%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
+        .logo { font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 10px; }
+        
+        .nav-toolbar { background-color: var(--primary-dark); padding: 10px 10%; display: flex; gap: 25px; }
+        .nav-item { color: white; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
+
+        /* --- 3. Breadcrumb & Status --- */
+        .breadcrumb-area { padding: 20px 10% 10px; font-size: 0.9rem; color: #666; }
+        .status-tag { background: var(--accent-orange); color: white; padding: 2px 8px; font-size: 0.8rem; border-radius: 2px; margin-right: 8px; }
+        .case-id { background: #eee; color: #555; padding: 2px 8px; font-size: 0.8rem; border-radius: 2px; }
+
+        /* --- 4. Main Layout --- */
+        .container {
+            width: 80%; max-width: 1400px; margin: 20px auto 60px;
+            display: grid; grid-template-columns: 1fr 320px; gap: 30px;
+        }
+
+        /* --- 5. Table Styles --- */
+        .spec-container { background: white; border: 1px solid var(--border-color); }
+        
+        .table-header-block {
+            background: linear-gradient(to right, #6c757d, #5a6268);
+            color: white; padding: 12px 20px; font-weight: 700;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .spec-row { display: grid; grid-template-columns: 180px 1fr; border-bottom: 1px solid var(--border-color); }
+        .spec-row:last-child { border-bottom: none; }
+        .spec-row:nth-child(even) .spec-content { background-color: var(--row-even-bg); }
+
+        .spec-label { background-color: var(--label-bg); padding: 20px; font-weight: 700; color: #495057; border-right: 1px solid var(--border-color); }
+        .spec-content { padding: 20px; color: #212529; background: white; }
+
+        /* --- 6. Content Elements --- */
+        .highlight-title { color: var(--primary-teal); font-size: 1.2rem; font-weight: 700; margin-bottom: 5px; }
+        .deadline-text { color: var(--accent-orange); font-weight: bold; font-size: 1.1rem; }
+
+        /* Checklist Style */
+        .doc-checklist { list-style: none; padding: 0; margin: 0; }
+        .doc-item {
+            display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px;
+            padding-bottom: 12px; border-bottom: 1px dashed #eee;
+        }
+        .doc-item:last-child { border-bottom: none; }
+        .doc-icon { color: var(--primary-teal); margin-top: 3px; }
+        .doc-name { font-weight: 700; color: #333; display: block; }
+        .doc-desc { font-size: 0.9rem; color: #666; margin-top: 2px; }
+        
+        .binding-box {
+            background: #fff8e1; border-left: 4px solid #ffc107; padding: 15px; font-size: 0.95rem; color: #5d4037;
+        }
+
+        /* --- 7. Sidebar --- */
+        .sidebar-card {
+            background: white; border: 1px solid var(--border-color); padding: 20px; margin-bottom: 20px;
+            border-top: 5px solid var(--accent-orange);
+        }
+        .card-title { font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 15px; }
+
+        .countdown-box { text-align: center; margin-bottom: 15px; }
+        .countdown-days { font-size: 2.5rem; font-weight: 700; color: var(--accent-orange); line-height: 1; }
+        
+        .download-link {
+            display: flex; align-items: center; gap: 10px; color: #0056b3; text-decoration: none;
+            padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 0.95rem;
+        }
+        .download-link:hover { color: var(--accent-orange); }
+
+        .btn-sidebar {
+            display: block; width: 100%; background: var(--accent-orange); color: white;
+            text-align: center; padding: 10px; border-radius: 4px; font-weight: 700;
+            text-decoration: none; border: none; cursor: pointer; transition: 0.2s;
+        }
+        .btn-sidebar:hover { background: #d65f42; }
+
+        /* RWD */
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+            .spec-row { grid-template-columns: 1fr; }
+            .spec-label { background: #e9ecef; padding: 10px 20px; border-bottom: 1px solid #eee; border-right: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="site-header">
+    <!-- 將原本的 div 改為 a 標籤 -->
+    <a href="index.html" class="logo" style="text-decoration: none;">
+        <i class="fa-solid fa-layer-group"></i>
+        <div>
+            <div style="font-size:1.4rem; font-weight:bold; line-height:1.2;">政府場域實證</div>
+            <div style="font-size:0.8rem; color:#888;">Innovation Matchmaking Platform</div>
+        </div>
+    </a>
+    <div style="font-size:0.9rem; color:#666;">
+        使用者：Guest <a href="#" style="color:var(--primary-teal);">[登入]</a>
+    </div>
+</header>
+
+    <nav class="nav-toolbar">
+        <a href="#" class="nav-item"><i class="fa-solid fa-magnifying-glass"></i> 挑戰查詢</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-file-contract"></i> 申請管理</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-download"></i> 下載專區</a>
+    </nav>
+
+    <div class="breadcrumb-area">
+        首頁 > 計畫時程 > 簽約文件繳交詳情
+        <div style="margin-top:10px;">
+            <span class="status-tag">急件</span>
+            <span class="case-id">案號：114-T058</span>
+        </div>
+    </div>
+
+    <div class="container">
+        
+        <!-- Left Column: Content -->
+        <main>
+            <div class="spec-container">
+                <div class="table-header-block">
+                    <span><i class="fa-solid fa-file-signature"></i> 簽約文件繳交規格</span>
+                    <button style="background:none; border:none; color:white; cursor:pointer;"><i class="fa-solid fa-print"></i> 列印檢核表</button>
+                </div>
+
+                <!-- Row 1: Title -->
+                <div class="spec-row">
+                    <div class="spec-label">事項名稱</div>
+                    <div class="spec-content">
+                        <div class="highlight-title">114年度創新場域實證計畫 簽約文件繳交</div>
+                    </div>
+                </div>
+
+                <!-- Row 2: Deadline -->
+                <div class="spec-row">
+                    <div class="spec-label">繳件截止日</div>
+                    <div class="spec-content">
+                        <span class="deadline-text">114年 07月 10日 (星期四) 下午 17:00 止</span><br>
+                        <span style="font-size:0.9rem; color:#666;">(以郵戳為憑，逾期視同放棄補助資格)</span>
+                    </div>
+                </div>
+
+                <!-- Row 3: Method -->
+                <div class="spec-row">
+                    <div class="spec-label">繳交方式</div>
+                    <div class="spec-content">
+                        <strong>掛號郵寄</strong> 或 <strong>親送</strong><br>
+                        寄送地址：24219 新北市新莊區中平路439號南棟4樓<br>
+                        收件人：創新實證計畫辦公室 (林專員 收)
+                    </div>
+                </div>
+
+                <!-- Row 4: Checklist (重點區塊) -->
+                <div class="spec-row">
+                    <div class="spec-label">應備文件清單</div>
+                    <div class="spec-content">
+                        <ul class="doc-checklist">
+                            <li class="doc-item">
+                                <i class="fa-regular fa-square-check doc-icon"></i>
+                                <div>
+                                    <span class="doc-name">1. 廠商用印函文</span>
+                                    <span class="doc-desc">正本 1 份，需蓋公司大、小章。</span>
+                                </div>
+                            </li>
+                            <li class="doc-item">
+                                <i class="fa-regular fa-square-check doc-icon"></i>
+                                <div>
+                                    <span class="doc-name">2. 簽約契約書</span>
+                                    <span class="doc-desc">正本 2 份。內含契約本文、核定版計畫書、MOU影本。需膠裝並加蓋騎縫章。</span>
+                                </div>
+                            </li>
+                            <li class="doc-item">
+                                <i class="fa-regular fa-square-check doc-icon"></i>
+                                <div>
+                                    <span class="doc-name">3. 第一期款領據 (Receipt)</span>
+                                    <span class="doc-desc">正本 1 份。金額為總補助款之 30% (含稅)。</span>
+                                </div>
+                            </li>
+                            <li class="doc-item">
+                                <i class="fa-regular fa-square-check doc-icon"></i>
+                                <div>
+                                    <span class="doc-name">4. 匯款帳戶存摺影本</span>
+                                    <span class="doc-desc">1 份。需為公司戶名之銀行帳戶。</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Row 5: Binding Specs -->
+                <div class="spec-row">
+                    <div class="spec-label">裝訂規範</div>
+                    <div class="spec-content">
+                        <div class="binding-box">
+                            <strong><i class="fa-solid fa-triangle-exclamation"></i> 契約書裝訂注意事項：</strong>
+                            <ul style="margin-top:5px; padding-left:20px;">
+                                <li>請採「左側膠裝」，封面顏色請用淡藍色 (雲彩紙/丹迪紙)。</li>
+                                <li>契約書側邊需加蓋公司騎縫章。</li>
+                                <li>契約書最後一頁「立約人」處，請務必加蓋公司印鑑與負責人印鑑。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 6: Contact -->
+                <div class="spec-row">
+                    <div class="spec-label">聯絡窗口</div>
+                    <div class="spec-content">
+                        如有文件填寫問題，請洽詢：<br>
+                        林專員 (02-2720-8889 分機 1234)<br>
+                        Email: contract@gov.taipei
+                    </div>
+                </div>
+
+            </div>
+            
+            <div style="text-align:right; margin-top:20px;">
+                <a href="#" style="background:white; border:1px solid #ccc; padding:8px 15px; color:#666; text-decoration:none; border-radius:4px;">
+                    <i class="fa-solid fa-reply"></i> 返回列表
+                </a>
+            </div>
+        </main>
+
+        <!-- Right Column: Sidebar -->
+        <aside>
+            <!-- Card 1: Countdown -->
+            <div class="sidebar-card">
+                <div class="card-title">繳件倒數</div>
+                <div class="countdown-box">
+                    <div class="countdown-days">5</div>
+                    <div class="countdown-label">天後截止</div>
+                </div>
+                <div style="font-size:0.85rem; color:#d63031; text-align:center;">
+                    <i class="fa-solid fa-bell"></i> 請盡速完成用印程序
+                </div>
+            </div>
+
+            <!-- Card 2: Downloads -->
+            <div class="sidebar-card">
+                <div class="card-title">空白文件下載</div>
+                <div>
+                    <a href="#" class="download-link">
+                        <i class="fa-regular fa-file-word"></i> 1. 繳件函文範本.doc
+                    </a>
+                    <a href="#" class="download-link">
+                        <i class="fa-regular fa-file-word"></i> 2. 空白契約書.doc
+                    </a>
+                    <a href="#" class="download-link">
+                        <i class="fa-regular fa-file-excel"></i> 3. 領據範本.xlsx
+                    </a>
+                    <a href="#" class="download-link">
+                        <i class="fa-solid fa-book"></i> 4. 契約書填寫說明.pdf
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card 3: Digital Copy Upload -->
+            <div class="sidebar-card">
+                <div class="card-title">電子檔備份</div>
+                <p style="font-size:0.9rem; color:#666; margin-bottom:10px;">
+                    寄出紙本前，請先掃描契約書封面與用印頁上傳，以利先期核對。
+                </p>
+                <button class="btn-sidebar">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> 上傳掃描檔
+                </button>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- Footer -->
+    <div style="background:#343a40; color:#adb5bd; padding:40px; text-align:center; font-size:0.9rem;">
+        <p>主辦單位：勞動力發展署 | 執行單位：創新實證中心</p>
+        <p>&copy; 2025 Innovation Matchmaking Platform.</p>
+    </div>
+
+</body>
+</html>

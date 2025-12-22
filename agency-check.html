@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>機關出題需求表 - 實證媒合平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0089A7;    /* 主色：科技藍綠 */
+            --primary-dark: #006075;     /* 深色：側邊欄/按鈕 */
+            --bg-body: #f4f6f9;
+            --border-color: #cbd5e0;
+            --text-main: #2d3748;
+            --text-label: #4a5568;
+            --white: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding-bottom: 50px;
+        }
+
+        /* Top Bar */
+        .top-nav {
+            background: white;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 30px;
+        }
+        .logo { font-weight: 700; font-size: 1.2rem; color: var(--primary-dark); display: flex; align-items: center; gap: 10px; }
+        .user-info { font-size: 0.9rem; color: #718096; }
+        .user-info a { color: var(--primary-color); text-decoration: none; margin-left: 10px; }
+
+        /* Page Title */
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .page-header h1 { font-size: 1.8rem; color: var(--text-main); margin-bottom: 5px; }
+        .page-header p { color: #718096; font-size: 0.9rem; }
+
+        /* --- Main Form Container --- */
+        .form-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border: 1px solid var(--primary-color); /* 外框 */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        /* Blue Header Strip */
+        .form-title-strip {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* --- The Grid Layout for the Form --- */
+        /* 每一大區塊 (Row) */
+        .form-section {
+            display: grid;
+            grid-template-columns: 80px 1fr; /* 左側標籤固定寬度，右側內容 */
+            border-bottom: 1px solid var(--border-color);
+        }
+        .form-section:last-child { border-bottom: none; }
+
+        /* 左側深色標籤 (Vertical Label) */
+        .section-label {
+            background-color: var(--primary-dark);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            writing-mode: vertical-lr; /* 直書 */
+            text-orientation: upright;
+            letter-spacing: 5px;
+            font-weight: 700;
+            padding: 20px 0;
+            font-size: 1rem;
+        }
+
+        /* 右側內容區 */
+        .section-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 內部再分兩欄 */
+            background: white;
+        }
+
+        /* 單元格 (Cell) */
+        .cell {
+            display: flex;
+            border-bottom: 1px solid #edf2f7;
+            border-right: 1px solid #edf2f7;
+        }
+        /* 讓某些單元格跨欄 */
+        .cell.full-width { grid-column: 1 / -1; border-right: none; }
+        
+        /* 欄位標題 (Field Name) */
+        .field-name {
+            background-color: #f7fafc;
+            width: 130px;
+            padding: 12px 15px;
+            font-weight: 500;
+            color: var(--text-label);
+            display: flex;
+            align-items: center;
+            flex-shrink: 0; /* 防止壓縮 */
+            border-right: 1px solid #edf2f7;
+        }
+
+        /* 欄位值 (Field Value) */
+        .field-value {
+            padding: 12px 20px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+
+        .field-value a { color: var(--primary-color); text-decoration: underline; }
+
+        /* Tags */
+        .tag {
+            background: #e6fffa;
+            color: #2c7a7b;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-right: 5px;
+            border: 1px solid #b2f5ea;
+        }
+
+        /* Attachments */
+        .attachment-item {
+            display: inline-flex;
+            align-items: center;
+            background: #edf2f7;
+            padding: 5px 12px;
+            border-radius: 4px;
+            margin-right: 10px;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #4a5568;
+            text-decoration: none !important;
+        }
+        .attachment-item i { margin-right: 6px; }
+
+        /* --- Footer Buttons --- */
+        .action-bar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 10px 30px;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-outline {
+            background: white;
+            border-color: #cbd5e0;
+            color: #4a5568;
+        }
+        .btn-outline:hover { background: #f7fafc; }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        .btn-primary:hover { background: var(--primary-dark); }
+
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+        }
+        .btn-danger:hover { background: #c53030; }
+
+        /* RWD */
+        @media (max-width: 768px) {
+            .form-section { grid-template-columns: 40px 1fr; } /* 縮小左側標籤 */
+            .section-label { font-size: 0.9rem; letter-spacing: 2px; }
+            .section-content { grid-template-columns: 1fr; } /* 內容變單欄 */
+            .cell { border-right: none; }
+            .field-name { width: 100px; padding: 10px; font-size: 0.9rem; }
+            .field-value { padding: 10px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+<a href="index.html" class="logo">
+    <img src="..." alt="Logo">
+    實證媒合平台
+</a>
+        <div class="user-info">
+            您好，交通局 林專員 <a href="#">[登出]</a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <p>首頁 > 挑戰管理 > 新增挑戰 > 預覽確認</p>
+        <h1>機關出題需求資料表</h1>
+        <p>(此為正式發布前之預覽畫面，請確認內容無誤後點擊發布)</p>
+    </div>
+
+    <!-- Main Form -->
+    <div class="form-container">
+        
+        <!-- Strip Header -->
+        <div class="form-title-strip">
+            <span>挑戰編號：114-T058-AGCY</span>
+            <span>出題單位：臺北市政府交通局</span>
+        </div>
+
+        <!-- Section 1: 基本資料 -->
+        <div class="form-section">
+            <div class="section-label">基本資料</div>
+            <div class="section-content">
+                <div class="cell">
+                    <div class="field-name">出題機關</div>
+                    <div class="field-value">臺北市政府交通局</div>
+                </div>
+                <div class="cell">
+                    <div class="field-name">承辦科室</div>
+                    <div class="field-value">智慧運輸科</div>
+                </div>
+                <div class="cell">
+                    <div class="field-name">聯絡人</div>
+                    <div class="field-value">林小明 (專案技正)</div>
+                </div>
+                <div class="cell">
+                    <div class="field-name">聯絡電話</div>
+                    <div class="field-value">02-2720-8889 #1234</div>
+                </div>
+                <div class="cell full-width">
+                    <div class="field-name">電子郵件</div>
+                    <div class="field-value">lin.xm@gov.taipei</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: 挑戰摘要 -->
+        <div class="form-section">
+            <div class="section-label">挑戰摘要</div>
+            <div class="section-content">
+                <div class="cell full-width">
+                    <div class="field-name">挑戰題目</div>
+                    <div class="field-value" style="font-weight: 700; color: var(--primary-dark); font-size: 1.1rem;">
+                        智慧路口：即時交通影像辨識與分析解決方案
+                    </div>
+                </div>
+                <div class="cell">
+                    <div class="field-name">技術領域</div>
+                    <div class="field-value">
+                        <span class="tag">AI 影像辨識</span>
+                        <span class="tag">5G / IoT</span>
+                        <span class="tag">Edge AI</span>
+                    </div>
+                </div>
+                <div class="cell">
+                    <div class="field-name">實證場域</div>
+                    <div class="field-value">臺北市信義區 (基隆路與忠孝東路口)</div>
+                </div>
+                <div class="cell">
+                    <div class="field-name">預算金額</div>
+                    <div class="field-value">新台幣 2,500,000 元 (含稅)</div>
+                </div>
+                <div class="cell">
+                    <div class="field-name">預計期程</div>
+                    <div class="field-value">6 個月 (含場域建置與驗證)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: 徵件條件 -->
+        <div class="form-section">
+            <div class="section-label">徵件條件</div>
+            <div class="section-content">
+                <div class="cell full-width">
+                    <div class="field-name">申請資格</div>
+                    <div class="field-value">
+                        1. 依公司法設立之本國公司。<br>
+                        2. 成立 8 年內之新創企業尤佳。<br>
+                        3. 具備過往智慧交通或影像分析相關實績者。
+                    </div>
+                </div>
+                <div class="cell full-width">
+                    <div class="field-name">評選標準</div>
+                    <div class="field-value">
+                        技術創新性 (30%)、場域可行性 (30%)、團隊執行力 (20%)、經費編列合理性 (20%)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: 痛點與需求 (核心內容) -->
+        <div class="form-section">
+            <div class="section-label">需求詳述</div>
+            <div class="section-content">
+                <div class="cell full-width">
+                    <div class="field-name">現況問題</div>
+                    <div class="field-value">
+                        目前本市主要幹道於上下班尖峰時刻，常因固定號誌時相無法應對突發性車流，導致路口回堵嚴重。現有之感應線圈維護成本高且數據單一，缺乏車種辨識與人流分析能力，無法作為動態號誌調整之依據。
+                    </div>
+                </div>
+                <div class="cell full-width">
+                    <div class="field-name">技術規格</div>
+                    <div class="field-value">
+                        1. 需利用路口現有 CCTV 影像進行分析，不額外架設大型硬體。<br>
+                        2. <strong>辨識準確率：</strong> 日間 > 95%，夜間 > 85% (需包含大客車、小客車、機車)。<br>
+                        3. <strong>延遲時間：</strong> 影像分析數據回傳延遲需 < 2 秒。<br>
+                        4. <strong>介接規範：</strong> 需提供 RESTful API 介接本局交控中心平台。
+                    </div>
+                </div>
+                <div class="cell full-width">
+                    <div class="field-name">預期效益</div>
+                    <div class="field-value">
+                        1. 降低路口尖峰時段平均延滯時間 15% 以上。<br>
+                        2. 節省人工車流調查人力成本約 50 萬元/年。<br>
+                        3. 建立即時交通戰情儀表板，提供決策輔助。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: 附件 -->
+        <div class="form-section">
+            <div class="section-label">相關附件</div>
+            <div class="section-content">
+                <div class="cell full-width" style="border-right: none;">
+                    <div class="field-value" style="display: block;">
+                        <a href="#" class="attachment-item"><i class="fa-regular fa-file-pdf"></i> 完整徵案簡章.pdf</a>
+                        <a href="#" class="attachment-item"><i class="fa-regular fa-image"></i> 場域現況照片.jpg</a>
+                        <a href="#" class="attachment-item"><i class="fa-regular fa-file-excel"></i> 經費預算表範本.xlsx</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<!-- Actions -->
+    <div class="action-bar">
+        <!-- 返回修改：連結至原本的填寫表單頁 -->
+        <a href="agency-apply.html" class="btn btn-outline">
+            <i class="fa-solid fa-arrow-left"></i> 返回修改
+        </a>
+
+        <!-- 列印資料：觸發瀏覽器列印功能 -->
+        <a href="javascript:window.print()" class="btn btn-outline">
+            <i class="fa-solid fa-print"></i> 列印資料
+        </a>
+
+        <!-- 確認並發布：連結至我們剛剛建立的成功頁面 -->
+        <a href="agency-success.html" class="btn btn-primary">
+            <i class="fa-solid fa-check"></i> 確認並發布挑戰
+        </a>
+    </div>
+
+</body>
+</html>

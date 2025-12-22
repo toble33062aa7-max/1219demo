@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>計畫時程查詢 - 實證媒合平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 台灣就業通 色彩系統 --- */
+        :root {
+            --primary-teal: #0089A7;       /* 表頭背景色 */
+            --teal-dark: #006E86;          /* 按鈕深色狀態 */
+            --btn-blue: #0089A7;           /* 搜尋按鈕色 */
+            --sidebar-border: #cccccc;     /* 虛線邊框色 */
+            --text-main: #333333;
+            --text-light: #666666;
+            --bg-body: #ffffff;
+            --table-hover: #f1f8fa;
+            --status-green: #2ecc71;
+            --status-red: #e74c3c;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            line-height: 1.5;
+        }
+
+        /* --- 2. Header (公版樣式) --- */
+        .top-bar {
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            padding: 5px 10%;
+            text-align: right;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .main-header {
+            background: #fff;
+            padding: 15px 10%;
+            border-bottom: 4px solid var(--primary-teal); /* 台灣就業通特徵：綠色底條 */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-bar {
+            background: var(--primary-teal);
+            padding: 0 10%;
+            display: flex;
+            gap: 1px; /* 模擬分隔線 */
+        }
+        .nav-item {
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        .nav-item:hover, .nav-item.active { background: var(--teal-dark); }
+
+        /* --- 3. 頁面標題區 --- */
+        .page-breadcrumb {
+            padding: 15px 10%;
+            font-size: 0.9rem;
+            color: #888;
+        }
+        
+        .page-title {
+            padding: 0 10% 20px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- 4. 主佈局 (Grid) --- */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto 50px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr; /* 左側固定，右側自適應 */
+            gap: 30px;
+        }
+
+        /* --- 5. 左側篩選欄 (Sidebar) --- */
+        .sidebar-box {
+            border: 1px dashed var(--sidebar-border); /* 特徵：虛線邊框 */
+            padding: 20px;
+            background: #fff;
+        }
+
+        .filter-title {
+            color: var(--primary-teal);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem; }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .radio-group { display: flex; flex-direction: column; gap: 8px; }
+        .radio-item { display: flex; align-items: center; font-size: 0.9rem; cursor: pointer; }
+        .radio-item input { margin-right: 8px; accent-color: var(--primary-teal); }
+
+        .btn-search {
+            width: 100%;
+            background: var(--btn-blue);
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .btn-search:hover { background: var(--teal-dark); }
+
+        /* --- 6. 右側列表 (Table) --- */
+        .content-top-bar {
+            text-align: right;
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        /* 表頭樣式 */
+        .data-table thead th {
+            background-color: var(--primary-teal);
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: 700;
+            white-space: nowrap;
+            border-right: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer; /* 模擬排序 */
+        }
+        .data-table thead th:last-child { border-right: none; }
+        .sort-icon { font-size: 0.8rem; margin-left: 5px; }
+
+        /* 表格內容 */
+        .data-table tbody td {
+            padding: 15px 10px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+            color: #333;
+        }
+
+        .data-table tbody tr:hover { background-color: var(--table-hover); }
+
+        /* 欄位特定樣式 */
+        .col-action { text-align: center; width: 80px; }
+        .btn-action {
+            background: var(--primary-teal);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-action:hover { background: var(--teal-dark); }
+
+        .col-name { font-weight: 500; color: #0056b3; cursor: pointer; }
+        .col-name:hover { text-decoration: underline; }
+        
+        .col-center { text-align: center; }
+        
+        /* 狀態標籤 */
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+        .status-urgent { color: var(--status-red); background: #fdecea; border: 1px solid var(--status-red); }
+        .status-normal { color: #333; }
+        .status-done { color: #999; text-decoration: line-through; }
+
+        /* --- 7. 底部 Pagination --- */
+        .pagination-area {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .page-info { font-size: 0.9rem; color: #333; font-weight: 700; }
+        
+        .pagination-controls { display: flex; gap: 5px; align-items: center; }
+        
+        .page-btn {
+            background: #eee;
+            border: none;
+            padding: 5px 12px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: #333;
+        }
+        .page-btn:hover { background: #ddd; }
+        .page-btn.active { background: #333; color: white; }
+
+        .page-select {
+            padding: 5px;
+            border: 1px solid #ccc;
+            margin-left: 10px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: #2c3e50;
+            color: #fff;
+            padding: 40px 10%;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        /* --- RWD --- */
+        @media (max-width: 992px) {
+            .main-container { grid-template-columns: 1fr; }
+            .sidebar-box { margin-bottom: 20px; border: 1px solid #ddd; border-style: solid; /* 手機版改實線 */ }
+            .data-table { display: block; overflow-x: auto; white-space: nowrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        網站導覽 | 職前訓練網 | 青年職訓資源網 | 登入
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header">
+        <!-- 將標題與 Logo 包裹在連結中 -->
+        <a href="index.html" class="header-logo-link">
+        <div style="font-size:1.5rem; font-weight:700; color:#333; display:flex; align-items:center; gap:10px;">
+            <img src="https://www.taiwanjobs.gov.tw/internet/2021/images/logo.png" alt="Logo" style="height:40px;">
+            <span style="border-left:1px solid #ccc; padding-left:15px; color:#555; font-size:1.2rem;">實證媒合平台</span>
+        </div>
+    </header>
+
+    <!-- Nav Bar -->
+    <div class="nav-bar">
+        <a href="index.html" class="nav-item">計畫首頁</a>
+        <a href="challenge.html" class="nav-item">尋找挑戰</a>
+        <a href="#" class="nav-item active">計畫時程</a>
+        <a href="#" class="nav-item">申請資源</a>
+        <a href="#" class="nav-item">成功案例</a>
+    </div>
+
+    <!-- Page Title -->
+    <div class="page-breadcrumb">首頁 > 計畫時程 > 時程查詢</div>
+    <div class="page-title"><i class="fa-regular fa-calendar-days"></i> 計畫時程查詢</div>
+
+    <!-- Main Content Grid -->
+    <div class="main-container">
+
+        <!-- Left Sidebar: Filter (仿參考圖左側虛線框) -->
+        <aside class="sidebar-box">
+            <div class="filter-title"><i class="fa-solid fa-magnifying-glass"></i> 時程查詢條件</div>
+            
+            <div class="form-group">
+                <label class="form-label">計畫年度：</label>
+                <div class="radio-group">
+                    <label class="radio-item"><input type="radio" name="year" checked> 114年 (2025)</label>
+                    <label class="radio-item"><input type="radio" name="year"> 113年 (2024)</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">執行階段：</label>
+                <div class="radio-group">
+                    <label class="radio-item"><input type="radio" name="stage" checked> 全部</label>
+                    <label class="radio-item"><input type="radio" name="stage"> 申請與審查</label>
+                    <label class="radio-item"><input type="radio" name="stage"> 簽約與啟動</label>
+                    <label class="radio-item"><input type="radio" name="stage"> 執行與管考</label>
+                    <label class="radio-item"><input type="radio" name="stage"> 結案與驗收</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">關鍵字：</label>
+                <input type="text" class="form-control" placeholder="例：說明會、繳件...">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">日期區間：</label>
+                <input type="date" class="form-control" style="margin-bottom:5px;">
+                至
+                <input type="date" class="form-control" style="margin-top:5px;">
+            </div>
+
+            <button class="btn-search"><i class="fa-solid fa-search"></i> 查詢</button>
+        </aside>
+
+        <!-- Right Content: Table (仿參考圖右側列表) -->
+        <main>
+            <div class="content-top-bar">
+                <i class="fa-regular fa-clock"></i> 資料更新時間：每日 00:00 (Updated Time: 00:00)
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th width="80">功能 <i class="fa-solid fa-sort sort-icon"></i></th>
+                        <th width="100">日期 <i class="fa-solid fa-sort sort-icon"></i></th>
+                        <th>事項名稱 <i class="fa-solid fa-sort sort-icon"></i></th>
+                        <th width="120">階段分類 <i class="fa-solid fa-sort sort-icon"></i></th>
+                        <th width="100">狀態 <i class="fa-solid fa-sort sort-icon"></i></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Row 1 -->
+                    <tr>
+                        <td class="col-action"><button class="btn-action">下載</button></td>
+                        <td class="col-center">2025/06/06</td>
+                        <td class="col-name"><a href="proposal.html">備妥並提交申請文件截止 (Application Deadline)</td>
+                        <td class="col-center">申請審查</td>
+                        <td class="col-center"><span class="status-badge status-urgent">即將截止</span></td>
+                    </tr>
+                    <!-- Row 2 -->
+                    <tr>
+                        <td class="col-action"><button class="btn-action">檢視</button></td>
+                        <td class="col-center">2025/06/10</td>
+                        <td class="col-name"><a href="Proposal-Review.html">審查會議 (Review Meeting)</td>
+                        <td class="col-center">申請審查</td>
+                        <td class="col-center"><span class="status-badge status-normal">未開始</span></td>
+                    </tr>
+                    <!-- Row 3 -->
+                    <tr>
+                        <td class="col-action"><button class="btn-action">下載</button></td>
+                        <td class="col-center">2025/06/25</td>
+                        <td class="col-name"><a href="shortlist.html">公告審查結果與獲選名單</td>
+                        <td class="col-center">申請審查</td>
+                        <td class="col-center"><span class="status-badge status-normal">未開始</span></td>
+                    </tr>
+                    <!-- Row 4 -->
+                    <tr>
+                        <td class="col-action"><button class="btn-action">下載</button></td>
+                        <td class="col-center">2025/07/10</td>
+                        <td class="col-name"><a href="agreement.html">簽約文件繳交截止 (MOU & Contract)</td>
+                        <td class="col-center">簽約啟動</td>
+                        <td class="col-center"><span class="status-badge status-normal">未開始</span></td>
+                    </tr>
+                    <!-- Row 5 -->
+                    <tr>
+                        <td class="col-action"><button class="btn-action">檢視</button></td>
+                        <td class="col-center">2025/07/30</td>
+                        <td class="col-name"><a href="1stinstallment .html">第一期款撥付 (30%)</td>
+                        <td class="col-center">簽約啟動</td>
+                        <td class="col-center"><span class="status-badge status-normal">未開始</span></td>
+                    </tr>
+                    <!-- Row 6 -->
+                    <tr>
+                        <td class="col-action"><button class="btn-action">檢視</button></td>
+                        <td class="col-center">每月 10號</td>
+                        <td class="col-name"><a href="journal.html">例行工作紀錄繳交 (Monthly Log)</td>
+                        <td class="col-center">執行管考</td>
+                        <td class="col-center"><span class="status-badge status-normal">常態性</span></td>
+                    </tr>
+                    <!-- Row 7 -->
+                    <tr>
+                        <td class="col-action"><button class="btn-action">檢視</button></td>
+                        <td class="col-center">2025/09/15</td>
+                        <td class="col-name"><a href="midterm.html">期中審查會議 (Mid-term Review)</td>
+                        <td class="col-center">執行管考</td>
+                        <td class="col-center"><span class="status-badge status-normal">未開始</span></td>
+                    </tr>
+                    <!-- Row 8 -->
+                    <tr>
+                        <td class="col-action"><button class="btn-action">下載</button></td>
+                        <td class="col-center">2025/11/10</td>
+                        <td class="col-name"><a href="final-report.html">期末報告初稿繳交截止</td>
+                        <td class="col-center">結案驗收</td>
+                        <td class="col-center"><span class="status-badge status-normal">未開始</span></td>
+                    </tr>
+                    <!-- Row 9 -->
+                    <tr>
+                        <td class="col-action"><button class="btn-action">下載</button></td>
+                        <td class="col-center">2025/11/30</td>
+                        <td class="col-name"><a href="2ndinstallment .html">結案文件與請款單據繳交截止</td>
+                        <td class="col-center">結案驗收</td>
+                        <td class="col-center"><span class="status-badge status-normal">未開始</span></td>
+                    </tr>
+                    <!-- Row 10 (Past Event) -->
+                    <tr style="background-color:#f9f9f9; color:#999;">
+                        <td class="col-action"><button class="btn-action" style="background:#ccc; cursor:not-allowed;">結束</button></td>
+                        <td class="col-center">2025/05/15</td>
+                        <td class="col-name" style="color:#666;"><a href="Info.html">計畫徵案說明會 (線上辦理)</td>
+                        <td class="col-center">申請審查</td>
+                        <td class="col-center"><span class="status-badge status-done">已結束</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Pagination (仿參考圖底部) -->
+            <div class="pagination-area">
+                <div class="page-info">合計 10 筆</div>
+                <div class="pagination-controls">
+                    <button class="page-btn">最前頁</button>
+                    <button class="page-btn">上一頁</button>
+                    <select style="padding:2px;">
+                        <option>第 1 頁</option>
+                    </select>
+                    <button class="page-btn">下一頁</button>
+                    <button class="page-btn">最後頁</button>
+                </div>
+                <div class="page-display">
+                    顯示 
+                    <select class="page-select">
+                        <option>10</option>
+                        <option>20</option>
+                    </select>
+                    筆
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>勞動部勞動力發展署版權所有 &copy; 2025 TaiwanJobs All Rights Reserved.</p>
+        <p>地址：24219 新北市新莊區中平路439號南棟4樓 | 客服專線：0800-777-888</p>
+    </footer>
+
+</body>
+</html>

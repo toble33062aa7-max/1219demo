@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>提案申請 - 實證媒合平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 色彩系統 --- */
+        :root {
+            --primary-teal: #0089A7;       /* 主色 */
+            --primary-dark: #005f73;       /* 深色 */
+            --header-bg: #f8fcfc;          /* 輸入框標籤背景 */
+            --section-bg: #0089A7;         /* 左側區塊背景 */
+            --text-main: #333;
+            --border-color: #cfd8dc;
+            --white: #ffffff;
+            --bg-body: #f5f5f5;
+            --danger: #e74c3c;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            line-height: 1.5;
+        }
+
+        /* --- Header --- */
+        .site-header {
+            background: var(--white);
+            padding: 15px 5%;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-size: 1.4rem; font-weight: 700; color: #003366; display: flex; align-items: center; gap: 10px; }
+
+        /* --- Layout --- */
+        .container {
+            max-width: 1100px;
+            margin: 30px auto 80px; /* Bottom margin for sticky footer */
+            padding: 0 20px;
+        }
+
+        /* --- Challenge Info Card (頂部提示) --- */
+        .challenge-info-card {
+            background: white;
+            border-left: 5px solid var(--primary-teal);
+            padding: 20px 25px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .challenge-title { font-size: 1.3rem; font-weight: 700; color: #333; margin-bottom: 5px; }
+        .challenge-meta { font-size: 0.9rem; color: #666; }
+        .countdown-badge { 
+            background: #fff3e0; color: #e65100; 
+            padding: 5px 15px; border-radius: 20px; 
+            font-weight: bold; font-size: 0.9rem; border: 1px solid #ffe0b2;
+        }
+
+        /* --- Form Structure (仿表格佈局) --- */
+        .form-container {
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .form-top-bar {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Row Layout */
+        .form-section-row {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .form-section-row:last-child { border-bottom: none; }
+
+        /* Left Header Column */
+        .section-header-col {
+            width: 140px;
+            background-color: var(--section-bg);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 20px 10px;
+            text-align: center;
+            flex-shrink: 0;
+            border-bottom: 1px solid white; /* For mobile view separation */
+        }
+
+        /* Right Content Column */
+        .section-content-col {
+            flex-grow: 1;
+            padding: 0;
+            background: white;
+        }
+
+        /* Grid for Inputs */
+        .input-grid {
+            display: grid;
+            grid-template-columns: 140px 1fr 140px 1fr; /* Label | Input | Label | Input */
+        }
+        .input-grid-full {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+        }
+
+        /* Input Styles */
+        .input-label {
+            background-color: var(--header-bg);
+            padding: 15px;
+            font-weight: 500;
+            color: #444;
+            border-bottom: 1px solid #eee;
+            border-right: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        .required::after { content: "*"; color: var(--danger); margin-left: 4px; }
+
+        .input-cell {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            border-right: 1px solid #eee; /* Default right border */
+            display: flex;
+            align-items: center;
+        }
+        .input-cell:last-child { border-right: none; }
+        .input-grid .input-cell:nth-child(4n) { border-right: none; }
+
+        /* Form Controls */
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        .form-control:focus {
+            border-color: var(--primary-teal);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 137, 167, 0.1);
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            line-height: 1.5;
+            min-height: 120px;
+        }
+
+        /* Readonly/Disabled Style */
+        .form-control:disabled, .form-control[readonly] {
+            background-color: #f0f0f0;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 6px;
+            padding: 30px;
+            text-align: center;
+            background: #fafafa;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 10px;
+        }
+        .upload-area:hover {
+            border-color: var(--primary-teal);
+            background: #f0f9fa;
+        }
+        .upload-icon { font-size: 2rem; color: #999; margin-bottom: 10px; }
+        .upload-text { color: #555; font-weight: 500; }
+        .upload-hint { font-size: 0.85rem; color: #999; margin-top: 5px; }
+
+        /* File List (Uploaded) */
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #eef7f9;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+        .btn-remove { color: var(--danger); cursor: pointer; }
+
+        /* Checkbox Group */
+        .checkbox-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        /* --- Bottom Action Bar (Sticky) --- */
+        .action-bar-wrapper {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            padding: 15px;
+            z-index: 999;
+        }
+        .action-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-cancel { background: transparent; color: #666; border: 1px solid #ccc; }
+        .btn-cancel:hover { background: #eee; }
+        
+        .btn-save { background: #ff9800; color: white; }
+        .btn-save:hover { background: #f57c00; }
+        
+        .btn-submit { background: var(--primary-teal); color: white; padding: 10px 40px; }
+        .btn-submit:hover { background: var(--primary-dark); }
+
+        /* --- RWD --- */
+        @media (max-width: 900px) {
+            .form-section-row { flex-direction: column; }
+            .section-header-col { width: 100%; text-align: left; padding: 10px 15px; justify-content: flex-start; }
+            .input-grid, .input-grid-full { grid-template-columns: 1fr; }
+            .input-label { border-right: none; background-color: #f1f8e9; padding: 10px 15px; font-size: 0.95rem; }
+            .input-cell { border-right: none; padding: 10px 15px 15px; }
+            .challenge-info-card { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .action-container { flex-direction: column; gap: 10px; }
+            .btn { width: 100%; justify-content: center; }
+            .btn-group-right { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="site-header">
+<a href="index.html" class="logo">
+    <img src="..." alt="Logo">
+    實證媒合平台
+</a>
+        <div>
+            <span style="margin-right:15px; color:#666;">智通科技股份有限公司</span>
+            <a href="index.html" style="color:var(--primary-teal);">回首頁</a>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <!-- Challenge Info Card -->
+        <div class="challenge-info-card">
+            <div>
+                <div style="font-size:0.9rem; color:#666; margin-bottom:5px;">您正在申請：</div>
+                <div class="challenge-title">智慧路口：即時交通影像辨識與分析</div>
+                <div class="challenge-meta">主辦機關：臺北市政府交通局 ｜ 案號：114-T058</div>
+            </div>
+            <div class="countdown-badge">
+                <i class="fa-regular fa-clock"></i> 距離截止剩餘：12 天 05 小時
+            </div>
+        </div>
+
+        <!-- Application Form -->
+        <form class="form-container">
+            
+            <div class="form-top-bar">
+                <i class="fa-solid fa-pen-to-square"></i> 提案申請表
+            </div>
+
+            <!-- 1. 基本資料 (自動帶入) -->
+            <div class="form-section-row">
+                <div class="section-header-col">
+                    基本資料<br>(自動帶入)
+                </div>
+                <div class="section-content-col">
+                    <div class="input-grid">
+                        <div class="input-label">公司名稱</div>
+                        <div class="input-cell">
+                            <input type="text" class="form-control" value="智通科技股份有限公司" readonly>
+                        </div>
+                        <div class="input-label">統一編號</div>
+                        <div class="input-cell">
+                            <input type="text" class="form-control" value="12345678" readonly>
+                        </div>
+                        
+                        <div class="input-label required">專案聯絡人</div>
+                        <div class="input-cell">
+                            <input type="text" class="form-control" placeholder="請輸入姓名">
+                        </div>
+                        <div class="input-label required">聯絡職稱</div>
+                        <div class="input-cell">
+                            <input type="text" class="form-control" placeholder="例：專案經理">
+                        </div>
+
+                        <div class="input-label required">聯絡電話</div>
+                        <div class="input-cell">
+                            <input type="tel" class="form-control" placeholder="02-xxxx-xxxx">
+                        </div>
+                        <div class="input-label required">電子信箱</div>
+                        <div class="input-cell">
+                            <input type="email" class="form-control" placeholder="contact@example.com">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 提案內容 -->
+            <div class="form-section-row">
+                <div class="section-header-col">
+                    提案內容
+                </div>
+                <div class="section-content-col">
+                    <div class="input-grid-full">
+                        <div class="input-label required">提案名稱</div>
+                        <div class="input-cell">
+                            <input type="text" class="form-control" placeholder="請輸入您的解決方案名稱 (限 30 字內)">
+                        </div>
+
+                        <div class="input-label required">預估經費</div>
+                        <div class="input-cell">
+                            <input type="number" class="form-control" placeholder="請輸入金額 (新台幣/元)" style="width: 200px; display:inline-block; margin-right:10px;"> 元
+                            <span style="font-size:0.85rem; color:#888; margin-left:10px;">(上限：250 萬元)</span>
+                        </div>
+
+                        <div class="input-label required">應用技術</div>
+                        <div class="input-cell">
+                            <div class="checkbox-group">
+                                <label class="checkbox-label"><input type="checkbox" name="tech"> AI 影像辨識</label>
+                                <label class="checkbox-label"><input type="checkbox" name="tech"> 5G 通訊</label>
+                                <label class="checkbox-label"><input type="checkbox" name="tech"> 邊緣運算 (Edge AI)</label>
+                                <label class="checkbox-label"><input type="checkbox" name="tech"> 大數據分析</label>
+                                <label class="checkbox-label"><input type="checkbox" name="tech"> 其他</label>
+                            </div>
+                        </div>
+
+                        <div class="input-label required">提案摘要</div>
+                        <div class="input-cell">
+                            <textarea class="form-control" placeholder="請簡述您的解決方案核心概念、技術優勢及預期效益 (建議 300-500 字)"></textarea>
+                        </div>
+                        
+                        <div class="input-label">過往實績</div>
+                        <div class="input-cell">
+                            <textarea class="form-control" style="min-height: 80px;" placeholder="請列舉團隊相關獲獎紀錄或過往執行案例 (選填)"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 文件上傳 -->
+            <div class="form-section-row">
+                <div class="section-header-col">
+                    文件上傳
+                </div>
+                <div class="section-content-col">
+                    <div class="input-grid-full">
+                        
+                        <!-- 計畫書 -->
+                        <div class="input-label required">提案計畫書</div>
+                        <div class="input-cell" style="display:block;">
+                            <div class="upload-area">
+                                <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                                <div class="upload-text">點擊選取檔案 或 將檔案拖曳至此</div>
+                                <div class="upload-hint">支援格式：PDF, DOCX (大小限制：10MB)</div>
+                            </div>
+                            <!-- 模擬已上傳狀態 -->
+                            <div class="file-item">
+                                <span><i class="fa-regular fa-file-pdf"></i> 智慧路口解決方案_計畫書_v1.pdf</span>
+                                <span class="btn-remove"><i class="fa-solid fa-xmark"></i> 移除</span>
+                            </div>
+                        </div>
+
+                        <!-- 經費表 -->
+                        <div class="input-label required">經費預算表</div>
+                        <div class="input-cell" style="display:block;">
+                            <div class="upload-area" style="padding: 15px;">
+                                <div style="font-size:0.9rem; color:#666;">
+                                    <i class="fa-solid fa-plus"></i> 上傳檔案
+                                </div>
+                            </div>
+                            <div class="upload-hint">支援格式：XLSX, ODS</div>
+                        </div>
+
+                        <!-- 簡報 -->
+                        <div class="input-label">審查簡報</div>
+                        <div class="input-cell" style="display:block;">
+                            <div class="upload-area" style="padding: 15px;">
+                                <div style="font-size:0.9rem; color:#666;">
+                                    <i class="fa-solid fa-plus"></i> 上傳檔案 (非必填，可後補)
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 聲明與同意 -->
+            <div class="form-section-row" style="border-bottom:none;">
+                <div class="section-header-col" style="background:#546e7a;">
+                    聲明事項
+                </div>
+                <div class="section-content-col">
+                    <div style="padding: 20px;">
+                        <label class="checkbox-label" style="align-items: flex-start; line-height: 1.5;">
+                            <input type="checkbox" style="margin-top: 5px;">
+                            <span>我已詳閱並同意本計畫之<a href="#" style="color:blue; text-decoration:underline;">徵件簡章</a>及<a href="#" style="color:blue; text-decoration:underline;">隱私權政策</a>，並保證所填寫資料及上傳文件皆真實無誤。如有不實，願負相關法律責任。</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Sticky Bottom Action Bar -->
+    <div class="action-bar-wrapper">
+        <div class="action-container">
+            <button class="btn btn-cancel" onclick="history.back()">
+                <i class="fa-solid fa-xmark"></i> 取消
+            </button>
+            
+            <div class="btn-group-right" style="display:flex; gap:15px;">
+                <!-- 暫存草稿按鈕：跳轉至 startup-check.html -->
+                <button type="button" class="btn btn-save" onclick="location.href='startup-check.html'">
+                    <i class="fa-regular fa-floppy-disk"></i> 暫存草稿
+                </button>
+                <!-- 確認送出按鈕：跳轉至 startup-check.html -->
+                <button type="button" class="btn btn-submit" onclick="location.href='startup-check.html'">
+                    <i class="fa-regular fa-paper-plane"></i> 確認送出
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

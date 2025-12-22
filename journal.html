@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>例行工作紀錄繳交說明 - 政府場域實證</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心變數 (維持一致風格) --- */
+        :root {
+            --primary-teal: #008f95;      /* 主色 */
+            --primary-dark: #006c70;      /* 深色導覽列 */
+            --header-gray: #6c757d;       /* 表格標題列背景 */
+            --label-bg: #eef5f5;          /* 表格左側標籤背景 */
+            --row-even-bg: #fcfcfc;       /* 偶數行背景 */
+            --border-color: #dee2e6;
+            --accent-orange: #e76f51;     /* 強調色 */
+            --status-green: #2ecc71;
+            --text-main: #333;
+            --bg-body: #f8f9fa;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            line-height: 1.6;
+        }
+
+        /* --- 2. Header & Nav (公版) --- */
+        .top-bar { background: var(--primary-teal); color: white; padding: 8px 10%; font-size: 0.85rem; display: flex; justify-content: space-between; }
+        .top-bar a { color: white; text-decoration: none; margin-left: 15px; }
+
+        .site-header { background: white; padding: 15px 10%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
+        .logo { font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 10px; }
+        
+        .nav-toolbar { background-color: var(--primary-dark); padding: 10px 10%; display: flex; gap: 25px; }
+        .nav-item { color: white; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
+        .nav-item:hover { color: #81e6d9; }
+
+        /* --- 3. 麵包屑 --- */
+        .breadcrumb-area { padding: 20px 10% 10px; font-size: 0.9rem; color: #666; }
+        .status-tag { background: var(--status-green); color: white; padding: 2px 8px; border-radius: 2px; margin-right: 8px; font-size: 0.8rem; }
+        .case-id { background: #eee; color: #555; padding: 2px 8px; border-radius: 2px; font-size: 0.8rem; }
+
+        /* --- 4. 主版面 (Grid) --- */
+        .container {
+            width: 80%;
+            max-width: 1400px;
+            margin: 20px auto 60px;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 30px;
+        }
+
+        /* --- 5. 左側表格 (Spec Table) --- */
+        .spec-container { background: white; border: 1px solid var(--border-color); }
+
+        .table-header-block {
+            background: linear-gradient(to right, #6c757d, #5a6268);
+            color: white;
+            padding: 12px 20px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .spec-row { display: grid; grid-template-columns: 180px 1fr; border-bottom: 1px solid var(--border-color); }
+        .spec-row:last-child { border-bottom: none; }
+        .spec-row:nth-child(even) .spec-content { background-color: var(--row-even-bg); }
+
+        .spec-label {
+            background-color: var(--label-bg);
+            padding: 20px;
+            font-weight: 700;
+            color: #495057;
+            display: flex;
+            align-items: flex-start;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .spec-content { padding: 20px; color: #212529; background: white; }
+
+        /* --- 6. 內容細節樣式 --- */
+        .highlight-title { color: var(--primary-teal); font-size: 1.2rem; font-weight: 700; margin-bottom: 5px; }
+        
+        .req-list { padding-left: 20px; margin: 0; }
+        .req-list li { margin-bottom: 8px; color: #444; }
+        .req-list strong { color: var(--primary-teal); }
+
+        /* 流程圖樣式 */
+        .process-steps { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+        .step-item { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 700; color: #555; }
+        .step-num { width: 24px; height: 24px; background: var(--primary-teal); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+        .step-arrow { color: #ccc; }
+
+        /* KPI 表格 (嵌入式) */
+        .mini-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+        .mini-table th { background: #f1f3f5; padding: 8px; border: 1px solid #dee2e6; text-align: left; color: #495057; }
+        .mini-table td { border: 1px solid #dee2e6; padding: 8px; }
+
+        /* --- 7. 右側側邊欄 --- */
+        .sidebar-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-top: 5px solid var(--accent-orange);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .card-title { font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 15px; }
+
+        .date-badge {
+            text-align: center; background: #fff3cd; color: #856404; padding: 10px; border-radius: 4px; font-weight: bold; margin-bottom: 15px; border: 1px solid #ffeeba;
+        }
+
+        .btn-sidebar {
+            display: block; width: 100%; background: var(--primary-teal); color: white; text-align: center; padding: 12px; border-radius: 4px; font-weight: 700; text-decoration: none; border: none; cursor: pointer; transition: 0.2s;
+        }
+        .btn-sidebar:hover { background: var(--primary-dark); }
+        .btn-sidebar.outline { background: white; color: #555; border: 1px solid #ccc; }
+        .btn-sidebar.outline:hover { background: #f8f9fa; }
+
+        .download-link { display: flex; align-items: center; gap: 10px; color: #0056b3; text-decoration: none; padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 0.95rem; }
+        .download-link:last-child { border-bottom: none; }
+        .download-link:hover { color: var(--accent-orange); }
+
+        .contact-info { font-size: 0.9rem; color: #666; margin-top: 10px; }
+
+        /* RWD */
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+            .spec-row { grid-template-columns: 1fr; }
+            .spec-label { border-right: none; border-bottom: 1px solid #eee; padding: 10px 20px; background: #e9ecef; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="site-header">
+    <!-- 將原本的 div 改為 a 標籤 -->
+    <a href="index.html" class="logo" style="text-decoration: none;">
+        <i class="fa-solid fa-layer-group"></i>
+        <div>
+            <div style="font-size:1.4rem; font-weight:bold; line-height:1.2;">政府場域實證</div>
+            <div style="font-size:0.8rem; color:#888;">Innovation Matchmaking Platform</div>
+        </div>
+    </a>
+    <div style="font-size:0.9rem; color:#666;">
+        使用者：Guest <a href="#" style="color:var(--primary-teal);">[登入]</a>
+    </div>
+</header>
+
+    <nav class="nav-toolbar">
+        <a href="#" class="nav-item"><i class="fa-solid fa-magnifying-glass"></i> 挑戰查詢</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-pen-to-square"></i> 申請參加</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-file-contract"></i> 計畫說明</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-download"></i> 下載專區</a>
+    </nav>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-area">
+        首頁 > 計畫時程 > 執行與管考 > 工作紀錄繳交
+        <div style="margin-top:10px;">
+            <span class="status-tag">填報期間</span>
+            <span class="case-id">案號：114-T058</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        
+        <!-- Left Column: Spec Table -->
+        <main>
+            <div class="spec-container">
+                <div class="table-header-block">
+                    <span><i class="fa-solid fa-clipboard-list"></i> 例行工作紀錄繳交說明</span>
+                    <span style="font-size:0.85rem; opacity:0.8;">更新日期：2025/08/01</span>
+                </div>
+
+                <!-- Row 1: Objective -->
+                <div class="spec-row">
+                    <div class="spec-label">填報目的</div>
+                    <div class="spec-content">
+                        <div class="highlight-title">掌握實證進度與經費執行狀況</div>
+                        <p style="color:#555;">為確保計畫依規劃時程推動，獲選團隊需定期回報執行情形、場域實證數據及遭遇困難，以利機關提供適時協助。</p>
+                    </div>
+                </div>
+
+                <!-- Row 2: Frequency -->
+                <div class="spec-row">
+                    <div class="spec-label">繳交頻率與期限</div>
+                    <div class="spec-content">
+                        <ul class="req-list">
+                            <li><strong>繳交頻率：</strong>每月 1 次。</li>
+                            <li><strong>繳交期限：</strong>每月 5 日前，繳交前一月份之工作紀錄（遇假日順延至次一工作日）。</li>
+                            <li><strong>填報期間：</strong>自簽約日起至結案驗收通過止。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Row 3: Required Items -->
+                <div class="spec-row">
+                    <div class="spec-label">填報項目</div>
+                    <div class="spec-content">
+                        <p style="margin-bottom:10px;">請登入系統填寫以下內容，並上傳佐證資料：</p>
+                        <ul class="req-list">
+                            <li><strong>本月執行重點：</strong>條列本月已完成之查核點 (Milestone)。</li>
+                            <li><strong>量化數據：</strong>填報 KPI 達成數值（如：辨識準確率、使用人次）。</li>
+                            <li><strong>場域紀錄：</strong>上傳至少 3 張現場實證照片或系統截圖。</li>
+                            <li><strong>遭遇困難：</strong>若有進度落後或場域問題，請務必說明並提出解決方案。</li>
+                            <li><strong>經費支用：</strong>填寫本月預估支出金額（不需上傳單據，僅供管考參考）。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Row 4: Process -->
+                <div class="spec-row">
+                    <div class="spec-label">審核流程</div>
+                    <div class="spec-content">
+                        <div class="process-steps">
+                            <div class="step-item">
+                                <div class="step-num">1</div> 團隊線上填報
+                            </div>
+                            <div class="step-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                            <div class="step-item">
+                                <div class="step-num">2</div> 專案辦公室初審
+                            </div>
+                            <div class="step-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                            <div class="step-item">
+                                <div class="step-num">3</div> 機關覆核
+                            </div>
+                            <div class="step-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                            <div class="step-item">
+                                <div class="step-num"><i class="fa-solid fa-check"></i></div> 完成/退回修正
+                            </div>
+                        </div>
+                        <p style="margin-top:10px; font-size:0.9rem; color:#d63031;">
+                            * 若被退回修正，請於接獲通知後 3 日內完成補件。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Row 5: KPI Example -->
+                <div class="spec-row">
+                    <div class="spec-label">KPI 填報範例</div>
+                    <div class="spec-content">
+                        <table class="mini-table">
+                            <thead>
+                                <tr>
+                                    <th>查核項目</th>
+                                    <th width="80">單位</th>
+                                    <th width="100">本月數值</th>
+                                    <th>佐證資料</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>AI 辨識準確率</td>
+                                    <td>%</td>
+                                    <td>92.5</td>
+                                    <td>系統報表截圖.jpg</td>
+                                </tr>
+                                <tr>
+                                    <td>場域測試時數</td>
+                                    <td>小時</td>
+                                    <td>120</td>
+                                    <td>測試日誌.pdf</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <div style="text-align:right; margin-top:20px;">
+                <a href="#" style="color:#666; text-decoration:none; border:1px solid #ccc; padding:8px 15px; border-radius:4px; font-size:0.9rem;">
+                    <i class="fa-solid fa-reply"></i> 返回列表
+                </a>
+            </div>
+        </main>
+
+        <!-- Right Column: Sidebar -->
+        <aside>
+            <!-- Card 1: Status & Action -->
+            <div class="sidebar-card">
+                <div class="card-title">本期填報狀態</div>
+                
+                <div class="date-badge">
+                    本次繳交期限<br>
+                    <span style="font-size:1.4rem; color:#d63031;">09/05 (五)</span>
+                </div>
+
+                <div style="margin-bottom:15px; font-size:0.9rem;">
+                    <div><span style="color:#888;">填報月份：</span> 114年 08月</div>
+                    <div><span style="color:#888;">目前狀態：</span> <span style="color:green; font-weight:bold;">開放填報中</span></div>
+                </div>
+
+                <button class="btn-sidebar">
+                    <i class="fa-solid fa-pen-to-square"></i> 立即填寫工作紀錄
+                </button>
+                <button class="btn-sidebar outline" style="margin-top:10px;">
+                    <i class="fa-solid fa-clock-rotate-left"></i> 查看歷史紀錄
+                </button>
+            </div>
+
+            <!-- Card 2: Downloads -->
+            <div class="sidebar-card">
+                <div class="card-title">相關文件下載</div>
+                <div>
+                    <a href="#" class="download-link">
+                        <i class="fa-regular fa-file-word"></i> 工作紀錄表(線下草稿用).docx
+                    </a>
+                    <a href="#" class="download-link">
+                        <i class="fa-regular fa-file-excel"></i> KPI 統計表範本.xlsx
+                    </a>
+                    <a href="#" class="download-link">
+                        <i class="fa-regular fa-file-pdf"></i> 系統操作手冊.pdf
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card 3: Contact -->
+            <div class="sidebar-card" style="background:#f8f9fa; border:none;">
+                <div class="card-title" style="font-size:1rem; margin-bottom:10px;">填報遇到問題？</div>
+                <div class="contact-info">
+                    系統操作客服：<br>
+                    <i class="fa-solid fa-phone"></i> 02-8995-1234 #99<br>
+                    <i class="fa-solid fa-envelope"></i> help@innovation.gov.tw
+                </div>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- Footer -->
+    <div style="background:#343a40; color:#adb5bd; padding:40px; text-align:center; font-size:0.9rem;">
+        <p>主辦單位：勞動力發展署 | 執行單位：創新實證中心</p>
+        <p>&copy; 2025 Innovation Matchmaking Platform.</p>
+    </div>
+
+</body>
+</html>

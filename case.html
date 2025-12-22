@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>實證媒合平台 - 成功案例分享</title>
+    
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 延用 challenge.html 的 Design System --- */
+        :root {
+            --primary-color: #0089A7;       /* 成功案例改用青色調，代表創新成功 */
+            --primary-dark: #005f73;
+            --accent-gold: #F2A900;
+            --bg-light: #f4f6f9;
+            --text-main: #333;
+            --text-light: #666;
+            --white: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --tag-bg: #e0f2f1;
+            --tag-text: #00796b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-light); color: var(--text-main); line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+
+        /* --- Navbar --- */
+        .navbar {
+            background: var(--white);
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo { font-size: 1.5rem; font-weight: 700; color: #003366; display: flex; align-items: center; gap: 10px; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { font-weight: 500; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-color); }
+        .btn-contact { background: var(--primary-color); color: white; padding: 8px 20px; border-radius: 50px; font-size: 0.9rem; }
+
+        /* --- Hero Section --- */
+        .hero {
+            background: linear-gradient(135deg, #0089A7 0%, #003366 100%);
+            color: white;
+            padding: 60px 5%;
+            text-align: center;
+        }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 15px; }
+        .hero p { font-size: 1.1rem; opacity: 0.9; max-width: 800px; margin: 0 auto 30px; }
+
+        .stats-container { display: flex; justify-content: center; gap: 50px; margin-top: 30px; }
+        .stat-number { font-size: 1.8rem; font-weight: 700; color: var(--accent-gold); }
+        .stat-label { font-size: 0.9rem; opacity: 0.8; }
+
+        /* --- Main Layout --- */
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 40px;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            height: fit-content;
+            position: sticky;
+            top: 90px;
+        }
+        .filter-group { margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid #eee; }
+        .filter-title { font-weight: 700; margin-bottom: 15px; }
+        .checkbox-item { display: flex; align-items: center; margin-bottom: 10px; cursor: pointer; font-size: 0.95rem; }
+        .checkbox-item input { margin-right: 10px; accent-color: var(--primary-color); }
+
+        /* --- Content Area --- */
+        .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .toolbar-right { display: flex; align-items: center; gap: 15px; }
+        .view-toggles { display: flex; background: #fff; border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; }
+        .toggle-btn { background: transparent; border: none; padding: 8px 12px; cursor: pointer; color: #888; }
+        .toggle-btn.active { background-color: var(--primary-color); color: white; }
+
+        /* --- Card Grid --- */
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
+        .card { background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+
+        .card-img-wrapper { height: 200px; position: relative; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .badge-year { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.6); color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; }
+        .badge-impact { position: absolute; bottom: 10px; right: 10px; background: var(--accent-gold); color: #333; padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; }
+
+        .card-body { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+        .partner-info { font-size: 0.85rem; color: var(--primary-color); font-weight: 700; margin-bottom: 8px; }
+        .card-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 10px; height: 3.2em; overflow: hidden; }
+        .card-desc { font-size: 0.9rem; color: var(--text-light); margin-bottom: 20px; -webkit-line-clamp: 3; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+
+        .card-meta { margin-top: auto; padding-top: 15px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .btn-more { color: var(--primary-color); font-weight: 700; font-size: 0.9rem; }
+
+        /* --- List View Mode --- */
+        .card-grid.view-list { display: flex; flex-direction: column; }
+        .view-list .card { flex-direction: row; height: 240px; }
+        .view-list .card-img-wrapper { width: 320px; height: 100%; flex-shrink: 0; }
+        .view-list .card-body { width: 100%; }
+
+        /* --- Footer --- */
+        footer { background: #1a1a1a; color: #888; text-align: center; padding: 40px 20px; margin-top: 80px; }
+
+        @media (max-width: 992px) {
+            .container { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo"><i class="fa-solid fa-lightbulb"></i> 實證媒合平台</a>
+        <div class="nav-links">
+            <a href="index.html">首頁</a>
+            <a href="challenge.html">尋找挑戰</a>
+            <a href="timeline.html">計畫時程</a>
+            <a href="cases.html" class="active">成功案例</a>
+        </div>
+        <a href="#" class="btn-contact"><i class="fa-solid fa-envelope"></i> 聯絡我們</a>
+    </nav>
+
+    <section class="hero">
+        <h1>成功案例分享</h1>
+        <p>見證創新技術如何解決城市痛點。我們收錄了歷年來機關與新創團隊共同努力的成果，從概念驗證 (PoC) 到服務商轉 (Service Rollout) 的精彩旅程。</p>
+        
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">120+</div>
+                <div class="stat-label">已完成實證</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">85%</div>
+                <div class="stat-label">技術商轉率</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">35 億</div>
+                <div class="stat-label">帶動投資金額</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="filter-group">
+                <div class="filter-title">產業領域</div>
+                <label class="checkbox-item"><input type="checkbox" checked> 智慧醫療</label>
+                <label class="checkbox-item"><input type="checkbox"> 智慧交通</label>
+                <label class="checkbox-item"><input type="checkbox"> 綠能永續</label>
+                <label class="checkbox-item"><input type="checkbox"> 數位政府</label>
+            </div>
+            <div class="filter-group">
+                <div class="filter-title">實證年份</div>
+                <label class="checkbox-item"><input type="radio" name="year"> 2024 年度</label>
+                <label class="checkbox-item"><input type="radio" name="year"> 2023 年度</label>
+                <label class="checkbox-item"><input type="radio" name="year"> 2022 年度以前</label>
+            </div>
+            <div class="filter-group">
+                <div class="filter-title">實證階段</div>
+                <label class="checkbox-item"><input type="checkbox"> 概念驗證 (PoC)</label>
+                <label class="checkbox-item"><input type="checkbox" checked> 服務商轉 (PoS)</label>
+                <label class="checkbox-item"><input type="checkbox"> 全台擴散</label>
+            </div>
+            <button style="width:100%; padding:10px; background:var(--primary-color); color:white; border:none; border-radius:5px; cursor:pointer;">執行篩選</button>
+        </aside>
+
+        <main>
+            <div class="content-header">
+                <div style="font-weight:700;">共 84 件成功案例</div>
+                <div class="toolbar-right">
+                    <select style="padding:5px; border-radius:4px; border:1px solid #ddd;">
+                        <option>推薦排序</option>
+                        <option>最新案例</option>
+                    </select>
+                    <div class="view-toggles">
+                        <button id="btn-grid" class="toggle-btn active"><i class="fa-solid fa-table-cells-large"></i></button>
+                        <button id="btn-list" class="toggle-btn"><i class="fa-solid fa-list"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-grid" id="case-container">
+                <!-- Case 1 -->
+                <article class="card">
+                    <div class="card-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=500&q=60" class="card-img">
+                        <span class="badge-year">2024</span>
+                        <span class="badge-impact">效率提升 40%</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="partner-info">臺北市交通局 x 智行科技</div>
+                        <h3 class="card-title">AI 智慧路口：即時號誌優化與行人安全偵測系統</h3>
+                        <p class="card-desc">透過影像辨識技術即時調整號誌時相，成功縮短尖峰時段車流等待時間，並有效降低人車衝突機率。</p>
+                        <div class="card-meta">
+                            <span style="font-size:0.8rem; color:#999;"><i class="fa-solid fa-location-dot"></i> 臺北市信義區</span>
+                            <a href="case-detail.html" class="btn-more">案例詳情 <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Case 2 -->
+                <article class="card">
+                    <div class="card-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=500&q=60" class="card-img">
+                        <span class="badge-year">2023</span>
+                        <span class="badge-impact">商轉成功</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="partner-info">高雄市衛生局 x 醫聯新創</div>
+                        <h3 class="card-title">5G 遠距醫療行動診箱：打造偏鄉醫療最後一哩路</h3>
+                        <p class="card-desc">整合 5G 通訊與多功能生理監測儀器，讓偏鄉病患能與醫學中心醫師進行即時視訊會診。</p>
+                        <div class="card-meta">
+                            <span style="font-size:0.8rem; color:#999;"><i class="fa-solid fa-location-dot"></i> 高雄市那瑪夏區</span>
+                            <a href="case-detail.html" class="btn-more">案例詳情 <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Case 3 -->
+                <article class="card">
+                    <div class="card-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&w=500&q=60" class="card-img">
+                        <span class="badge-year">2023</span>
+                        <span class="badge-impact">減碳 200 噸/年</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="partner-info">經濟部園區管理局 x 綠能電力</div>
+                        <h3 class="card-title">智慧微電網儲能系統：工業區能源調度最佳化</h3>
+                        <p class="card-desc">利用 AI 預測負載並搭配儲能系統，實現削峰填谷，顯著降低工業區在用電尖峰期的電費支出。</p>
+                        <div class="card-meta">
+                            <span style="font-size:0.8rem; color:#999;"><i class="fa-solid fa-location-dot"></i> 台中軟體園區</span>
+                            <a href="case-detail.html" class="btn-more">案例詳情 <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Innovation Matchmaking Platform. 實證媒合平台 版權所有</p>
+    </footer>
+
+    <script>
+        const container = document.getElementById('case-container');
+        const btnGrid = document.getElementById('btn-grid');
+        const btnList = document.getElementById('btn-list');
+
+        btnList.addEventListener('click', () => {
+            container.classList.add('view-list');
+            btnList.classList.add('active');
+            btnGrid.classList.remove('active');
+        });
+
+        btnGrid.addEventListener('click', () => {
+            container.classList.remove('view-list');
+            btnGrid.classList.add('active');
+            btnList.classList.remove('active');
+        });
+    </script>
+</body>
+</html>

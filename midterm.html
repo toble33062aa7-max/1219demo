@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>期中審查會議詳情 - 政府場域實證</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心變數 (依照圖片風格) --- */
+        :root {
+            --primary-teal: #008f95;      /* 主色 (按鈕、連結) */
+            --primary-dark: #006c70;      /* 深色導覽列 */
+            --header-gray: #6c757d;       /* 表格標題列背景 */
+            --label-bg: #eef5f5;          /* 表格左側標籤背景 (淺青灰) */
+            --row-even-bg: #fcfcfc;       /* 偶數行背景 */
+            --border-color: #dee2e6;
+            --accent-orange: #e76f51;     /* 側邊欄強調色 */
+            --text-main: #333;
+            --bg-body: #f8f9fa;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            line-height: 1.6;
+        }
+
+        /* --- 2. 頂部導覽列 (Header) --- */
+        .top-bar {
+            background-color: var(--primary-teal);
+            color: white;
+            padding: 8px 10%;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .top-bar a { color: white; text-decoration: none; margin-left: 15px; }
+
+        .site-header {
+            background: white;
+            padding: 15px 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+        .logo { font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 10px; }
+        .logo i { font-size: 1.8rem; }
+        
+        .nav-toolbar {
+            background-color: var(--primary-dark);
+            padding: 10px 10%;
+            display: flex;
+            gap: 25px;
+        }
+        .nav-item { color: white; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
+        .nav-item:hover { color: #81e6d9; }
+
+        /* --- 3. 麵包屑與狀態 --- */
+        .breadcrumb-area {
+            padding: 20px 10% 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .status-tag {
+            background: var(--primary-teal);
+            color: white;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+            border-radius: 2px;
+            margin-right: 8px;
+        }
+        .case-id {
+            background: #eee;
+            color: #555;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+            border-radius: 2px;
+        }
+
+        /* --- 4. 主版面配置 (Grid) --- */
+        .container {
+            width: 80%;
+            max-width: 1400px;
+            margin: 20px auto 60px;
+            display: grid;
+            grid-template-columns: 1fr 320px; /* 左寬右窄 */
+            gap: 30px;
+        }
+
+        /* --- 5. 左側表格樣式 (完全復刻圖片) --- */
+        .spec-container {
+            background: white;
+            border: 1px solid var(--border-color);
+        }
+
+        /* 表格標題列 (深灰漸層) */
+        .table-header-block {
+            background: linear-gradient(to right, #6c757d, #5a6268);
+            color: white;
+            padding: 12px 20px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .print-btn {
+            background: white;
+            color: #333;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* 表格行 Row */
+        .spec-row {
+            display: grid;
+            grid-template-columns: 180px 1fr; /* 左側標籤寬度固定 */
+            border-bottom: 1px solid var(--border-color);
+        }
+        .spec-row:last-child { border-bottom: none; }
+        
+        /* 隔行變色 */
+        .spec-row:nth-child(even) .spec-content { background-color: var(--row-even-bg); }
+
+        /* 左側標籤 */
+        .spec-label {
+            background-color: var(--label-bg);
+            padding: 20px;
+            font-weight: 700;
+            color: #495057;
+            display: flex;
+            align-items: flex-start; /* 文字靠上 */
+            border-right: 1px solid var(--border-color);
+        }
+
+        /* 右側內容 */
+        .spec-content {
+            padding: 20px;
+            color: #212529;
+            background: white;
+        }
+
+        /* --- 6. 嵌入內容樣式 (議程、地圖等) --- */
+        .highlight-title {
+            color: var(--primary-teal);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        /* 議程時間軸 (嵌入在表格內) */
+        .agenda-list {
+            padding-left: 10px;
+            border-left: 2px solid #ddd;
+            margin-left: 10px;
+        }
+        .agenda-item {
+            position: relative;
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+        .agenda-item::before {
+            content: '';
+            width: 10px; height: 10px;
+            background: var(--primary-teal);
+            border-radius: 50%;
+            position: absolute;
+            left: -16px;
+            top: 6px;
+            border: 2px solid white;
+        }
+        .ag-time { font-weight: 700; color: #555; font-size: 0.95rem; }
+        .ag-desc { font-size: 0.95rem; color: #333; }
+        
+        /* 評分重點 Grid */
+        .criteria-tags { display: flex; gap: 10px; flex-wrap: wrap; }
+        .c-tag { 
+            background: #fff; border: 1px solid #ccc; 
+            padding: 5px 10px; border-radius: 4px; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .c-tag strong { color: var(--primary-teal); }
+
+        /* --- 7. 右側側邊欄卡片 (Sidebar) --- */
+        .sidebar-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            /* 圖片中的橘色頂部邊框 */
+            border-top: 5px solid var(--accent-orange); 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+
+        .countdown-box {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .countdown-days {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+            line-height: 1;
+        }
+        .countdown-label { font-size: 0.9rem; color: #666; }
+
+        .progress-bar-bg {
+            background: #eee; height: 6px; width: 100%; border-radius: 3px; margin: 10px 0;
+        }
+        .progress-bar-fill {
+            background: var(--primary-teal); height: 100%; width: 80%; border-radius: 3px;
+        }
+
+        .btn-sidebar {
+            display: block;
+            width: 100%;
+            background: var(--accent-orange);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-sidebar:hover { background: #d65f42; }
+
+        .download-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #0056b3;
+            text-decoration: none;
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+            font-size: 0.95rem;
+        }
+        .download-link:last-child { border-bottom: none; }
+        .download-link:hover { color: var(--accent-orange); }
+
+        /* --- 8. 底部返回按鈕 --- */
+        .bottom-actions { text-align: right; margin-top: 20px; }
+        .btn-back {
+            background: white;
+            border: 1px solid #ccc;
+            padding: 8px 15px;
+            color: #666;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .btn-back:hover { background: #eee; }
+
+        /* --- RWD --- */
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+            .spec-row { grid-template-columns: 1fr; }
+            .spec-label { background-color: #e9ecef; padding: 10px 20px; border-bottom: 1px solid #eee; border-right: none; }
+            .spec-content { padding: 15px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div><i class="fa-solid fa-bullhorn"></i> 重要公告：系統將於 12/25 進行維護。</div>
+        <div>
+            <a href="#">網站導覽</a>
+            <a href="#">常見問答</a>
+            <a href="#">回首頁</a>
+        </div>
+    </div>
+
+<!-- Header -->
+<header class="site-header">
+    <!-- 將原本的 div 改為 a 標籤 -->
+    <a href="index.html" class="logo" style="text-decoration: none;">
+        <i class="fa-solid fa-layer-group"></i>
+        <div>
+            <div style="font-size:1.4rem; font-weight:bold; line-height:1.2;">政府場域實證</div>
+            <div style="font-size:0.8rem; color:#888;">Innovation Matchmaking Platform</div>
+        </div>
+    </a>
+    <div style="font-size:0.9rem; color:#666;">
+        使用者：Guest <a href="#" style="color:var(--primary-teal);">[登入]</a>
+    </div>
+</header>
+
+
+    <!-- Navigation Toolbar -->
+    <nav class="nav-toolbar">
+        <a href="#" class="nav-item"><i class="fa-solid fa-magnifying-glass"></i> 挑戰查詢</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-pen-to-square"></i> 申請參加</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-file-contract"></i> 計畫說明</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-download"></i> 下載專區</a>
+    </nav>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-area">
+        首頁 > 計畫時程 > 審查會議詳情
+        <div style="margin-top:10px;">
+            <span class="status-tag">即將開始</span>
+            <span class="case-id">案號：114-T058-Review</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        
+        <!-- Left Column: The Big Table -->
+        <main>
+            <div class="spec-container">
+                <!-- Table Header -->
+                <div class="table-header-block">
+                    <span><i class="fa-solid fa-list-ul"></i> 會議詳細資訊</span>
+                    <button class="print-btn" onclick="window.print()">
+                        <i class="fa-solid fa-print"></i> 列印
+                    </button>
+                </div>
+
+                <!-- Row 1: Title -->
+                <div class="spec-row">
+                    <div class="spec-label">會議名稱</div>
+                    <div class="spec-content">
+                        <div class="highlight-title">114年度創新場域實證計畫 期中審查會議</div>
+                    </div>
+                </div>
+
+                <!-- Row 2: Time -->
+                <div class="spec-row">
+                    <div class="spec-label">會議時間</div>
+                    <div class="spec-content">
+                        <strong>114年 09月 15日 (星期一)</strong><br>
+                        上午 09:00 至 下午 17:00
+                    </div>
+                </div>
+
+                <!-- Row 3: Location -->
+                <div class="spec-row">
+                    <div class="spec-label">會議地點</div>
+                    <div class="spec-content">
+                        台北市大安區和平東路二段106號 (科技大樓) 401 會議室<br>
+                        <span style="font-size:0.9rem; color:#666;">(註：請由正門換證後搭乘電梯至4樓)</span>
+                    </div>
+                </div>
+
+                <!-- Row 4: Attendees -->
+                <div class="spec-row">
+                    <div class="spec-label">出席人員</div>
+                    <div class="spec-content">
+                        1. 計畫主持人 (必須出席)<br>
+                        2. 核心團隊成員 (建議 1-2 位)<br>
+                        3. 評選委員及機關代表
+                    </div>
+                </div>
+
+                <!-- Row 5: Agenda (Embed Timeline) -->
+                <div class="spec-row">
+                    <div class="spec-label">會議議程</div>
+                    <div class="spec-content">
+                        <p style="margin-bottom:10px; color:#666;">每組團隊審查時間共計 35 分鐘，流程如下：</p>
+                        <div class="agenda-list">
+                            <div class="agenda-item">
+                                <div class="ag-time">0 ~ 3 分鐘</div>
+                                <div class="ag-desc">進場準備與設備測試</div>
+                            </div>
+                            <div class="agenda-item">
+                                <div class="ag-time">3 ~ 18 分鐘</div>
+                                <div class="ag-desc"><strong>團隊簡報 (15 mins)</strong>：執行進度、經費使用、成果展示</div>
+                            </div>
+                            <div class="agenda-item">
+                                <div class="ag-time">18 ~ 28 分鐘</div>
+                                <div class="ag-desc"><strong>委員統問 (10 mins)</strong></div>
+                            </div>
+                            <div class="agenda-item">
+                                <div class="ag-time">28 ~ 35 分鐘</div>
+                                <div class="ag-desc"><strong>團隊統答 (7 mins)</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 6: Requirements -->
+                <div class="spec-row">
+                    <div class="spec-label">評分重點</div>
+                    <div class="spec-content">
+                        <div class="criteria-tags">
+                            <div class="c-tag"><strong>30%</strong> 執行進度</div>
+                            <div class="c-tag"><strong>30%</strong> 實證成效</div>
+                            <div class="c-tag"><strong>20%</strong> 經費執行</div>
+                            <div class="c-tag"><strong>20%</strong> 商模規劃</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 7: Notes -->
+                <div class="spec-row">
+                    <div class="spec-label">注意事項</div>
+                    <div class="spec-content">
+                        <ul style="padding-left:20px; color:#d63031;">
+                            <li>請務必攜帶身分證件以利換證。</li>
+                            <li>簡報檔請於 9/12 前上傳至系統，現場不接受隨身碟存取。</li>
+                            <li>若需展示實體設備，請提前 30 分鐘到場佈置。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Row 8: Contact -->
+                <div class="spec-row">
+                    <div class="spec-label">聯絡窗口</div>
+                    <div class="spec-content">
+                        林專員 (02-2720-8889 分機 1234)<br>
+                        Email: smart_city@gov.taipei
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="bottom-actions">
+                <a href="#" class="btn-back"><i class="fa-solid fa-reply"></i> 返回列表</a>
+            </div>
+        </main>
+
+        <!-- Right Column: Sidebar (模仿圖片樣式) -->
+        <aside>
+            <!-- Card 1: Status -->
+            <div class="sidebar-card">
+                <div class="card-title">會議倒數</div>
+                <div class="countdown-box">
+                    <div class="countdown-days">15</div>
+                    <div class="countdown-label">天後開始</div>
+                </div>
+                
+                <div style="font-size:0.85rem; color:#666;">
+                    <i class="fa-regular fa-clock"></i> 時間：114/09/15 09:00
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: 85%;"></div>
+                </div>
+                <div style="text-align:right; font-size:0.8rem; color:#888;">進度：準備中</div>
+
+                <button class="btn-sidebar" style="margin-top:15px;">
+                    <i class="fa-brands fa-google"></i> 加入行事曆
+                </button>
+            </div>
+
+            <!-- Card 2: Downloads -->
+            <div class="sidebar-card">
+                <div class="card-title">相關文件下載</div>
+                <div>
+                    <a href="#" class="download-link">
+                        <i class="fa-regular fa-file-powerpoint"></i> 簡報範本.pptx
+                    </a>
+                    <a href="#" class="download-link">
+                        <i class="fa-regular fa-file-pdf"></i> 會議議程表.pdf
+                    </a>
+                    <a href="#" class="download-link">
+                        <i class="fa-regular fa-map"></i> 交通指引地圖.jpg
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card 3: Upload -->
+            <div class="sidebar-card">
+                <div class="card-title">資料上傳</div>
+                <p style="font-size:0.9rem; color:#666; margin-bottom:10px;">
+                    請於截止日前上傳最終版簡報。
+                </p>
+                <button class="btn-sidebar" style="background:#006c70;">
+                    前往上傳系統
+                </button>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- Footer (Standard) -->
+    <div style="background:#343a40; color:#adb5bd; padding:40px; text-align:center; font-size:0.9rem;">
+        <p>主辦單位：勞動力發展署 | 執行單位：創新實證中心</p>
+        <p>地址：24219 新北市新莊區中平路439號南棟4樓 | 電話：02-8995-6000</p>
+        <p style="margin-top:10px;">&copy; 2025 Innovation Matchmaking Platform.</p>
+    </div>
+
+</body>
+</html>

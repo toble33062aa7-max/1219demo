@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>案例詳情 - 實證媒合平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 延用 challenge-detail.html 的變數系統 --- */
+        :root {
+            --primary-teal: #0089A7;      
+            --primary-dark: #003366;      
+            --bg-table-head: #f0f7f8;     
+            --bg-row-even: #fbfbfb;       
+            --border-color: #ddd;
+            --accent-gold: #F2A900;       /* 成功案例改用金色代表成就 */
+            --text-main: #333;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8f9fa; color: var(--text-main); line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+
+        /* --- Navbar & Headers (與挑戰詳情一致) --- */
+        .utility-bar { background-color: var(--primary-teal); color: white; padding: 10px 10%; display: flex; justify-content: space-between; font-size: 0.9rem; }
+        .utility-links a { color: white; margin-left: 15px; }
+        
+        .site-header { background: white; padding: 15px 10%; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap:10px; }
+
+        .action-toolbar { background-color: var(--primary-dark); color: white; padding: 12px 10%; display: flex; gap: 25px; font-size: 0.95rem; }
+        .action-btn { display: flex; align-items: center; gap: 5px; cursor: pointer; opacity: 0.9; }
+        .action-btn:hover { opacity: 1; color: #add8e6; }
+
+        /* --- Main Layout --- */
+        .container { width: 85%; margin: 30px auto; display: grid; grid-template-columns: 1fr 320px; gap: 30px; }
+
+        /* --- Spec Table Layout --- */
+        .spec-container { background: white; border: 1px solid var(--border-color); }
+        .table-header-block { background: linear-gradient(to bottom, #7f8c8d, #636e72); color: white; padding: 12px 20px; font-weight: 700; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; }
+        
+        .spec-row { display: grid; grid-template-columns: 200px 1fr; border-bottom: 1px solid var(--border-color); }
+        .spec-label { background-color: var(--bg-table-head); padding: 15px 20px; font-weight: 700; color: #444; border-right: 1px solid var(--border-color); display: flex; align-items: center; }
+        .spec-content { padding: 15px 20px; color: #333; }
+        .spec-row:nth-child(even) .spec-content { background-color: var(--bg-row-even); }
+
+        /* --- Sidebar Style --- */
+        .info-card { background: white; border: 1px solid var(--border-color); border-top: 4px solid var(--accent-gold); padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .card-title { font-weight: 700; margin-bottom: 15px; color: var(--primary-dark); border-bottom: 1px solid #eee; padding-bottom: 8px; }
+
+        .btn-action { display: block; width: 100%; background: var(--primary-teal); color: white; text-align: center; padding: 12px; border-radius: 4px; font-weight: bold; margin-top: 10px; transition: 0.3s; }
+        .btn-action:hover { background: var(--primary-dark); }
+
+        .impact-tag { background: #fff8e1; color: #b7791f; padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: 700; display: inline-block; margin-bottom: 5px; border: 1px solid #fbd38d; }
+
+        /* Footer */
+        .footer { background: #343a40; color: #adb5bd; padding: 40px 10%; margin-top: 50px; text-align: center; }
+
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+            .spec-row { grid-template-columns: 1fr; }
+            .spec-label { border-right: none; border-bottom: 1px solid #eee; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="utility-bar">
+        <div><i class="fa-solid fa-trophy"></i> 實證亮點：2024 年度優選案例已更新。</div>
+        <div class="utility-links">
+            <a href="index.html">網站導覽</a>
+            <a href="cases.html">回案例列表</a>
+            <a href="index.html">回首頁</a>
+        </div>
+    </div>
+
+    <header class="site-header">
+        <a href="index.html" class="logo">
+            <i class="fa-solid fa-award"></i>
+            <div>
+                <div style="font-size:1.4rem; font-weight:bold; line-height:1.2;">成功案例專區</div>
+                <div style="font-size:0.8rem; color:#888;">Success Story Showcase</div>
+            </div>
+        </a>
+        <div style="font-size:0.9rem; color:#666;">
+            分類：<span style="color:var(--primary-teal);">智慧交通</span>
+        </div>
+    </header>
+
+    <div class="action-toolbar">
+        <div class="action-btn"><i class="fa-solid fa-file-export"></i> 匯出案例</div>
+        <div class="action-btn"><i class="fa-solid fa-share-nodes"></i> 分享案例</div>
+        <div class="action-btn"><i class="fa-solid fa-message"></i> 洽談合作</div>
+    </div>
+
+    <div class="container">
+        
+        <main>
+            <div style="margin-bottom: 20px;">
+                <div style="font-size:0.9rem; color:#666; margin-bottom:5px;">首頁 > 成功案例 > 智慧交通 > AI 智慧路口</div>
+                <span style="background:#2ecc71; color:white; padding:2px 10px; font-size:0.8rem; border-radius:3px; font-weight:bold;">已商轉服務 (PoS)</span>
+                <span style="background:#eee; color:#555; padding:2px 8px; font-size:0.8rem; border-radius:3px; margin-left:5px;">年份：2024</span>
+            </div>
+
+            <div class="spec-container">
+                <div class="table-header-block">
+                    <span><i class="fa-solid fa-circle-info"></i> 案例實證成果明細</span>
+                    <button style="background:white; border:none; padding:3px 10px; border-radius:3px; font-size:0.8rem; cursor:pointer;"><i class="fa-solid fa-print"></i> 列印</button>
+                </div>
+
+                <!-- Row: 名稱 -->
+                <div class="spec-row">
+                    <div class="spec-label">案例題目</div>
+                    <div class="spec-content" style="font-weight:700; color:var(--primary-dark); font-size:1.2rem;">
+                        AI 智慧路口：即時號誌優化與行人安全偵測系統
+                    </div>
+                </div>
+
+                <!-- Row: 參與單位 -->
+                <div class="spec-row">
+                    <div class="spec-label">合作夥伴</div>
+                    <div class="spec-content">
+                        <strong>出題機關：</strong>臺北市政府交通局<br>
+                        <strong>解題團隊：</strong>智行科技股份有限公司 (SmartLink Tech)
+                    </div>
+                </div>
+
+                <!-- Row: 實證執行期間 -->
+                <div class="spec-row">
+                    <div class="spec-label">實證執行期間</div>
+                    <div class="spec-content">
+                        113/03/01 ～ 113/09/30 (共 7 個月)
+                    </div>
+                </div>
+
+                <!-- Row: 實證背景 -->
+                <div class="spec-row">
+                    <div class="spec-label">實證背景與痛點</div>
+                    <div class="spec-content">
+                        信義區基隆路口於尖峰時刻車流密度極高，傳統固定時相號誌無法應對突發車流，導致回堵嚴重。同時，該路口轉向車輛與行人衝突頻繁，急需自動化警示系統。
+                    </div>
+                </div>
+
+                <!-- Row: 解決方案 -->
+                <div class="spec-row">
+                    <div class="spec-label">創新解決方案</div>
+                    <div class="spec-content">
+                        <ul style="padding-left:15px;">
+                            <li>部署 4 組高解析度 4K 辨識攝影機，即時擷取全路口影像。</li>
+                            <li>導入邊緣運算 (Edge AI) 技術，辨識率達 98.5%。</li>
+                            <li>動態調整號誌時相，依據車流排隊長度即時加減綠燈秒數。</li>
+                            <li>設置「行人闖入警示燈箱」，當偵測到行人與轉向車距離過近時，自動閃爍警告駕駛。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Row: 實證量化成果 -->
+                <div class="spec-row">
+                    <div class="spec-label">關鍵成效數據</div>
+                    <div class="spec-content">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                            <div style="background:#f9f9f9; padding:10px; border-left:4px solid #2ecc71;">
+                                <div style="font-size:0.8rem; color:#666;">平均等候時間</div>
+                                <div style="font-size:1.2rem; font-weight:bold; color:#27ae60;">減少 25%</div>
+                            </div>
+                            <div style="background:#f9f9f9; padding:10px; border-left:4px solid #e74c3c;">
+                                <div style="font-size:0.8rem; color:#666;">人車衝突件數</div>
+                                <div style="font-size:1.2rem; font-weight:bold; color:#c0392b;">降低 40%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row: 後續商轉 -->
+                <div class="spec-row">
+                    <div class="spec-label">後續商轉計畫</div>
+                    <div class="spec-content">
+                        本計畫已於實證結束後由臺北市政府正式編列預算採購，預計於 114 年擴展至全市 20 處主要幹道交叉路口。
+                    </div>
+                </div>
+
+                <!-- Row: 相關連結 -->
+                <div class="spec-row">
+                    <div class="spec-label">參考資源</div>
+                    <div class="spec-content">
+                        <a href="#" style="color:#0056b3;"><i class="fa-solid fa-video"></i> 實證過程縮時攝影</a> | 
+                        <a href="#" style="color:#0056b3;"><i class="fa-solid fa-file-pdf"></i> 結案報告摘要下載</a>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top:20px;">
+                <a href="cases.html" style="color:#666; border:1px solid #ccc; padding:6px 15px; background:white; border-radius:3px;">
+                    <i class="fa-solid fa-arrow-left"></i> 返回案例列表
+                </a>
+            </div>
+        </main>
+
+<aside>
+            <!-- 執行團隊卡片 -->
+            <div class="info-card">
+                <div class="card-title">執行團隊資訊</div>
+                <div style="text-align:center; padding:10px 0;">
+                    <div style="width:80px; height:80px; background:#f4f4f4; border-radius:50%; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; font-size:2rem; color:#ccc;">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                    <div style="font-weight:bold; color:var(--primary-dark);">智行科技股份有限公司</div>
+                    <div style="font-size:0.8rem; color:#888;">AI 與智慧城市解決方案供應商</div>
+                </div>
+                <a href="#" class="btn-action">進入團隊官網</a>
+            </div>
+
+            <!-- 相關媒體 (新增的部分) -->
+            <div class="info-card">
+                <div class="card-title">相關媒體</div>
+                <div style="display:flex; flex-direction:column; gap:12px;">
+                    <a href="#" style="display:flex; align-items:center; gap:10px; color:#c0392b; font-weight:500; font-size:0.95rem;">
+                        <i class="fa-solid fa-circle-play" style="font-size:1.2rem;"></i> 實證現場紀錄影片
+                    </a>
+                    <a href="#" style="display:flex; align-items:center; gap:10px; color:#2c3e50; font-weight:500; font-size:0.95rem;">
+                        <i class="fa-solid fa-file-lines" style="font-size:1.2rem; color:#7f8c8d;"></i> 完整結案報告(摘要版)
+                    </a>
+                </div>
+            </div>
+
+            <!-- 實證效益 -->
+            <div class="info-card" style="border-top-color: #2ecc71;">
+                <div class="card-title">實證效益標籤</div>
+                <span class="impact-tag">#交通優化</span>
+                <span class="impact-tag">#行人安全</span>
+                <span class="impact-tag">#AI邊緣運算</span>
+                <span class="impact-tag">#商轉成功</span>
+            </div>
+
+            <!-- 聯絡窗口 -->
+            <div class="info-card">
+                <div class="card-title">洽談實證擴散</div>
+                <p style="font-size:0.9rem; color:#666; margin-bottom:15px;">若您對此技術的場域應用有興趣，歡迎連繫平台管理單位。</p>
+                <div style="font-size:0.85rem; line-height:1.8;">
+                    <i class="fa-solid fa-phone"></i> 02-8995-6000<br>
+                    <i class="fa-solid fa-envelope"></i> service@innovation.gov.tw
+                </div>
+                <a href="partner-apply.html" class="btn-action" style="background:var(--accent-gold); color:#333;">填寫諮詢表單</a>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Innovation Matchmaking Platform. 成功案例展示</p>
+    </footer>
+
+</body>
+</html>

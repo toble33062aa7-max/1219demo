@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>挑戰詳情 - 實證媒合平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 變數系統 (Teal 主色調) --- */
+        :root {
+            --primary-teal: #008f95;      /* 主色 */
+            --primary-dark: #006c70;      /* 深色按鈕/Header */
+            --bg-table-head: #eef5f5;     /* 表格項目欄背景 (類似參考圖左側) */
+            --bg-row-even: #fbfbfb;       /* 偶數行背景 (斑馬紋) */
+            --border-color: #ddd;
+            --accent-orange: #e76f51;
+            --text-main: #333;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: #f8f9fa; 
+            color: var(--text-main); 
+            line-height: 1.6;
+        }
+        a { text-decoration: none; color: inherit; transition: 0.2s; }
+
+        /* --- Top Utility Bar (參考圖上方綠色區塊) --- */
+        .utility-bar {
+            background-color: var(--primary-teal);
+            color: white;
+            padding: 10px 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        .utility-links a { color: white; margin-left: 15px; }
+        .utility-links a:hover { text-decoration: underline; }
+
+        /* --- Header (Logo & Nav) --- */
+        .site-header {
+            background: white;
+            padding: 15px 10%;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap:10px; }
+
+        /* --- Action Toolbar (參考圖藍色功能列) --- */
+        .action-toolbar {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 10px 10%;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 0.95rem;
+        }
+        .action-btn { 
+            display: flex; align-items: center; gap: 5px; cursor: pointer; color: white;
+        }
+        .action-btn:hover { color: #81e6d9; }
+
+        /* --- Main Layout --- */
+        .container {
+            width: 85%;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: 1fr 300px; /* 左側表格寬，右側資訊窄 */
+            gap: 30px;
+        }
+
+        /* --- Table Style Layout (核心優化部分) --- */
+        .spec-container {
+            background: white;
+            border: 1px solid var(--border-color);
+            /* border-top: 5px solid var(--primary-teal);  <-- 類似參考圖的頂部粗線 */
+        }
+
+        /* 表格標題列 (類似參考圖 "課程明細") */
+        .table-header-block {
+            background-color: #6c757d; /* 參考圖的深灰/橄欖綠色 */
+            background: linear-gradient(to bottom, #7f8c8d, #636e72);
+            color: white;
+            padding: 12px 20px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .print-btn {
+            background: white;
+            color: #333;
+            border: none;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        /* 模擬表格的 Grid Row */
+        .spec-row {
+            display: grid;
+            grid-template-columns: 220px 1fr; /* 左側固定寬度，右側自動 */
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .spec-row:last-child { border-bottom: none; }
+
+        /* 左側項目欄 (Label) */
+        .spec-label {
+            background-color: var(--bg-table-head);
+            padding: 15px 20px;
+            font-weight: 700;
+            color: #444;
+            display: flex;
+            align-items: center; /* 垂直置中 */
+            border-right: 1px solid var(--border-color); /* 參考圖有分隔線 */
+        }
+
+        /* 右側內容欄 (Content) */
+        .spec-content {
+            padding: 15px 20px;
+            color: #333;
+            /* 斑馬紋效果：在父層 .spec-row 處理 */
+        }
+
+        /* 斑馬紋 (參考圖的隔行換色) */
+        .spec-row:nth-child(even) .spec-content {
+            background-color: var(--bg-row-even);
+        }
+        .spec-row:nth-child(even) .spec-label {
+            background-color: #e4ecec; /* 偶數行標題稍微深一點點 */
+        }
+
+        /* 內容中的條列優化 */
+        .spec-content ul { padding-left: 20px; margin-top: 5px; }
+        .spec-content li { margin-bottom: 5px; }
+
+        /* --- Right Sidebar (懸浮資訊卡) --- */
+        .sidebar {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .info-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--accent-orange);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .card-title { font-weight: 700; margin-bottom: 15px; color: var(--primary-dark); font-size: 1.1rem; }
+
+        .btn-primary {
+            display: block;
+            width: 100%;
+            background: var(--accent-orange);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+        .btn-primary:hover { background: #d35400; }
+
+        .contact-item { margin-bottom: 10px; font-size: 0.9rem; display: flex; gap: 10px; }
+        .contact-item i { color: var(--primary-teal); margin-top: 4px; }
+
+        /* --- Footer --- */
+        .footer {
+            background: #343a40;
+            color: #adb5bd;
+            padding: 40px 10%;
+            margin-top: 50px;
+            font-size: 0.9rem;
+        }
+
+        /* --- RWD 手機版優化 (把表格變堆疊) --- */
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+            
+            .spec-row {
+                grid-template-columns: 1fr; /* 變單欄 */
+                border-bottom: 1px solid #ddd;
+            }
+            
+            .spec-label {
+                background-color: #e0f2f1; /* 手機版標題色稍微明顯一點 */
+                border-right: none;
+                border-bottom: 1px solid #eee;
+                padding: 10px 15px;
+                color: var(--primary-dark);
+            }
+            
+            .spec-content { padding: 15px; }
+            
+            /* 手機版隱藏斑馬紋背景，避免看起來太花 */
+            .spec-row:nth-child(even) .spec-content { background-color: white; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Utility Bar -->
+    <div class="utility-bar">
+        <div><i class="fa-solid fa-bullhorn"></i> 重要公告：系統將於 12/25 進行維護。</div>
+        <div class="utility-links">
+            <a href="index.html">網站導覽</a>
+            <a href="index.html">常見問答</a>
+            <a href="index.html">回首頁</a>
+        </div>
+    </div>
+
+<!-- Header -->
+<header class="site-header">
+    <!-- 將原本的 div 改為 a 標籤 -->
+    <a href="index.html" class="logo" style="text-decoration: none;">
+        <i class="fa-solid fa-layer-group"></i>
+        <div>
+            <div style="font-size:1.4rem; font-weight:bold; line-height:1.2;">政府場域實證</div>
+            <div style="font-size:0.8rem; color:#888;">Innovation Matchmaking Platform</div>
+        </div>
+    </a>
+    <div style="font-size:0.9rem; color:#666;">
+        使用者：Guest <a href="#" style="color:var(--primary-teal);">[登入]</a>
+    </div>
+</header>
+
+
+    <!-- Action Toolbar (參考圖藍色條) -->
+    <div class="action-toolbar">
+        <div class="action-btn"><i class="fa-solid fa-magnifying-glass"></i> 挑戰查詢</div>
+        <div class="action-btn"><i class="fa-solid fa-pen-to-square"></i> 申請參加</div>
+        <div class="action-btn"><i class="fa-solid fa-file-contract"></i> 計畫說明</div>
+        <div class="action-btn"><i class="fa-solid fa-download"></i> 下載專區</div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        
+        <!-- Left: Detail Table (仿表格結構) -->
+        <main>
+            <!-- 麵包屑與標題 -->
+            <div style="margin-bottom: 20px;">
+                <div style="font-size:0.9rem; color:#666; margin-bottom:5px;">
+                    首頁 > 尋找挑戰 > 智慧交通 > 挑戰詳情
+                </div>
+                <!-- 狀態標籤 -->
+                <span style="background:var(--primary-teal); color:white; padding:2px 8px; font-size:0.8rem; border-radius:3px;">徵件中</span>
+                <span style="background:#eee; color:#555; padding:2px 8px; font-size:0.8rem; border-radius:3px; margin-left:5px;">案號：114-T058</span>
+            </div>
+
+            <div class="spec-container">
+                <!-- 標題列 -->
+                <div class="table-header-block">
+                    <span><i class="fa-solid fa-list-check"></i> 挑戰規格明細</span>
+                    <button class="print-btn" onclick="window.print()"><i class="fa-solid fa-print"></i> 列印</button>
+                </div>
+
+                <!-- Row 1: 名稱 -->
+                <div class="spec-row">
+                    <div class="spec-label">挑戰題目</div>
+                    <div class="spec-content" style="font-weight:700; color:var(--primary-teal); font-size:1.2rem;">
+                        智慧路口：即時交通影像辨識與分析解決方案
+                    </div>
+                </div>
+
+                <!-- Row 2: 機關 -->
+                <div class="spec-row">
+                    <div class="spec-label">出題機關</div>
+                    <div class="spec-content">
+                        臺北市政府交通局 <i class="fa-solid fa-circle-check" style="color:#2ecc71; margin-left:5px;"></i>
+                    </div>
+                </div>
+
+                <!-- Row 3: 徵件日期 -->
+                <div class="spec-row">
+                    <div class="spec-label">徵件期間</div>
+                    <div class="spec-content">
+                        114/12/15 ～ 115/01/30 <span style="color:#e74c3c; font-weight:bold;">(剩餘 42 天)</span>
+                    </div>
+                </div>
+
+                <!-- Row 4: 預算 -->
+                <div class="spec-row">
+                    <div class="spec-label">實證獎助金</div>
+                    <div class="spec-content">
+                        新台幣 <strong>2,500,000</strong> 元 (含稅)
+                    </div>
+                </div>
+
+                <!-- Row 5: 執行期程 -->
+                <div class="spec-row">
+                    <div class="spec-label">預計執行期程</div>
+                    <div class="spec-content">
+                        決標後 6 個月內完成 POC 驗證
+                    </div>
+                </div>
+
+                <!-- Row 6: 場域地點 (多行內容) -->
+                <div class="spec-row">
+                    <div class="spec-label">實證場域地點</div>
+                    <div class="spec-content">
+                        <p>主要場域：臺北市信義區基隆路與忠孝東路交叉口。</p>
+                        <p>備用場域：內湖科學園區瑞光路沿線路口。</p>
+                        <p style="color:#666; font-size:0.9rem; margin-top:5px;">(註：需配合交通局安排現勘)</p>
+                    </div>
+                </div>
+
+                <!-- Row 7: 內容詳情 (長文字) -->
+                <div class="spec-row">
+                    <div class="spec-label">需求與規格</div>
+                    <div class="spec-content">
+                        <p>本計畫旨在解決尖峰時刻路口壅塞問題，徵求具備邊緣運算能力之 AI 影像辨識方案。</p>
+                        <ul style="margin-top:10px;">
+                            <li><strong>辨識標的：</strong>需能區分大客車、小客車、機車、自行車及行人。</li>
+                            <li><strong>準確率要求：</strong>日間辨識率需達 95% 以上，夜間需達 90% 以上。</li>
+                            <li><strong>系統介接：</strong>需提供 RESTful API 介接本局交控中心，資料延遲不得超過 3 秒。</li>
+                            <li><strong>硬體限制：</strong>需可安裝於現有號誌桿上，且具備 IP66 防水防塵等級。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Row 8: 資格 -->
+                <div class="spec-row">
+                    <div class="spec-label">參賽資格</div>
+                    <div class="spec-content">
+                        <p>1. 依公司法設立之本國公司，或外國公司在台分公司。</p>
+                        <p>2. 新創團隊（成立未滿 5 年者尤佳）。</p>
+                        <p>3. 最近 3 年無欠繳稅款紀錄。</p>
+                    </div>
+                </div>
+
+                <!-- Row 9: 評選方式 -->
+                <div class="spec-row">
+                    <div class="spec-label">評選方式</div>
+                    <div class="spec-content">
+                        書面審查 (40%) + 簡報決選 (60%)。簡報需包含 Live Demo 展示。
+                    </div>
+                </div>
+
+                <!-- Row 10: 聯絡資訊 -->
+                <div class="spec-row">
+                    <div class="spec-label">聯絡窗口</div>
+                    <div class="spec-content">
+                        林專員 (02-2720-8889 分機 1234)<br>
+                        Email: smart_city@gov.taipei
+                    </div>
+                </div>
+
+            </div>
+            
+            <div style="margin-top:20px; text-align:right;">
+                <a href="challenge.html" style="color:#666; border:1px solid #ccc; padding:5px 15px; background:white; border-radius:3px;">
+                    <i class="fa-solid fa-arrow-left"></i> 返回列表
+                </a>
+            </div>
+        </main>
+
+        <!-- Right: Sidebar Action -->
+        <aside class="sidebar">
+            <!-- Action Box -->
+            <div class="info-card">
+                <div class="card-title">報名狀態</div>
+                <div style="text-align:center; margin-bottom:15px;">
+                    <div style="font-size:2rem; font-weight:700; color:var(--accent-orange);">250 萬</div>
+                    <div style="font-size:0.9rem; color:#666;">最高補助金額</div>
+                </div>
+                <div style="font-size:0.9rem; color:#555; margin-bottom:5px;">
+                    <i class="fa-regular fa-clock"></i> 截止：115/01/30
+                </div>
+                <div style="width:100%; background:#eee; height:8px; border-radius:4px; overflow:hidden;">
+                    <div style="width:60%; background:var(--primary-teal); height:100%;"></div>
+                </div>
+                <div style="text-align:right; font-size:0.8rem; color:#888;">進度：徵件中</div>
+
+                <a href="startup-apply.html" class="btn-primary">我要提案</a>
+            </div>
+
+            <!-- Download Box -->
+            <div class="info-card">
+                <div class="card-title">相關文件下載</div>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <a href="#" style="display:flex; align-items:center; gap:10px; color:#0056b3;">
+                        <i class="fa-regular fa-file-pdf"></i> 徵件簡章.pdf
+                    </a>
+                    <a href="#" style="display:flex; align-items:center; gap:10px; color:#0056b3;">
+                        <i class="fa-regular fa-file-word"></i> 提案計畫書.docx
+                    </a>
+                    <a href="#" style="display:flex; align-items:center; gap:10px; color:#0056b3;">
+                        <i class="fa-regular fa-file-excel"></i> 預算表範本.xlsx
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="info-card">
+                <div class="card-title">相關標籤</div>
+                <div style="display:flex; flex-wrap:wrap; gap:5px;">
+                    <span style="background:#eee; padding:3px 8px; font-size:0.85rem; color:#555; border-radius:3px;">#AI</span>
+                    <span style="background:#eee; padding:3px 8px; font-size:0.85rem; color:#555; border-radius:3px;">#智慧交通</span>
+                    <span style="background:#eee; padding:3px 8px; font-size:0.85rem; color:#555; border-radius:3px;">#影像辨識</span>
+                    <span style="background:#eee; padding:3px 8px; font-size:0.85rem; color:#555; border-radius:3px;">#台北市</span>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div style="max-width:1200px; margin:0 auto; text-align:center;">
+            <p>主辦單位：勞動力發展署 | 執行單位：創新實證中心</p>
+            <p>地址：24219 新北市新莊區中平路439號南棟4樓 | 電話：02-8995-6000</p>
+            <p style="margin-top:20px; font-size:0.8rem;">&copy; 2025 Innovation Matchmaking Platform. 本網站為示意設計。</p>
+        </div>
+    </footer>
+
+</body>
+</html>

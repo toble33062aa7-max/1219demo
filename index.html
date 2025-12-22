@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>實證媒合平台 - 政府出題．新創解題</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 色彩系統 (公務/科技風格) --- */
+        :root {
+            --primary-blue: #003366;      /* 深藍：穩重、官方 */
+            --primary-teal: #0089A7;      /* 青色：創新、科技 */
+            --accent-gold: #F2A900;       /* 金黃：強調、行動 */
+            --bg-light: #F4F6F9;          /* 背景灰 */
+            --text-dark: #333333;
+            --text-gray: #666666;
+            --white: #ffffff;
+            --border-radius: 8px;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-light); color: var(--text-dark); line-height: 1.5; }
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* --- 2. 頂部導覽 (Top Bar) --- */
+        .top-bar {
+            background-color: #2c3e50;
+            color: #ddd;
+            font-size: 0.8rem;
+            padding: 5px 10%;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+        .top-bar a:hover { color: white; }
+
+        .header {
+            background: var(--white);
+            padding: 15px 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-menu { display: flex; gap: 25px; font-weight: 500; color: var(--text-dark); }
+        .nav-menu a:hover { color: var(--primary-teal); }
+
+        /* --- 3. 搜尋主視覺區 (模仿參考圖的搜尋列) --- */
+        .search-hero {
+            background: linear-gradient(135deg, var(--bg-light) 0%, #e3f2fd 100%);
+            padding: 40px 10% 20px;
+            text-align: center;
+        }
+
+        .search-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 50px; /* 圓角造型 */
+            overflow: hidden;
+            border: 2px solid var(--primary-teal); /* 官方青色框 */
+        }
+
+        .search-dropdown {
+            background: var(--primary-teal);
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            appearance: none; /* 移除預設箭頭 */
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .search-btn {
+            background: var(--accent-gold);
+            color: var(--primary-blue);
+            border: none;
+            padding: 0 30px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: 0.3s;
+        }
+        .search-btn:hover { background: #e09b00; }
+
+        .hot-keywords {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+        .hot-keywords a { color: var(--primary-teal); margin: 0 5px; font-weight: 500; }
+
+        /* --- 4. Banner 輪播區 --- */
+        .banner-section {
+            width: 80%;
+            margin: 20px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        .banner-img {
+            width: 100%;
+            height: 300px; /* 固定高度 */
+            object-fit: cover;
+            background: url('https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            position: relative;
+        }
+        .banner-text {
+            background: rgba(0, 51, 102, 0.8);
+            padding: 20px 40px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .banner-text h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        /* --- 5. 圓形快速導航 (Quick Nav) --- */
+        .quick-nav-wrapper {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZjRmNmY5Ii8+CjxwYXRoIGQ9Ik0wIDBoNHYxSDB6IiBmaWxsPSIjZWRlZWYwIi8+Cjwvc3ZnPg=='); /* 微細紋理 */
+            background-color: #fff; /* 參考圖的背景帶 */
+            padding: 40px 10%;
+            position: relative;
+            margin-top: -40px; /* 向上重疊一點 */
+            z-index: 10;
+            border-top-left-radius: 50% 20px;
+            border-top-right-radius: 50% 20px;
+        }
+
+        .icon-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .icon-item {
+            text-align: center;
+            width: 100px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .icon-item:hover { transform: translateY(-5px); }
+
+        .circle-icon {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border: 3px solid var(--primary-teal); /* 官方感框線 */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--primary-teal);
+            margin: 0 auto 10px;
+            box-shadow: 0 4px 10px rgba(0,137,167,0.2);
+            transition: 0.3s;
+        }
+        .icon-item:hover .circle-icon {
+            background: var(--primary-teal);
+            color: white;
+        }
+
+        .icon-text { font-weight: 700; color: var(--primary-blue); }
+
+        /* --- 6. 雙欄分眾入口 (Target Audience) --- */
+        .section-container {
+            padding: 40px 10%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .split-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .role-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: var(--shadow);
+            border-left: 5px solid transparent;
+            transition: 0.3s;
+        }
+
+        .role-card:hover { transform: translateY(-3px); }
+        .role-card.solver { border-left-color: var(--primary-teal); }
+        .role-card.seeker { border-left-color: var(--accent-gold); }
+
+        .role-img {
+            width: 120px;
+            height: 120px;
+            background: #f0f4f8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .role-img i { font-size: 3rem; color: var(--primary-blue); }
+
+        .role-content h3 { font-size: 1.5rem; margin-bottom: 10px; color: var(--primary-blue); }
+        .role-content p { color: var(--text-gray); font-size: 0.95rem; margin-bottom: 15px; }
+        
+        .btn-role {
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .btn-solver { background: rgba(0, 137, 167, 0.1); color: var(--primary-teal); }
+        .btn-seeker { background: rgba(242, 169, 0, 0.1); color: #d68910; }
+
+        /* --- 7. 最新消息 & 快速列表 --- */
+        .news-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* 左邊新聞，右邊活動 */
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .content-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .header-title { font-size: 1.3rem; font-weight: 700; color: var(--primary-blue); border-left: 5px solid var(--primary-teal); padding-left: 10px; }
+        .header-more { font-size: 0.9rem; color: var(--text-gray); }
+
+        .news-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px dashed #eee;
+            align-items: center;
+        }
+        .news-list li:last-child { border-bottom: none; }
+        
+        .news-tag {
+            background: var(--primary-blue);
+            color: white;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .news-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+        .news-title:hover { color: var(--primary-teal); }
+        .news-date { font-size: 0.85rem; color: #999; margin-left: 10px; }
+
+        /* --- 8. 主題專區 (Topic Grid) --- */
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .topic-card {
+            background: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: 0.3s;
+            border-top: 4px solid transparent;
+        }
+        
+        .topic-card:hover { transform: translateY(-5px); border-top-color: var(--primary-teal); }
+        
+        .topic-icon { font-size: 2.5rem; color: var(--primary-teal); margin-bottom: 15px; }
+        .topic-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 10px; }
+        .topic-list { text-align: left; font-size: 0.9rem; color: #666; margin-top: 15px; }
+        .topic-list li { margin-bottom: 5px; padding-left: 15px; position: relative; }
+        .topic-list li::before { content: "•"; color: var(--accent-gold); position: absolute; left: 0; }
+
+        /* --- 9. 影音/成功案例 --- */
+        .media-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .media-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        .media-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .media-body { padding: 20px; }
+        .media-title { font-weight: 700; margin-bottom: 10px; }
+
+        /* --- Footer --- */
+        .footer {
+            background: #1e272e;
+            color: #bdc3c7;
+            padding: 50px 10%;
+            font-size: 0.9rem;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+        .footer h3 { color: white; margin-bottom: 15px; font-size: 1.1rem; }
+        .footer p { margin-bottom: 10px; line-height: 1.6; }
+        .footer-links a { display: block; margin-bottom: 8px; color: #bdc3c7; }
+        .footer-links a:hover { color: white; }
+
+        /* --- RWD --- */
+        @media (max-width: 992px) {
+            .split-grid, .news-grid, .topic-grid, .media-grid, .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            .topic-grid { grid-template-columns: 1fr 1fr; }
+            .search-hero { padding: 20px 5%; }
+            .search-container { flex-direction: column; border-radius: 15px; }
+            .search-dropdown { width: 100%; text-align: left; }
+            .search-btn { padding: 10px; }
+            .banner-text h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <a href="#">網站導覽</a> | 
+        <a href="#">常見問答</a> | 
+        <a href="#">English</a> | 
+        <a href="#"><i class="fa-brands fa-facebook"></i></a>
+        <a href="#"><i class="fa-brands fa-line"></i></a>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <a href="index.html" class="logo">
+            <i class="fa-solid fa-lightbulb"></i>
+            <div>
+                <div>實證媒合平台</div>
+                <div style="font-size:0.8rem; font-weight:400; color:#666;">Innovation Matchmaking Platform</div>
+            </div>
+        </a>
+        <nav class="nav-menu">
+            <a href="challenge.html">尋找挑戰</a>
+            <a href="#">計畫資源</a>
+            <a href="case.html">成功案例</a>
+            <a href="#">關於我們</a>
+            <a href="#" style="color:var(--primary-teal);"><i class="fa-solid fa-user"></i> 會員登入</a>
+        </nav>
+    </header>
+
+    <!-- 1. Search Hero (仿參考圖的搜尋列) -->
+    <section class="search-hero">
+        <div class="search-container">
+            <select class="search-dropdown">
+                <option>找挑戰</option>
+                <option>找資源</option>
+                <option>找夥伴</option>
+            </select>
+            <input type="text" class="search-input" placeholder="請輸入關鍵字（例：AI、淨零碳排、智慧交通...）">
+            <button class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <div class="hot-keywords">
+            熱門關鍵字： 
+            <a href="challenge.html">#生成式AI</a>
+            <a href="challenge.html">#ESG淨零</a>
+            <a href="challenge.html">#長照科技</a>
+            <a href="challenge.html">#無人機</a>
+        </div>
+    </section>
+
+    <!-- 2. Banner Slider -->
+    <section class="banner-section">
+        <div class="banner-img">
+            <div class="banner-text">
+                <h2>114年度 創新場域實證計畫 徵案開跑</h2>
+                <p>總獎金高達 5,000 萬，開放 20+ 政府場域，等你來挑戰！</p>
+                <button style="margin-top:15px; padding:10px 25px; background:var(--accent-gold); border:none; font-weight:bold; cursor:pointer; border-radius:5px;">立即報名</button>
+            </div>
+        </div>
+    </section>
+
+<!-- 3. Circle Quick Nav (仿參考圖的中間圓形導航) -->
+    <div class="quick-nav-wrapper">
+        <div class="icon-grid">
+            <a href="challenge.html" class="icon-item">
+                <div class="circle-icon"><i class="fa-solid fa-rocket"></i></div>
+                <div class="icon-text">尋找挑戰</div>
+            </a>
+            <a href="agency-apply.html" class="icon-item">
+                <div class="circle-icon"><i class="fa-solid fa-building-flag"></i></div>
+                <div class="icon-text">機關出題</div>
+            </a>
+            <a href="timeline.html" class="icon-item">
+                <div class="circle-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                <div class="icon-text">活動時程</div>
+            </a>
+            <a href="case.html" class="icon-item">
+                <div class="circle-icon"><i class="fa-solid fa-trophy"></i></div>
+                <div class="icon-text">成功案例</div>
+            </a>
+            <a href="Info.html" class="icon-item">
+                <div class="circle-icon"><i class="fa-solid fa-file-contract"></i></div>
+                <div class="icon-text">資源下載</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- 4. Main Content Area -->
+    <div class="section-container">
+        
+        <!-- 角色分眾入口 -->
+        <div class="split-grid">
+            <div class="role-card solver">
+                <div class="role-img"><i class="fa-solid fa-laptop-code"></i></div>
+                <div class="role-content">
+                    <h3>我是新創/團隊</h3>
+                    <p>尋找政府場域實證機會，獲取補助資源，加速產品落地驗證。</p>
+                    <a href="challenge.html" class="btn-role btn-solver">找尋挑戰機會 <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="role-card seeker">
+                <div class="role-img"><i class="fa-solid fa-city"></i></div>
+                <div class="role-content">
+                    <h3>我是機關/企業</h3>
+                    <p>提出痛點需求，媒合創新解決方案，導入新技術提升效能。</p>
+                    <a href="agency-apply.html" class="btn-role btn-seeker">發布出題需求 <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 最新消息 & 重點活動 -->
+        <div class="news-grid">
+            <!-- News -->
+            <div class="content-box">
+                <div class="section-header">
+                    <div class="header-title">最新公告</div>
+                    <a href="timeline.html" class="header-more">查看更多 <i class="fa-solid fa-angle-right"></i></a>
+                </div>
+                <ul class="news-list">
+                    <li>
+                        <span class="news-tag">公告</span>
+                        <span class="news-title">114年度「智慧城鄉生活應用補助計畫」徵案說明會開放報名</span>
+                        <span class="news-date">2025/12/17</span>
+                    </li>
+                    <li>
+                        <span class="news-tag">快訊</span>
+                        <span class="news-title">恭喜！第三屆綠能科技黑客松 獲選團隊名單公布</span>
+                        <span class="news-date">2025/12/16</span>
+                    </li>
+                    <li>
+                        <span class="news-tag">活動</span>
+                        <span class="news-title">「創新沙盒」場域實證工作坊 - 高雄場 議程更新</span>
+                        <span class="news-date">2025/12/15</span>
+                    </li>
+                    <li>
+                        <span class="news-tag">公告</span>
+                        <span class="news-title">重要通知：本平台將於 12/25 凌晨進行系統維護</span>
+                        <span class="news-date">2025/12/10</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Quick Links -->
+            <div class="content-box" style="background:#e3f2fd;">
+                <div class="section-header" style="border-bottom-color:#bbdefb;">
+                    <div class="header-title" style="color:var(--primary-blue);">新手上路</div>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <a href="proposal.html" style="background:white; padding:10px; border-radius:8px; display:flex; align-items:center; color:#333;"><i class="fa-solid fa-circle-question" style="color:var(--primary-teal); margin-right:10px;"></i> 如何提案報名？</a>
+                    <a href="Info.html" style="background:white; padding:10px; border-radius:8px; display:flex; align-items:center; color:#333;"><i class="fa-solid fa-book" style="color:var(--primary-teal); margin-right:10px;"></i> 計畫申請懶人包</a>
+                    <a href="Info.html" style="background:white; padding:10px; border-radius:8px; display:flex; align-items:center; color:#333;"><i class="fa-solid fa-video" style="color:var(--primary-teal); margin-right:10px;"></i> 線上說明會回放</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主題專區 Grid -->
+        <h2 style="text-align:center; margin-bottom:30px; color:var(--primary-blue);">熱門實證領域</h2>
+        <div class="topic-grid">
+            <div class="topic-card">
+                <div class="topic-icon"><i class="fa-solid fa-robot"></i></div>
+                <div class="topic-title">AI 與 數據分析</div>
+                <ul class="topic-list">
+                    <li>生成式 AI 應用</li>
+                    <li>大數據預測模型</li>
+                    <li>影像辨識技術</li>
+                </ul>
+            </div>
+            <div class="topic-card">
+                <div class="topic-icon"><i class="fa-solid fa-leaf"></i></div>
+                <div class="topic-title">淨零碳排 (ESG)</div>
+                <ul class="topic-list">
+                    <li>能源管理系統</li>
+                    <li>循環經濟模式</li>
+                    <li>碳盤查工具</li>
+                </ul>
+            </div>
+            <div class="topic-card">
+                <div class="topic-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                <div class="topic-title">智慧交通</div>
+                <ul class="topic-list">
+                    <li>智慧號誌控制</li>
+                    <li>無人載具物流</li>
+                    <li>停車管理優化</li>
+                </ul>
+            </div>
+            <div class="topic-card">
+                <div class="topic-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                <div class="topic-title">智慧醫療</div>
+                <ul class="topic-list">
+                    <li>遠距照護平台</li>
+                    <li>穿戴式裝置</li>
+                    <li>高齡健康促進</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 影音/案例 -->
+        <div class="media-grid">
+            <div class="media-card">
+                <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Video" class="media-img">
+                <div class="media-body">
+                    <div class="media-title">【影音專區】如何撰寫完美的提案計畫書？</div>
+                    <p style="font-size:0.9rem; color:#666;">評審觀點大公開！掌握這 5 個關鍵要素，讓你的實證提案脫穎而出。</p>
+                </div>
+            </div>
+            <div class="media-card">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Case" class="media-img">
+                <div class="media-body">
+                    <div class="media-title">【企業專訪】智新科技：從實證到商轉的旅程</div>
+                    <p style="font-size:0.9rem; color:#666;">透過本平台媒合，成功將 AI 巡檢系統導入捷運局，現在已擴展至海外市場。</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div>
+                <h3><i class="fa-solid fa-lightbulb"></i> 實證媒合平台</h3>
+                <p>政府出題，企業解題。我們致力於連結公部門需求與民間創新能量，共同解決社會痛點，加速智慧城市發展。</p>
+            </div>
+            <div class="footer-links">
+                <h3 style="font-size:1rem; color:#fff;">關於我們</h3>
+                <a href="#">計畫緣起</a>
+                <a href="#">服務條款</a>
+                <a href="#">隱私權政策</a>
+                <a href="#">資訊安全政策</a>
+            </div>
+            <div>
+                <h3 style="font-size:1rem; color:#fff;">聯絡資訊</h3>
+                <p>客服專線：0800-000-123</p>
+                <p>服務時間：週一至週五 09:00-18:00</p>
+                <p>電子信箱：service@innovation.gov.tw</p>
+            </div>
+        </div>
+        <div style="text-align:center; border-top:1px solid #34495e; padding-top:20px;">
+            <p style="font-size:0.8rem;">&copy; 2025 Innovation Matchmaking Platform. 版權所有</p>
+        </div>
+    </footer>
+
+</body>
+</html>

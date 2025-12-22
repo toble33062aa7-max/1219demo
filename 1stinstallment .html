@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第一期款撥付申請 - 114年度創新場域實證計畫</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心變數 (維持一致風格) --- */
+        :root {
+            --primary-teal: #008f95;      
+            --primary-dark: #006c70;      
+            --header-gray: #6c757d;       
+            --label-bg: #eef5f5;          
+            --row-even-bg: #fcfcfc;       
+            --border-color: #dee2e6;
+            --accent-orange: #e76f51;     
+            --text-main: #333;
+            --bg-body: #f8f9fa;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            line-height: 1.6;
+        }
+
+        /* --- 2. Header & Nav --- */
+        .top-bar { background: var(--primary-teal); color: white; padding: 8px 10%; font-size: 0.85rem; text-align: right; }
+        .site-header { background: white; padding: 15px 10%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
+        .logo { font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 10px; }
+        .nav-toolbar { background-color: var(--primary-dark); padding: 10px 10%; display: flex; gap: 25px; }
+        .nav-item { color: white; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
+        
+        /* --- 3. 麵包屑 --- */
+        .breadcrumb-area { padding: 20px 10% 10px; font-size: 0.9rem; color: #666; }
+        .status-tag { background: var(--accent-orange); color: white; padding: 2px 8px; font-size: 0.8rem; border-radius: 2px; margin-right: 8px; }
+        .case-id { background: #eee; color: #555; padding: 2px 8px; font-size: 0.8rem; border-radius: 2px; }
+
+        /* --- 4. Grid Layout --- */
+        .container {
+            width: 80%; max-width: 1400px; margin: 20px auto 60px;
+            display: grid; grid-template-columns: 1fr 320px; gap: 30px;
+        }
+
+        /* --- 5. 左側表格樣式 --- */
+        .spec-container { background: white; border: 1px solid var(--border-color); }
+        
+        .table-header-block {
+            background: linear-gradient(to right, #6c757d, #5a6268);
+            color: white; padding: 12px 20px; font-weight: 700;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .spec-row { display: grid; grid-template-columns: 200px 1fr; border-bottom: 1px solid var(--border-color); }
+        .spec-row:last-child { border-bottom: none; }
+        .spec-row:nth-child(even) .spec-content { background-color: var(--row-even-bg); }
+
+        .spec-label {
+            background-color: var(--label-bg); padding: 20px; font-weight: 700; color: #495057;
+            display: flex; align-items: flex-start; border-right: 1px solid var(--border-color);
+        }
+        .spec-content { padding: 20px; color: #212529; background: white; }
+
+        /* --- 6. 內容細節樣式 --- */
+        .highlight-money { color: var(--primary-teal); font-weight: 700; font-size: 1.2rem; }
+        
+        .doc-checklist { list-style: none; padding: 0; }
+        .doc-item {
+            display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px;
+            padding-bottom: 12px; border-bottom: 1px dashed #eee;
+        }
+        .doc-item:last-child { border-bottom: none; }
+        .doc-icon { color: var(--primary-teal); margin-top: 4px; }
+        .doc-required { color: #e74c3c; font-size: 0.8rem; border: 1px solid #e74c3c; padding: 0 4px; border-radius: 3px; margin-left: 5px; }
+        
+        .alert-box {
+            background: #fff3cd; border-left: 5px solid #ffc107; color: #856404;
+            padding: 15px; margin-top: 10px; font-size: 0.9rem;
+        }
+
+        /* 流程步驟 */
+        .process-steps { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+        .step { text-align: center; position: relative; flex: 1; }
+        .step-circle {
+            width: 30px; height: 30px; background: #ddd; color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;
+        }
+        .step.active .step-circle { background: var(--primary-teal); }
+        .step.active .step-text { color: var(--primary-teal); font-weight: 700; }
+        .step-line { flex: 1; height: 2px; background: #ddd; margin: 0 10px; margin-bottom: 20px; }
+        .step-text { font-size: 0.85rem; color: #666; }
+
+        /* --- 7. Sidebar --- */
+        .sidebar-card {
+            background: white; border: 1px solid var(--border-color);
+            padding: 20px; margin-bottom: 20px;
+            border-top: 5px solid var(--accent-orange);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .card-title { font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 15px; }
+
+        .money-display { text-align: center; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
+        .money-val { font-size: 2rem; font-weight: 700; color: var(--accent-orange); line-height: 1; }
+        .money-label { font-size: 0.9rem; color: #666; margin-top: 5px; }
+
+        .btn-sidebar {
+            display: block; width: 100%; background: var(--accent-orange); color: white;
+            text-align: center; padding: 12px; border-radius: 4px; font-weight: 700;
+            text-decoration: none; border: none; cursor: pointer; transition: 0.2s;
+        }
+        .btn-sidebar:hover { background: #d65f42; }
+
+        .download-link {
+            display: flex; align-items: center; gap: 10px; color: #0056b3;
+            text-decoration: none; padding: 10px 0; border-bottom: 1px dashed #eee; font-size: 0.95rem;
+        }
+        .download-link:hover { color: var(--accent-orange); }
+
+        /* --- RWD --- */
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+            .spec-row { grid-template-columns: 1fr; }
+            .spec-label { background-color: #e9ecef; border-right: none; border-bottom: 1px solid #eee; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top & Header -->
+    <div class="top-bar">系統公告：請款系統將於每月 25 日暫停服務進行維護。</div>
+<header class="site-header">
+    <!-- 將原本的 div 改為 a 標籤 -->
+    <a href="index.html" class="logo" style="text-decoration: none;">
+        <i class="fa-solid fa-layer-group"></i>
+        <div>
+            <div style="font-size:1.4rem; font-weight:bold; line-height:1.2;">政府場域實證</div>
+            <div style="font-size:0.8rem; color:#888;">Innovation Matchmaking Platform</div>
+        </div>
+    </a>
+    <div style="font-size:0.9rem; color:#666;">
+        使用者：Guest <a href="#" style="color:var(--primary-teal);">[登入]</a>
+    </div>
+</header>    <nav class="nav-toolbar">
+        <a href="#" class="nav-item"><i class="fa-solid fa-magnifying-glass"></i> 挑戰查詢</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-pen-to-square"></i> 申請參加</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-file-contract"></i> 計畫說明</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-download"></i> 下載專區</a>
+    </nav>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-area">
+        首頁 > 計畫時程 > 第一期款撥付
+        <div style="margin-top:10px;">
+            <span class="status-tag">可申請</span>
+            <span class="case-id">案號：114-T058</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Main Content -->
+        <main>
+            <div class="spec-container">
+                <div class="table-header-block">
+                    <span><i class="fa-solid fa-file-invoice-dollar"></i> 款項撥付詳細資料</span>
+                    <button style="background:none; border:none; color:white; cursor:pointer;"><i class="fa-solid fa-print"></i> 列印</button>
+                </div>
+
+                <!-- Row 1: Basic Info -->
+                <div class="spec-row">
+                    <div class="spec-label">撥付期別</div>
+                    <div class="spec-content">
+                        <div class="highlight-title" style="color:#333; font-size:1.1rem; font-weight:bold;">
+                            第一期款 (簽約撥付)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 2: Calculation -->
+                <div class="spec-row">
+                    <div class="spec-label">撥付金額計算</div>
+                    <div class="spec-content">
+                        <div>總補助金額： <strong>NT$ 2,500,000</strong></div>
+                        <div style="margin-top:5px;">
+                            本期撥付比例： <span class="highlight-money">30%</span>
+                        </div>
+                        <div style="margin-top:5px; border-top:1px dashed #ccc; padding-top:5px;">
+                            應撥金額： <span class="highlight-money">NT$ 750,000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 3: Prerequisites -->
+                <div class="spec-row">
+                    <div class="spec-label">申請條件</div>
+                    <div class="spec-content">
+                        <ul style="padding-left:20px; color:#555;">
+                            <li>已完成正式簽約用印流程。</li>
+                            <li>已繳交修正後最終版計畫書。</li>
+                            <li>已設立專戶（或提供專款專用帳戶證明）。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Row 4: Process Flow -->
+                <div class="spec-row">
+                    <div class="spec-label">撥款流程</div>
+                    <div class="spec-content">
+                        <div class="process-steps">
+                            <div class="step active">
+                                <div class="step-circle">1</div>
+                                <div class="step-text">備齊文件</div>
+                            </div>
+                            <div class="step-line"></div>
+                            <div class="step">
+                                <div class="step-circle">2</div>
+                                <div class="step-text">線上申請</div>
+                            </div>
+                            <div class="step-line"></div>
+                            <div class="step">
+                                <div class="step-circle">3</div>
+                                <div class="step-text">文件審核</div>
+                            </div>
+                            <div class="step-line"></div>
+                            <div class="step">
+                                <div class="step-circle">4</div>
+                                <div class="step-text">撥款入帳</div>
+                            </div>
+                        </div>
+                        <div style="margin-top:15px; font-size:0.85rem; color:#888;">* 審核作業約需 7-14 個工作天。</div>
+                    </div>
+                </div>
+
+                <!-- Row 5: Document Checklist (Crucial) -->
+                <div class="spec-row">
+                    <div class="spec-label">應備文件檢核</div>
+                    <div class="spec-content">
+                        <p style="margin-bottom:15px; font-weight:bold;">請務必確認以下文件皆已蓋妥公司大小章：</p>
+                        <ul class="doc-checklist">
+                            <li class="doc-item">
+                                <i class="fa-regular fa-check-square doc-icon"></i>
+                                <div>
+                                    <strong>請款申請書 (正本 1 份)</strong> <span class="doc-required">必備</span>
+                                    <div style="font-size:0.85rem; color:#666;">需填寫正確案號與金額，並加蓋公司大小章。</div>
+                                </div>
+                            </li>
+                            <li class="doc-item">
+                                <i class="fa-regular fa-check-square doc-icon"></i>
+                                <div>
+                                    <strong>領據 (Receipt) 或 統一發票</strong> <span class="doc-required">必備</span>
+                                    <div style="font-size:0.85rem; color:#666;">
+                                        抬頭：勞動部勞動力發展署<br>
+                                        統編：12345678
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="doc-item">
+                                <i class="fa-regular fa-check-square doc-icon"></i>
+                                <div>
+                                    <strong>撥款帳戶存摺影本</strong> <span class="doc-required">必備</span>
+                                    <div style="font-size:0.85rem; color:#666;">需清晰可見戶名與帳號，戶名須與簽約公司名稱一致。</div>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div class="alert-box">
+                            <i class="fa-solid fa-triangle-exclamation"></i> <strong>常見錯誤提醒：</strong>
+                            <ul style="padding-left:20px; margin-top:5px;">
+                                <li>印鑑章與簽約時不符（若更換印鑑需附證明）。</li>
+                                <li>領據金額未用國字大寫（如：柒拾伍萬元整）。</li>
+                                <li>未貼足印花稅票（領據需貼千分之四印花稅）。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 6: Contact -->
+                <div class="spec-row">
+                    <div class="spec-label">財務窗口</div>
+                    <div class="spec-content">
+                        陳小姐 (會計室)<br>
+                        電話：02-8995-6000 分機 5678<br>
+                        Email: finance@innovation.gov.tw
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align:right; margin-top:20px;">
+                <a href="#" style="color:#666; text-decoration:none; border:1px solid #ccc; padding:8px 15px; border-radius:4px; background:white;">
+                    <i class="fa-solid fa-reply"></i> 返回列表
+                </a>
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside>
+            <!-- Money Card -->
+            <div class="sidebar-card">
+                <div class="card-title">本期可請領金額</div>
+                <div class="money-display">
+                    <div class="money-val">750,000</div>
+                    <div class="money-label">新台幣 (NTD)</div>
+                </div>
+                <div style="font-size:0.9rem; color:#333; margin-bottom:15px;">
+                    <i class="fa-solid fa-circle-exclamation" style="color:#e67e22;"></i> 截止日期：<strong>114/07/30</strong>
+                </div>
+                
+                <button class="btn-sidebar">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> 前往上傳請款文件
+                </button>
+            </div>
+
+            <!-- Download Card -->
+            <div class="sidebar-card">
+                <div class="card-title">請款文件下載</div>
+                <div>
+                    <a href="#" class="download-link">
+                        <i class="fa-regular fa-file-word"></i> 第一期款請款單.docx
+                    </a>
+                    <a href="#" class="download-link">
+                        <i class="fa-regular fa-file-word"></i> 領據範本 (免用發票).docx
+                    </a>
+                    <a href="#" class="download-link">
+                        <i class="fa-regular fa-file-pdf"></i> 經費核銷作業手冊.pdf
+                    </a>
+                </div>
+            </div>
+
+            <!-- FAQ Card -->
+            <div class="sidebar-card" style="border-top-color: #666;">
+                <div class="card-title">常見問題</div>
+                <ul style="padding-left:20px; font-size:0.9rem; color:#0056b3;">
+                    <li style="margin-bottom:8px;"><a href="#" style="color:inherit;">發票開立日期有規定嗎？</a></li>
+                    <li style="margin-bottom:8px;"><a href="#" style="color:inherit;">可以用個人帳戶撥款嗎？</a></li>
+                    <li><a href="#" style="color:inherit;">印花稅要去哪裡買？</a></li>
+                </ul>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Footer -->
+    <div style="background:#343a40; color:#adb5bd; padding:40px; text-align:center; font-size:0.9rem;">
+        <p>主辦單位：勞動力發展署 | 執行單位：創新實證中心</p>
+        <p>&copy; 2025 Innovation Matchmaking Platform.</p>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>審查結果公告 - 114年度創新場域實證計畫</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心變數 (維持一致性) --- */
+        :root {
+            --primary-teal: #008f95;      /* 主色 */
+            --primary-dark: #006c70;      /* 深色 */
+            --header-gray: #6c757d;       /* 標題列背景 */
+            --label-bg: #eef5f5;          /* 左側標籤背景 */
+            --row-even-bg: #fcfcfc;       /* 偶數行背景 */
+            --border-color: #dee2e6;
+            --accent-orange: #e76f51;     /* 強調色 */
+            --status-green: #2ecc71;      /* 正取 */
+            --status-yellow: #f1c40f;     /* 備取 */
+            --text-main: #333;
+            --bg-body: #f8f9fa;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            line-height: 1.6;
+        }
+
+        /* --- Header & Top Bar --- */
+        .top-bar { background-color: var(--primary-teal); color: white; padding: 8px 10%; font-size: 0.85rem; display: flex; justify-content: space-between; }
+        .top-bar a { color: white; text-decoration: none; margin-left: 15px; }
+
+        .site-header { background: white; padding: 15px 10%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
+        .logo { font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 10px; }
+        
+        .nav-toolbar { background-color: var(--primary-dark); padding: 10px 10%; display: flex; gap: 25px; }
+        .nav-item { color: white; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
+        .nav-item:hover { color: #81e6d9; }
+
+        /* --- Breadcrumb --- */
+        .breadcrumb-area { padding: 20px 10% 10px; font-size: 0.9rem; color: #666; }
+        .announce-tag { background: #d63031; color: white; padding: 2px 8px; font-size: 0.8rem; border-radius: 2px; margin-right: 8px; }
+
+        /* --- Layout --- */
+        .container {
+            width: 80%; max-width: 1400px; margin: 20px auto 60px;
+            display: grid; grid-template-columns: 1fr 320px; gap: 30px;
+        }
+
+        /* --- Main Content: Spec Table Style --- */
+        .spec-container { background: white; border: 1px solid var(--border-color); margin-bottom: 30px; }
+        
+        .table-header-block {
+            background: linear-gradient(to right, #6c757d, #5a6268);
+            color: white; padding: 12px 20px; font-weight: 700;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .print-btn { background: white; color: #333; border: none; padding: 4px 12px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; }
+
+        .spec-row { display: grid; grid-template-columns: 180px 1fr; border-bottom: 1px solid var(--border-color); }
+        .spec-row:last-child { border-bottom: none; }
+        .spec-label { background-color: var(--label-bg); padding: 20px; font-weight: 700; color: #495057; border-right: 1px solid var(--border-color); }
+        .spec-content { padding: 20px; background: white; }
+
+        /* --- Winner List Table (Embedded) --- */
+        .winner-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.95rem; }
+        .winner-table th { background: #f1f3f5; color: #333; padding: 10px; text-align: left; border-bottom: 2px solid #ddd; }
+        .winner-table td { padding: 12px 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        .winner-table tr:hover { background-color: #f8f9fa; }
+
+        /* Status Badges */
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; }
+        .badge-success { background: rgba(46, 204, 113, 0.15); color: #27ae60; border: 1px solid #27ae60; }
+        .badge-wait { background: rgba(241, 196, 15, 0.15); color: #f39c12; border: 1px solid #f39c12; }
+
+        /* --- Sidebar Cards --- */
+        .sidebar-card {
+            background: white; border: 1px solid var(--border-color);
+            padding: 20px; margin-bottom: 20px;
+            border-top: 5px solid var(--accent-orange);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .card-title { font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 15px; }
+
+        /* Stats Circle */
+        .stats-box { display: flex; justify-content: space-around; text-align: center; margin-bottom: 10px; }
+        .stat-item h3 { font-size: 1.8rem; color: var(--primary-teal); margin-bottom: 5px; }
+        .stat-item span { font-size: 0.85rem; color: #666; }
+
+        .btn-sidebar {
+            display: block; width: 100%; background: var(--accent-orange); color: white;
+            text-align: center; padding: 10px; border-radius: 4px; font-weight: 700;
+            text-decoration: none; border: none; cursor: pointer; transition: 0.2s;
+        }
+        .btn-sidebar:hover { background: #d65f42; }
+
+        .download-link {
+            display: flex; align-items: center; gap: 10px; color: #0056b3;
+            text-decoration: none; padding: 10px 0; border-bottom: 1px dashed #eee;
+        }
+        .download-link:last-child { border-bottom: none; }
+        .download-link:hover { color: var(--accent-orange); }
+
+        /* --- RWD --- */
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+            .spec-row { grid-template-columns: 1fr; }
+            .spec-label { background-color: #e9ecef; border-right: none; border-bottom: 1px solid #eee; padding: 10px 20px; }
+            .winner-table { display: block; overflow-x: auto; white-space: nowrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar & Header -->
+    <div class="top-bar">
+        <div><i class="fa-solid fa-bullhorn"></i> 公告：獲選團隊請於 10/15 前完成線上簽約。</div>
+        <div><a href="#">網站導覽</a> <a href="#">回首頁</a></div>
+    </div>
+<header class="site-header">
+    <!-- 將原本的 div 改為 a 標籤 -->
+    <a href="index.html" class="logo" style="text-decoration: none;">
+        <i class="fa-solid fa-layer-group"></i>
+        <div>
+            <div style="font-size:1.4rem; font-weight:bold; line-height:1.2;">政府場域實證</div>
+            <div style="font-size:0.8rem; color:#888;">Innovation Matchmaking Platform</div>
+        </div>
+    </a>
+    <div style="font-size:0.9rem; color:#666;">
+        使用者：Guest <a href="#" style="color:var(--primary-teal);">[登入]</a>
+    </div>
+</header>
+
+
+    <nav class="nav-toolbar">
+        <a href="#" class="nav-item"><i class="fa-solid fa-magnifying-glass"></i> 挑戰查詢</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-list-check"></i> 審查結果</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-download"></i> 下載專區</a>
+    </nav>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-area">
+        首頁 > 最新消息 > 審查結果公告
+        <div style="margin-top:10px;">
+            <span class="announce-tag">重要公告</span>
+            <span style="color:#666; font-size:0.9rem;">發文日期：114年10月01日</span>
+        </div>
+    </div>
+
+    <!-- Container -->
+    <div class="container">
+        
+        <!-- Left Column -->
+        <main>
+            <!-- 1. 公告主體 (規格表樣式) -->
+            <div class="spec-container">
+                <div class="table-header-block">
+                    <span><i class="fa-solid fa-scroll"></i> 公告詳細內容</span>
+                    <button class="print-btn" onclick="window.print()"><i class="fa-solid fa-print"></i> 列印</button>
+                </div>
+
+                <div class="spec-row">
+                    <div class="spec-label">公告主旨</div>
+                    <div class="spec-content">
+                        <strong style="font-size:1.2rem; color:var(--primary-teal);">114年度「創新場域實證計畫」審查結果暨獲選名單公告</strong>
+                    </div>
+                </div>
+
+                <div class="spec-row">
+                    <div class="spec-label">依據</div>
+                    <div class="spec-content">
+                        依據本計畫 114 年 9 月 15 日期中審查會議決議辦理。
+                    </div>
+                </div>
+
+                <div class="spec-row">
+                    <div class="spec-label">公告事項</div>
+                    <div class="spec-content">
+                        <p>一、本年度共計受理 58 件提案申請，經資格審查及專家學者委員會評選，核定獲選團隊共計 5 隊、備取 2 隊。</p>
+                        <p>二、正取團隊請於 <strong>114年10月15日 (五)</strong> 前，依規定辦理簽約手續，逾期視同放棄，由備取團隊依序遞補。</p>
+                        <p>三、審查結果清單如下：</p>
+                    </div>
+                </div>
+
+                <div class="spec-row">
+                    <div class="spec-label">獲選名單</div>
+                    <div class="spec-content">
+                        <!-- 獲選名單表格 -->
+                        <table class="winner-table">
+                            <thead>
+                                <tr>
+                                    <th width="80">狀態</th>
+                                    <th>提案編號</th>
+                                    <th>團隊/公司名稱</th>
+                                    <th>提案主題</th>
+                                    <th>核定補助</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- 正取 1 -->
+                                <tr style="background:#f0fff4;">
+                                    <td><span class="badge badge-success">正取 1</span></td>
+                                    <td>114-T005</td>
+                                    <td><strong>智新科技有限公司</strong></td>
+                                    <td>AI 智慧路口影像辨識方案</td>
+                                    <td style="color:#d63031; font-weight:bold;">250 萬</td>
+                                </tr>
+                                <!-- 正取 2 -->
+                                <tr style="background:#f0fff4;">
+                                    <td><span class="badge badge-success">正取 2</span></td>
+                                    <td>114-T012</td>
+                                    <td><strong>綠能未來工作室</strong></td>
+                                    <td>社區型微電網儲能系統實證</td>
+                                    <td style="color:#d63031; font-weight:bold;">200 萬</td>
+                                </tr>
+                                <!-- 正取 3 -->
+                                <tr style="background:#f0fff4;">
+                                    <td><span class="badge badge-success">正取 3</span></td>
+                                    <td>114-T028</td>
+                                    <td><strong>遠距守護者團隊</strong></td>
+                                    <td>偏鄉長者健康照護平台</td>
+                                    <td style="color:#d63031; font-weight:bold;">180 萬</td>
+                                </tr>
+                                <!-- 正取 4 -->
+                                <tr style="background:#f0fff4;">
+                                    <td><span class="badge badge-success">正取 4</span></td>
+                                    <td>114-T033</td>
+                                    <td><strong>循環好幫手</strong></td>
+                                    <td>智慧回收機台 IoT 整合</td>
+                                    <td style="color:#d63031; font-weight:bold;">150 萬</td>
+                                </tr>
+                                <!-- 正取 5 -->
+                                <tr style="background:#f0fff4;">
+                                    <td><span class="badge badge-success">正取 5</span></td>
+                                    <td>114-T058</td>
+                                    <td><strong>飛鷹無人機</strong></td>
+                                    <td>農用無人機精準噴灑驗證</td>
+                                    <td style="color:#d63031; font-weight:bold;">150 萬</td>
+                                </tr>
+                                <!-- 備取 1 -->
+                                <tr>
+                                    <td><span class="badge badge-wait">備取 1</span></td>
+                                    <td>114-T009</td>
+                                    <td>數據領航者</td>
+                                    <td>城市人流熱點分析儀表板</td>
+                                    <td style="color:#888;">-</td>
+                                </tr>
+                                <!-- 備取 2 -->
+                                <tr>
+                                    <td><span class="badge badge-wait">備取 2</span></td>
+                                    <td>114-T061</td>
+                                    <td>雲端教育家</td>
+                                    <td>VR 沉浸式英語教學</td>
+                                    <td style="color:#888;">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="margin-top:10px; font-size:0.85rem; color:#666; text-align:right;">
+                            * 補助金額為含稅價，實際撥款依契約約定為準。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="spec-row">
+                    <div class="spec-label">評審總評</div>
+                    <div class="spec-content">
+                        本次提案整體水準優良，多數團隊能針對場域痛點提出具體之 AI 解決方案。獲選團隊在「商模可行性」與「技術成熟度」上表現尤佳。建議未獲選團隊可加強「場域落地性」之規劃，歡迎明年再次挑戰。
+                    </div>
+                </div>
+
+                <div class="spec-row">
+                    <div class="spec-label">聯絡窗口</div>
+                    <div class="spec-content">
+                        創新實證計畫辦公室 - 陳專員<br>
+                        電話：02-2345-6789 分機 888<br>
+                        Email: service@innovation.gov.tw
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align:right;">
+                <a href="#" style="color:#666; text-decoration:none; border:1px solid #ccc; padding:8px 15px; border-radius:4px; background:white;">
+                    <i class="fa-solid fa-reply"></i> 返回列表
+                </a>
+            </div>
+        </main>
+
+        <!-- Right Column: Sidebar -->
+        <aside>
+            <!-- Card 1: Review Stats -->
+            <div class="sidebar-card">
+                <div class="card-title">審查統計數據</div>
+                <div class="stats-box">
+                    <div class="stat-item">
+                        <h3>58</h3>
+                        <span>申請件數</span>
+                    </div>
+                    <div style="border-right:1px solid #eee;"></div>
+                    <div class="stat-item">
+                        <h3>8.6%</h3>
+                        <span>錄取率</span>
+                    </div>
+                </div>
+                <div style="background:#eee; height:6px; border-radius:3px; margin:15px 0 5px;">
+                    <div style="background:var(--primary-teal); width:8.6%; height:100%; border-radius:3px;"></div>
+                </div>
+                <div style="text-align:center; font-size:0.8rem; color:#888;">競爭激烈，請再接再厲！</div>
+            </div>
+
+            <!-- Card 2: Downloads -->
+            <div class="sidebar-card">
+                <div class="card-title">正式公文下載</div>
+                <a href="#" class="download-link">
+                    <i class="fa-solid fa-file-pdf" style="color:#d63031;"></i> 
+                    <div>
+                        <div>正式公告公文.pdf</div>
+                        <div style="font-size:0.75rem; color:#888;">350 KB</div>
+                    </div>
+                </a>
+                <a href="#" class="download-link">
+                    <i class="fa-solid fa-file-excel" style="color:#27ae60;"></i>
+                    <div>
+                        <div>完整獲選名單清冊.xlsx</div>
+                        <div style="font-size:0.75rem; color:#888;">120 KB</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card 3: Next Action -->
+            <div class="sidebar-card">
+                <div class="card-title">獲選團隊下一步</div>
+                <p style="font-size:0.9rem; color:#555; margin-bottom:15px;">
+                    恭喜獲選！請登入系統填寫簽約資料並上傳用印合約。
+                </p>
+                <button class="btn-sidebar">
+                    <i class="fa-solid fa-pen-nib"></i> 前往簽約系統
+                </button>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Footer -->
+    <div style="background:#343a40; color:#adb5bd; padding:40px; text-align:center; font-size:0.9rem;">
+        <p>主辦單位：勞動力發展署 | 執行單位：創新實證中心</p>
+        <p>&copy; 2025 Innovation Matchmaking Platform.</p>
+    </div>
+
+</body>
+</html>
