@@ -292,15 +292,28 @@
         .news-title:hover { color: var(--primary-teal); }
         .news-date { font-size: 0.85rem; color: #999; margin-left: 10px; }
 
-        /* --- 8. 主題專區 (Topic Grid) --- */
-        .topic-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+/* --- 8. 主題專區 (按鈕切換版 + 還原原始樣式) --- */
+        .topic-outer-container {
+            position: relative;
+            display: flex;
+            align-items: center;
             margin-bottom: 50px;
         }
 
+        .topic-grid {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 15px 5px 25px; /* 下方留一點空間給陰影 */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .topic-grid::-webkit-scrollbar { display: none; }
+
         .topic-card {
+            flex: 0 0 calc(25% - 15px); /* 桌機一次四張 */
+            min-width: 260px;
             background: white;
             padding: 30px 20px;
             text-align: center;
@@ -312,12 +325,67 @@
         
         .topic-card:hover { transform: translateY(-5px); border-top-color: var(--primary-teal); }
         
-        .topic-icon { font-size: 2.5rem; color: var(--primary-teal); margin-bottom: 15px; }
-        .topic-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 10px; }
-        .topic-list { text-align: left; font-size: 0.9rem; color: #666; margin-top: 15px; }
-        .topic-list li { margin-bottom: 5px; padding-left: 15px; position: relative; }
-        .topic-list li::before { content: "•"; color: var(--accent-gold); position: absolute; left: 0; }
+        /* --- 完全還原原始圖示與清單樣式 --- */
+        .topic-icon { 
+            font-size: 2.5rem; 
+            color: var(--primary-teal); 
+            margin-bottom: 15px; 
+        }
+        .topic-title { 
+            font-weight: 700; 
+            font-size: 1.1rem; 
+            margin-bottom: 10px; 
+            color: var(--text-dark);
+        }
+        .topic-list { 
+            text-align: left; 
+            font-size: 0.9rem; 
+            color: #666; 
+            margin-top: 15px; 
+            list-style: none; /* 移除預設圓點 */
+        }
+        .topic-list li { 
+            margin-bottom: 5px; 
+            padding-left: 15px; 
+            position: relative; 
+        }
+        /* 還原金黃色小圓點 */
+        .topic-list li::before { 
+            content: "•"; 
+            color: var(--accent-gold); 
+            position: absolute; 
+            left: 0; 
+            font-weight: bold;
+        }
 
+        /* 左右控制按鈕 */
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 45px;
+            height: 45px;
+            background: var(--white);
+            border: 2px solid var(--primary-teal);
+            color: var(--primary-teal);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+        .nav-btn:hover { background: var(--primary-teal); color: white; }
+        .nav-btn.prev { left: -25px; }
+        .nav-btn.next { right: -25px; }
+
+        @media (max-width: 992px) {
+            .nav-btn { display: none; } /* 手機版通常直接滑動，隱藏按鈕避免擋住 */
+            .topic-grid { padding: 15px 20px; }
+            .topic-card { flex: 0 0 75%; }
+        }
         /* --- 9. 影音/成功案例 --- */
         .media-grid {
             display: grid;
@@ -525,47 +593,61 @@
             </div>
         </div>
 
-        <!-- 主題專區 Grid -->
+<!-- 主題專區 (包含按鈕控制) -->
         <h2 style="text-align:center; margin-bottom:30px; color:var(--primary-blue);">熱門實證領域</h2>
-        <div class="topic-grid">
-            <div class="topic-card">
-                <div class="topic-icon"><i class="fa-solid fa-robot"></i></div>
-                <div class="topic-title">AI 與 數據分析</div>
-                <ul class="topic-list">
-                    <li>生成式 AI 應用</li>
-                    <li>大數據預測模型</li>
-                    <li>影像辨識技術</li>
-                </ul>
+        
+        <div class="topic-outer-container">
+            <!-- 左按鈕 -->
+            <button class="nav-btn prev" onclick="scrollTopics(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            
+            <div class="topic-grid" id="topicGrid">
+                <!-- 1. AI -->
+                <div class="topic-card">
+                    <div class="topic-icon"><i class="fa-solid fa-robot"></i></div>
+                    <div class="topic-title">AI 與 數據分析</div>
+                    <ul class="topic-list"><li>生成式 AI 應用</li><li>大數據預測模型</li><li>影像辨識技術</li></ul>
+                </div>
+                <!-- 2. ESG -->
+                <div class="topic-card">
+                    <div class="topic-icon"><i class="fa-solid fa-leaf"></i></div>
+                    <div class="topic-title">淨零碳排 (ESG)</div>
+                    <ul class="topic-list"><li>能源管理系統</li><li>循環經濟模式</li><li>碳盤查工具</li></ul>
+                </div>
+                <!-- 3. Traffic -->
+                <div class="topic-card">
+                    <div class="topic-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                    <div class="topic-title">智慧交通</div>
+                    <ul class="topic-list"><li>智慧號誌控制</li><li>無人載具物流</li><li>停車管理優化</li></ul>
+                </div>
+                <!-- 4. Health -->
+                <div class="topic-card">
+                    <div class="topic-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                    <div class="topic-title">智慧醫療</div>
+                    <ul class="topic-list"><li>遠距照護平台</li><li>穿戴式裝置</li><li>高齡健康促進</li></ul>
+                </div>
+                <!-- 5. Agriculture -->
+                <div class="topic-card">
+                    <div class="topic-icon"><i class="fa-solid fa-seedling"></i></div>
+                    <div class="topic-title">智慧農業</div>
+                    <ul class="topic-list"><li>環境感測監控</li><li>自動化植保機</li><li>產銷溯源系統</li></ul>
+                </div>
+                <!-- 6. EdTech -->
+                <div class="topic-card">
+                    <div class="topic-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <div class="topic-title">教育科技</div>
+                    <ul class="topic-list"><li>AR/VR 沉浸教學</li><li>AI 輔助學習評量</li><li>終身學習平台</li></ul>
+                </div>
+                <!-- 7. Security -->
+                <div class="topic-card">
+                    <div class="topic-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="topic-title">資通安全</div>
+                    <ul class="topic-list"><li>零信任架構導入</li><li>威脅情資分析</li><li>資安實戰攻防</li></ul>
+                </div>
             </div>
-            <div class="topic-card">
-                <div class="topic-icon"><i class="fa-solid fa-leaf"></i></div>
-                <div class="topic-title">淨零碳排 (ESG)</div>
-                <ul class="topic-list">
-                    <li>能源管理系統</li>
-                    <li>循環經濟模式</li>
-                    <li>碳盤查工具</li>
-                </ul>
-            </div>
-            <div class="topic-card">
-                <div class="topic-icon"><i class="fa-solid fa-truck-fast"></i></div>
-                <div class="topic-title">智慧交通</div>
-                <ul class="topic-list">
-                    <li>智慧號誌控制</li>
-                    <li>無人載具物流</li>
-                    <li>停車管理優化</li>
-                </ul>
-            </div>
-            <div class="topic-card">
-                <div class="topic-icon"><i class="fa-solid fa-heart-pulse"></i></div>
-                <div class="topic-title">智慧醫療</div>
-                <ul class="topic-list">
-                    <li>遠距照護平台</li>
-                    <li>穿戴式裝置</li>
-                    <li>高齡健康促進</li>
-                </ul>
-            </div>
-        </div>
 
+            <!-- 右按鈕 -->
+            <button class="nav-btn next" onclick="scrollTopics(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
         <!-- 影音/案例 -->
         <div class="media-grid">
             <div class="media-card">
@@ -613,4 +695,17 @@
     </footer>
 
 </body>
+<script>
+    function scrollTopics(direction) {
+        const grid = document.getElementById('topicGrid');
+        // 計算捲動距離：以第一張卡片的寬度為基準
+        const cardWidth = grid.querySelector('.topic-card').offsetWidth + 20; // 寬度 + gap
+        
+        // 根據方向捲動 (1 為右, -1 為左)
+        grid.scrollBy({
+            left: direction * cardWidth,
+            behavior: 'smooth'
+        });
+    }
+</script>
 </html>
