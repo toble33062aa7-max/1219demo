@@ -120,6 +120,25 @@
             text-decoration: none; padding: 10px 0; border-bottom: 1px dashed #eee; font-size: 0.95rem;
         }
         .download-link:hover { color: var(--accent-orange); }
+/* --- Sidebar 專用新樣式 (請確保這段有在 <style> 內) --- */
+        .btn-upload {
+            display: block; width: 100%; background: var(--accent-orange); color: white;
+            text-align: center; padding: 12px; border-radius: 4px; font-weight: 700;
+            text-decoration: none; border: none; cursor: pointer; transition: 0.2s;
+            margin-top: 10px;
+        }
+        .btn-upload:hover { background: #d65f42; color: white; }
+
+        .download-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 0;
+            border-bottom: 1px solid #eee; text-decoration: none; color: #333;
+            transition: background 0.2s;
+        }
+        .download-item:hover { background: #fcfcfc; color: var(--primary-teal); }
+        
+        .dl-icon { 
+            font-size: 1.4rem; color: #6c757d; min-width: 30px; text-align: center; 
+        }
 
         /* --- RWD --- */
         @media (max-width: 900px) {
@@ -297,50 +316,64 @@
         </main>
 
         <!-- Right Sidebar -->
+       <!-- Sidebar (此部分已替換並更新內容) -->
         <aside>
-            <!-- Money Card -->
+            <!-- Card 1: Upload Action -->
             <div class="sidebar-card">
-                <div class="card-title">本期可請領金額</div>
-                <div class="money-display">
-                    <div class="money-val">750,000</div>
-                    <div class="money-label">新台幣 (NTD)</div>
-                </div>
-                <div style="font-size:0.9rem; color:#333; margin-bottom:15px;">
-                    <i class="fa-solid fa-circle-exclamation" style="color:#e67e22;"></i> 截止日期：<strong>114/07/30</strong>
+                <div class="card-title">繳件提醒</div>
+                <div style="background:#f8f9fa; padding:15px; border-radius:6px; text-align:center; margin-bottom:15px;">
+                    <div style="font-size:0.9rem; color:#666;">第一期款申請截止日</div>
+                    <div style="font-size:2rem; font-weight:700; color:#333;">2025/07/30 <span style="font-size:1rem;">(星期三)</span></div>
                 </div>
                 
-                <button class="btn-sidebar">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> 前往上傳請款文件
-                </button>
+                <!-- Email 主旨已更正為第一期款相關 -->
+                <a href="mailto:help@innovation.gov.tw?subject=【第一期款撥付申請詢問】案號114-T058-公司名稱&body=您好，%0D%0A%0D%0A我們是（請填寫公司名稱），關於第一期款撥付申請有以下問題：%0D%0A1. 問題描述：%0D%0A2. 聯絡人/電話：%0D%0A%0D%0A謝謝您的協助。" class="btn-upload">
+                       <i class="fa-solid fa-envelope"></i> 發送 Email 提醒
+                </a>
+                <p style="font-size:0.8rem; color:#888; text-align:center; margin-top:10px;">
+                    點擊將自動開啟電子郵件，或寄至：service@spp.org.tw
+                </p>
             </div>
 
-            <!-- Download Card -->
+            <!-- Card 2: Downloads (已更正為第一期款文件) -->
             <div class="sidebar-card">
-                <div class="card-title">請款文件下載</div>
-                <div>
-                    <a href="#" class="download-link">
-                        <i class="fa-regular fa-file-word"></i> 第一期款請款單.docx
-                    </a>
-                    <a href="#" class="download-link">
-                        <i class="fa-regular fa-file-word"></i> 領據範本 (免用發票).docx
-                    </a>
-                    <a href="#" class="download-link">
-                        <i class="fa-regular fa-file-pdf"></i> 經費核銷作業手冊.pdf
-                    </a>
-                </div>
+                <div class="card-title">必備範本下載</div>
+                
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-word dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">第一期款請款單_範本.docx</div>
+                        <div style="font-size:0.75rem; color:#999;">1.2 MB • 2025/05/20 更新</div>
+                    </div>
+                </a>
+
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-word dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">公司領據範本 (含印花稅說明).docx</div>
+                        <div style="font-size:0.75rem; color:#999;">800 KB</div>
+                    </div>
+                </a>
+
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-pdf dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">經費核銷作業手冊_V1.1.pdf</div>
+                        <div style="font-size:0.75rem; color:#999;">3.5 MB</div>
+                    </div>
+                </a>
             </div>
 
-            <!-- FAQ Card -->
-            <div class="sidebar-card" style="border-top-color: #666;">
+            <!-- Card 3: Help -->
+            <div class="sidebar-card" style="border-top-color:#6c757d;">
                 <div class="card-title">常見問題</div>
-                <ul style="padding-left:20px; font-size:0.9rem; color:#0056b3;">
-                    <li style="margin-bottom:8px;"><a href="#" style="color:inherit;">發票開立日期有規定嗎？</a></li>
-                    <li style="margin-bottom:8px;"><a href="#" style="color:inherit;">可以用個人帳戶撥款嗎？</a></li>
-                    <li><a href="#" style="color:inherit;">印花稅要去哪裡買？</a></li>
+                <ul style="font-size:0.9rem; color:#0056b3; padding-left:20px;">
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">領據一定要貼印花稅嗎？</a></li>
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">存摺影本需要蓋公司章嗎？</a></li>
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">如何確認撥款進度？</a></li>
                 </ul>
             </div>
         </aside>
-
     </div>
 
     <!-- Footer -->

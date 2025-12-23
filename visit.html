@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>活動報名詳情 - 政府場域實證</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心變數 (維持原樣) --- */
+        :root {
+            --primary-teal: #008f95;      /* 主色 */
+            --primary-dark: #006c70;      /* 深色 */
+            --header-gray: #6c757d;       /* 表頭灰 */
+            --label-bg: #eef5f5;          /* 左側標籤淺青灰 */
+            --row-even-bg: #fcfcfc;       /* 偶數行 */
+            --border-color: #dee2e6;
+            --accent-orange: #e76f51;     /* 強調色 */
+            --status-red: #d63031;        /* 警告紅 */
+            --text-main: #333;
+            --bg-body: #f8f9fa;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            line-height: 1.6;
+        }
+
+        /* --- 2. 頂部導覽列 --- */
+        .top-bar { background: var(--primary-teal); color: white; padding: 8px 10%; font-size: 0.85rem; text-align: right; }
+        .site-header { background: white; padding: 15px 10%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
+        .logo { font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 10px; }
+        .nav-toolbar { background-color: var(--primary-dark); padding: 10px 10%; display: flex; gap: 25px; }
+        .nav-item { color: white; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
+        .nav-item:hover { color: #81e6d9; }
+
+        /* --- 3. 麵包屑 --- */
+        .breadcrumb-area { padding: 20px 10% 10px; font-size: 0.9rem; color: #666; }
+        .status-tag { background: var(--primary-teal); color: white; padding: 2px 8px; font-size: 0.8rem; border-radius: 2px; margin-right: 8px; }
+        .case-id { background: #eee; color: #555; padding: 2px 8px; font-size: 0.8rem; border-radius: 2px; }
+
+        /* --- 4. 主版面 (Grid) --- */
+        .container {
+            width: 80%; max-width: 1400px; margin: 20px auto 60px;
+            display: grid; grid-template-columns: 1fr 320px; gap: 30px;
+        }
+
+        /* --- 5. 左側表格樣式 --- */
+        .spec-container { background: white; border: 1px solid var(--border-color); }
+        .table-header-block { background: linear-gradient(to right, #6c757d, #5a6268); color: white; padding: 12px 20px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        
+        .spec-row { display: grid; grid-template-columns: 180px 1fr; border-bottom: 1px solid var(--border-color); }
+        .spec-row:last-child { border-bottom: none; }
+        .spec-row:nth-child(even) .spec-content { background-color: var(--row-even-bg); }
+
+        .spec-label { background-color: var(--label-bg); padding: 20px; font-weight: 700; color: #495057; border-right: 1px solid var(--border-color); }
+        .spec-content { padding: 20px; color: #212529; background: white; }
+
+        /* --- 6. 內容細節 --- */
+        .highlight-title { color: var(--primary-dark); font-size: 1.2rem; font-weight: 700; margin-bottom: 5px; }
+        .checklist-group { display: flex; flex-direction: column; gap: 10px; }
+        .check-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px; border: 1px solid #eee; border-radius: 4px; background: #fff; }
+        .check-icon { color: var(--primary-teal); font-size: 1.1rem; margin-top: 2px; }
+        .item-title { font-weight: 700; display: block; }
+        .item-desc { font-size: 0.9rem; color: #666; }
+        .required-badge { background: #d63031; color: white; font-size: 0.7rem; padding: 1px 5px; border-radius: 3px; vertical-align: middle; margin-left: 5px; }
+        .flow-steps { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+        .step { background: #f1f3f5; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; color: #555; }
+        .step.active { background: var(--primary-teal); color: white; font-weight: bold; }
+        .step-arrow { color: #ccc; }
+        .alert-box { background: #eef5f5; color: #006c70; padding: 12px; border-radius: 4px; border-left: 5px solid var(--primary-teal); font-size: 0.9rem; margin-top: 10px; }
+
+        /* --- 7. 右側側邊欄 --- */
+        .sidebar-card { background: white; border: 1px solid var(--border-color); padding: 20px; margin-bottom: 20px; border-top: 5px solid var(--primary-teal); box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .card-title { font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 15px; }
+        
+        .btn-upload { display: block; width: 100%; background: var(--accent-orange); color: white; text-align: center; padding: 12px; border-radius: 4px; font-weight: 700; text-decoration: none; transition: 0.2s; border: none; cursor: pointer; }
+        .btn-upload:hover { background: #d65f42; color: white; }
+
+        .download-item { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid #eee; border-radius: 6px; margin-bottom: 10px; text-decoration: none; color: #333; transition: all 0.2s; }
+        .download-item:hover { background: #f0f7f7; border-color: var(--primary-teal); }
+        .dl-icon { font-size: 1.5rem; color: var(--primary-teal); }
+
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+            .spec-row { grid-template-columns: 1fr; }
+            .spec-label { background-color: #e9ecef; border-right: none; border-bottom: 1px solid #eee; padding: 10px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <a href="index.html" class="logo" style="text-decoration: none;">
+        <i class="fa-solid fa-layer-group"></i>
+        <div>
+            <div style="font-size:1.4rem; font-weight:bold; line-height:1.2;">政府場域實證</div>
+            <div style="font-size:0.8rem; color:#888;">Innovation Matchmaking Platform</div>
+        </div>
+    </a>
+    <div style="font-size:0.9rem; color:#666;">
+        使用者：Guest <a href="#" style="color:var(--primary-teal);">[登入]</a>
+    </div>
+</header>
+
+<nav class="nav-toolbar">
+    <a href="#" class="nav-item"><i class="fa-solid fa-magnifying-glass"></i> 挑戰查詢</a>
+    <a href="#" class="nav-item"><i class="fa-solid fa-pen-to-square"></i> 申請參加</a>
+    <a href="#" class="nav-item"><i class="fa-solid fa-file-contract"></i> 計畫說明</a>
+    <a href="#" class="nav-item"><i class="fa-solid fa-download"></i> 下載專區</a>
+</nav>
+
+<div class="breadcrumb-area">
+    首頁 > 活動報名 > 場域觀摩
+    <div style="margin-top:10px;">
+        <span class="status-tag">受理報名</span>
+        <span class="case-id">案號：114-VISIT-N01</span>
+    </div>
+</div>
+
+<div class="container">
+    
+    <main>
+        <div class="spec-container">
+            <div class="table-header-block">
+                <span><i class="fa-solid fa-calendar-check"></i> 活動報名詳細資訊</span>
+                <button style="background:none; border:none; color:white; cursor:pointer;"><i class="fa-solid fa-share-nodes"></i> 分享</button>
+            </div>
+
+            <!-- 事項名稱 -->
+            <div class="spec-row">
+                <div class="spec-label">活動名稱</div>
+                <div class="spec-content">
+                    <div class="highlight-title">【場域參訪】數位轉型示範基地參訪(北區)</div>
+                    <div style="color:#666; font-size:0.95rem;">分類：場域觀摩 / 技術交流</div>
+                </div>
+            </div>
+
+            <!-- 截止時間 -->
+            <div class="spec-row">
+                <div class="spec-label">報名截止期限</div>
+                <div class="spec-content">
+                    <strong>114年 08月 15日 (星期五) 17:00 止</strong>
+                    <div style="color:var(--primary-teal); font-size:0.9rem; margin-top:5px;">
+                        (名額有限，若額滿將提前關閉報名系統)
+                    </div>
+                </div>
+            </div>
+
+            <!-- 報名應備資料 -->
+            <div class="spec-row">
+                <div class="spec-label">報名需知與文件</div>
+                <div class="spec-content">
+                    <div class="checklist-group">
+                        <div class="check-item">
+                            <i class="fa-solid fa-id-card check-icon"></i>
+                            <div>
+                                <span class="item-title">1. 基本聯繫資料 <span class="required-badge">必填</span></span>
+                                <span class="item-desc">包含公司名稱、統一編號、參訪者姓名及連絡電話。</span>
+                            </div>
+                        </div>
+                        <div class="check-item">
+                            <i class="fa-solid fa-file-shield check-icon"></i>
+                            <div>
+                                <span class="item-title">2. 參訪安全切結書 <span class="required-badge">必繳</span></span>
+                                <span class="item-desc">因涉及機敏場域，需下載範本簽署後於當日現場繳交或預先上傳。</span>
+                            </div>
+                        </div>
+                        <div class="check-item">
+                            <i class="fa-solid fa-bus check-icon"></i>
+                            <div>
+                                <span class="item-title">3. 交通接駁需求</span>
+                                <span class="item-desc">本場次提供台北車站至基地之接駁車，請於報名表勾選。</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 活動詳情 -->
+            <div class="spec-row">
+                <div class="spec-label">活動詳情</div>
+                <div class="spec-content">
+                    <p><strong>參訪地點：</strong> 數位轉型示範基地 (新北市五股區...詳見行前通知)</p>
+                    <p style="margin-top:10px;"><strong>活動議程：</strong></p>
+                    <ul style="margin-left:20px; font-size:0.95rem;">
+                        <li>09:30 - 10:00 | 報到與領取資料</li>
+                        <li>10:00 - 11:30 | 5G 智慧工廠實景導覽</li>
+                        <li>11:30 - 12:00 | 廠商座談與 Q&A</li>
+                    </ul>
+                    <div class="alert-box">
+                        <i class="fa-solid fa-circle-info"></i> <strong>溫馨提示：</strong><br>
+                        本活動為專業技術交流，建議由公司技術主管或數位轉型負責人代表出席。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 審核流程 -->
+            <div class="spec-row">
+                <div class="spec-label">報名流程</div>
+                <div class="spec-content">
+                    <div class="flow-steps">
+                        <div class="step active">1. 線上報名</div>
+                        <div class="step-arrow"><i class="fa-solid fa-angle-right"></i></div>
+                        <div class="step">2. 資格審核</div>
+                        <div class="step-arrow"><i class="fa-solid fa-angle-right"></i></div>
+                        <div class="step">3. 行前通知寄發</div>
+                        <div class="step-arrow"><i class="fa-solid fa-angle-right"></i></div>
+                        <div class="step">4. 現場報到參訪</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 聯絡窗口 -->
+            <div class="spec-row">
+                <div class="spec-label">聯絡窗口</div>
+                <div class="spec-content">
+                    活動推廣組：王先生 (02-8995-6000 分機 123)<br>
+                    Email: event@innovation.gov.tw
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align:right; margin-top:20px;">
+            <a href="#" style="color:#666; text-decoration:none; border:1px solid #ccc; padding:8px 15px; border-radius:4px; background:white;">
+                <i class="fa-solid fa-reply"></i> 返回活動列表
+            </a>
+        </div>
+    </main>
+
+    <aside>
+        <!-- 報名行動 -->
+        <div class="sidebar-card">
+            <div class="card-title">報名狀態</div>
+            <div style="background:#f8f9fa; padding:15px; border-radius:6px; text-align:center; margin-bottom:15px;">
+                <div style="font-size:0.9rem; color:#666;">活動日期為</div>
+                <div style="font-size:2rem; font-weight:700; color:#333;">2025/08/15 <span style="font-size:1rem;">(星期五)</span></div>
+            </div>
+            
+            <a href="#" class="btn-upload">
+                <i class="fa-solid fa-pen-to-square"></i> 立即線上報名
+            </a>
+            <p style="font-size:0.8rem; color:#888; text-align:center; margin-top:10px;">
+                報名截止：2025/08/15 17:00
+            </p>
+        </div>
+
+        <!-- 檔案下載 -->
+        <div class="sidebar-card" style="border-top-color: #6c757d;">
+            <div class="card-title">相關文件下載</div>
+            
+            <a href="#" class="download-item">
+                <i class="fa-regular fa-file-pdf dl-icon"></i>
+                <div>
+                    <div style="font-weight:500;">活動簡章與交通指南.pdf</div>
+                    <div style="font-size:0.75rem; color:#999;">1.8 MB</div>
+                </div>
+            </a>
+
+            <a href="#" class="download-item">
+                <i class="fa-regular fa-file-word dl-icon"></i>
+                <div>
+                    <div style="font-weight:500;">場域安全切結書_範本.docx</div>
+                    <div style="font-size:0.75rem; color:#999;">450 KB</div>
+                </div>
+            </a>
+        </div>
+
+        <!-- 常見問題 -->
+        <div class="sidebar-card" style="border-top-color:#e9ecef;">
+            <div class="card-title">常見問題</div>
+            <ul style="font-size:0.9rem; color:#0056b3; padding-left:20px;">
+                <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">可以現場報名嗎？</a></li>
+                <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">一家公司可以報名幾位？</a></li>
+                <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">參訪基地可以拍照嗎？</a></li>
+            </ul>
+        </div>
+    </aside>
+
+</div>
+
+<footer style="background:#343a40; color:#adb5bd; padding:40px; text-align:center; font-size:0.9rem;">
+    <p>主辦單位：勞動力發展署 | 執行單位：創新實證中心</p>
+    <p>地址：24219 新北市新莊區中平路439號南棟4樓 | 電話：02-8995-6000</p>
+    <p>&copy; 2025 Innovation Matchmaking Platform.</p>
+</footer>
+
+</body>
+</html>

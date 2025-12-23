@@ -97,6 +97,20 @@
         .info-alert {
             background: #fff3cd; color: #856404; padding: 10px; font-size: 0.9rem; border-radius: 4px; margin-top: 15px; display: flex; gap: 8px;
         }
+/* 新增的側邊欄專屬樣式 */
+.btn-upload {
+    display: block; width: 100%; background: var(--accent-orange); color: white; text-align: center;
+    padding: 12px; border-radius: 4px; font-weight: 700; text-decoration: none; transition: 0.2s; border: none; cursor: pointer; font-size: 1.1rem;
+}
+.btn-upload:hover { background: #d65f42; }
+
+.download-item {
+    display: flex; align-items: center; gap: 12px; text-decoration: none; color: #333; padding: 10px;
+    border: 1px solid #eee; border-radius: 6px; margin-bottom: 10px; transition: 0.2s;
+}
+.download-item:hover { background: #f8f9fa; border-color: var(--primary-teal); }
+
+.dl-icon { font-size: 1.4rem; color: var(--primary-teal); }
 
         /* --- Footer --- */
         .footer { background: #343a40; color: #adb5bd; padding: 40px; text-align: center; font-size: 0.9rem; margin-top: auto; }
@@ -256,56 +270,60 @@
 
         <!-- Right Column: Action Card -->
         <aside>
-            <!-- Card 1: Main Action -->
+            <!-- Card 1: Upload Action (已更正日期與郵件內容) -->
             <div class="sidebar-card">
-                <div class="card-title">申請狀態</div>
-                
-                <div style="text-align:center; margin-bottom:15px;">
-                    <div style="font-size:2rem; font-weight:700; color:var(--accent-orange);">收件中</div>
-                    <div style="font-size:0.9rem; color:#666;">剩餘 15 天 8 小時</div>
+                <div class="card-title">繳件提醒</div>
+                <div style="background:#f8f9fa; padding:15px; border-radius:6px; text-align:center; margin-bottom:15px;">
+                    <div style="font-size:0.9rem; color:#666;">活動截止時間為</div>
+                    <div style="font-size:2rem; font-weight:700; color:#333;">2025/06/06 <span style="font-size:1rem;">(星期五)</span></div>
                 </div>
                 
-                <div style="margin-bottom:15px;">
-                    <div style="font-size:0.85rem; color:#666; margin-bottom:5px;">截止進度條</div>
-                    <div style="background:#eee; height:8px; border-radius:4px; overflow:hidden;">
-                        <div style="background:var(--primary-teal); width:60%; height:100%;"></div>
-                    </div>
-                </div>
+                <a href="mailto:service@innovation.gov.tw?subject=【提案申請繳件詢問】案號114-T058-公司名稱&body=您好，%0D%0A%0D%0A我們是（請填寫公司名稱），關於 114年度創新場域實證計畫的提案申請有以下問題：%0D%0A1. 問題描述：%0D%0A2. 聯絡人/電話：%0D%0A%0D%0A謝謝您的協助。" class="btn-upload">
+                       <i class="fa-solid fa-envelope"></i> 發送 Email 提醒
+                </a>
+                <p style="font-size:0.8rem; color:#888; text-align:center; margin-top:10px;">
+                    點擊將自動開啟您的電子郵件軟體，或寄至：service@innovation.gov.tw
+                </p>
+            </div>
 
-                <a href="#" class="btn-primary-action">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> 立即前往提案
+            <!-- Card 2: Downloads -->
+            <div class="sidebar-card">
+                <div class="card-title">必備範本下載</div>
+                
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-word dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">提案申請書範本_v1.docx</div>
+                        <div style="font-size:0.75rem; color:#999;">2.5 MB • 2025/03/01 更新</div>
+                    </div>
                 </a>
 
-                <div class="info-alert">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-excel dl-icon"></i>
                     <div>
-                        <strong>系統提醒：</strong><br>
-                        截止前 3 小時為流量高峰，建議避開該時段以免上傳失敗。
+                        <div style="font-weight:500;">經費編列明細表.xlsx</div>
+                        <div style="font-size:0.75rem; color:#999;">500 KB</div>
                     </div>
-                </div>
+                </a>
+
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-pdf dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">系統操作說明手冊.pdf</div>
+                        <div style="font-size:0.75rem; color:#999;">1.2 MB</div>
+                    </div>
+                </a>
             </div>
 
-            <!-- Card 2: Template Download Pack -->
-            <div class="sidebar-card">
-                <div class="card-title">相關資源下載</div>
-                <div style="display:flex; flex-direction:column; gap:10px;">
-                    <a href="#" style="display:flex; align-items:center; gap:10px; color:#0056b3; text-decoration:none; padding-bottom:10px; border-bottom:1px dashed #eee;">
-                        <i class="fa-solid fa-file-zipper"></i> 
-                        <div>
-                            <div>申請文件懶人包.zip</div>
-                            <div style="font-size:0.75rem; color:#888;">含所有必須文件範本</div>
-                        </div>
-                    </a>
-                    <a href="#" style="display:flex; align-items:center; gap:10px; color:#0056b3; text-decoration:none;">
-                        <i class="fa-solid fa-book-open"></i> 
-                        <div>
-                            <div>系統操作手冊.pdf</div>
-                            <div style="font-size:0.75rem; color:#888;">提案流程教學</div>
-                        </div>
-                    </a>
-                </div>
+            <!-- Card 3: Help -->
+            <div class="sidebar-card" style="border-top-color:#6c757d;">
+                <div class="card-title">常見問題</div>
+                <ul style="font-size:0.9rem; color:#0056b3; padding-left:20px;">
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">檔案超過 20MB 怎麼辦？</a></li>
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">如何確認上傳成功？</a></li>
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">補件流程說明</a></li>
+                </ul>
             </div>
-
         </aside>
 
     </div>

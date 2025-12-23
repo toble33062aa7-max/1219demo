@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="zh-Hant-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>結案與請款繳件詳情 - 政府場域實證</title>
+    <title>活動詳情 - 政府場域實證</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -69,7 +70,7 @@
         .check-icon { color: var(--primary-teal); font-size: 1.1rem; margin-top: 2px; }
         .item-title { font-weight: 700; display: block; }
         .item-desc { font-size: 0.9rem; color: #666; }
-        .required-badge { background: #d63031; color: white; font-size: 0.7rem; padding: 1px 5px; border-radius: 3px; vertical-align: middle; margin-left: 5px; }
+        .required-badge { background: var(--primary-teal); color: white; font-size: 0.7rem; padding: 1px 5px; border-radius: 3px; vertical-align: middle; margin-left: 5px; }
 
         /* 撥款流程圖 */
         .flow-steps { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
@@ -91,43 +92,43 @@
 
         .download-list a { display: flex; align-items: center; gap: 10px; color: #0056b3; text-decoration: none; padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 0.95rem; }
         .download-list a:hover { color: var(--accent-orange); }
-/* --- 側邊欄新元件樣式 --- */
-.btn-upload {
-    display: block;
-    width: 100%;
-    background: var(--accent-orange);
-    color: white;
-    text-align: center;
-    padding: 12px;
-    border-radius: 4px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: 0.2s;
-    border: none;
-    cursor: pointer;
-}
-.btn-upload:hover { background: #d65f42; color: white; }
 
-.download-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px;
-    border: 1px solid #eee;
-    border-radius: 6px;
-    margin-bottom: 10px;
-    text-decoration: none;
-    color: #333;
-    transition: all 0.2s;
-}
-.download-item:hover { 
-    background: #f0f7f7; 
-    border-color: var(--primary-teal); 
-}
-.dl-icon {
-    font-size: 1.5rem;
-    color: var(--primary-teal);
-}
+        .btn-upload {
+            display: block;
+            width: 100%;
+            background: var(--accent-orange);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-upload:hover { background: #d65f42; color: white; }
+
+        .download-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.2s;
+        }
+        .download-item:hover { 
+            background: #f0f7f7; 
+            border-color: var(--primary-teal); 
+        }
+        .dl-icon {
+            font-size: 1.5rem;
+            color: var(--primary-teal);
+        }
 
         /* --- RWD --- */
         @media (max-width: 900px) {
@@ -141,7 +142,6 @@
 
 <!-- Header -->
 <header class="site-header">
-    <!-- 將原本的 div 改為 a 標籤 -->
     <a href="index.html" class="logo" style="text-decoration: none;">
         <i class="fa-solid fa-layer-group"></i>
         <div>
@@ -163,10 +163,10 @@
 
     <!-- Breadcrumb -->
     <div class="breadcrumb-area">
-        首頁 > 計畫時程 > 結案與請款
+        首頁 > 活動資訊 > 專題講座
         <div style="margin-top:10px;">
-            <span class="status-tag">收件中</span>
-            <span class="case-id">案號：114-T058-Final</span>
+            <span class="status-tag">規劃中</span>
+            <span class="case-id">分類：經驗分享</span>
         </div>
     </div>
 
@@ -177,108 +177,107 @@
         <main>
             <div class="spec-container">
                 <div class="table-header-block">
-                    <span><i class="fa-solid fa-file-invoice-dollar"></i> 繳件詳細資訊</span>
+                    <span><i class="fa-solid fa-calendar-check"></i> 活動詳細資訊</span>
                     <button style="background:none; border:none; color:white; cursor:pointer;"><i class="fa-solid fa-print"></i> 列印</button>
                 </div>
 
                 <!-- 事項名稱 -->
                 <div class="spec-row">
-                    <div class="spec-label">事項名稱</div>
+                    <div class="spec-label">活動名稱</div>
                     <div class="spec-content">
-                        <div class="highlight-title">結案文件與第二期款請款單據繳交</div>
+                        <div class="highlight-title">【專題講座】從實證到商轉：成功案例分享</div>
                     </div>
                 </div>
 
                 <!-- 截止時間 -->
                 <div class="spec-row">
-                    <div class="spec-label">截止期限</div>
+                    <div class="spec-label">活動時間</div>
                     <div class="spec-content">
-                        <strong>114年 11月 30日 (星期日) 23:59 止</strong>
-                        <div style="color:#d63031; font-size:0.9rem; margin-top:5px;">
-                            (實體文件以郵戳為憑，逾期將影響撥款進度)
+                        <strong>114年 10月 25日 (星期六) 14:00 - 17:00</strong>
+                        <div style="color:var(--primary-teal); font-size:0.9rem; margin-top:5px;">
+                            (預計於活動前二週開放線上報名)
                         </div>
                     </div>
                 </div>
 
-                <!-- 應備文件 Checklist -->
+                <!-- 講座亮點 Checklist -->
                 <div class="spec-row">
-                    <div class="spec-label">應備文件清單</div>
+                    <div class="spec-label">講座重點大綱</div>
                     <div class="spec-content">
                         <div class="checklist-group">
                             <div class="check-item">
                                 <i class="fa-solid fa-square-check check-icon"></i>
                                 <div>
-                                    <span class="item-title">1. 結案成果報告書 <span class="required-badge">必繳</span></span>
-                                    <span class="item-desc">膠裝紙本 3 份 + 電子檔光碟 1 份 (需含 WORD 與 PDF 檔)。</span>
+                                    <span class="item-title">1. 場域實證核心心法 <span class="required-badge">重點</span></span>
+                                    <span class="item-desc">如何鎖定政府痛點，進行有效的方案設計與 POC 驗證。</span>
                                 </div>
                             </div>
                             <div class="check-item">
                                 <i class="fa-solid fa-square-check check-icon"></i>
                                 <div>
-                                    <span class="item-title">2. 會計師查核報告 <span class="required-badge">必繳</span></span>
-                                    <span class="item-desc">需由合格會計師簽證，正本 1 份。請確認數字與發票金額相符。</span>
+                                    <span class="item-title">2. 商業模式轉型路徑 <span class="required-badge">重點</span></span>
+                                    <span class="item-desc">從實驗室走向市場，解析成功跨越「死亡之谷」的營運策略。</span>
                                 </div>
                             </div>
                             <div class="check-item">
                                 <i class="fa-solid fa-square-check check-icon"></i>
                                 <div>
-                                    <span class="item-title">3. 第二期款領據/發票 <span class="required-badge">必繳</span></span>
-                                    <span class="item-desc">金額：總補助款之 70%。抬頭：勞動部勞動力發展署... (詳見備註)</span>
+                                    <span class="item-title">3. 歷屆標竿企業現身說法</span>
+                                    <span class="item-desc">邀請 112-113 年獲獎廠商，分享與機關合作的實戰經驗與挑戰。</span>
                                 </div>
                             </div>
                             <div class="check-item">
                                 <i class="fa-regular fa-square check-icon" style="color:#999;"></i>
                                 <div>
-                                    <span class="item-title">4. 財產目錄清冊 (若有)</span>
-                                    <span class="item-desc">若計畫經費有購置單價 1 萬元以上且耐用年限 2 年以上之設備。</span>
+                                    <span class="item-title">4. 圓桌交流與媒合諮詢</span>
+                                    <span class="item-desc">現場提供專家 1-on-1 諮詢，協助檢視現有計畫書之商業可行性。</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 繳交方式 -->
+                <!-- 參加方式 -->
                 <div class="spec-row">
-                    <div class="spec-label">繳交方式</div>
+                    <div class="spec-label">參加方式</div>
                     <div class="spec-content">
-                        <p><strong>步驟一 (電子檔)：</strong> 請先至「廠商專區 > 資料上傳」上傳所有文件之 PDF 檔供初審。</p>
-                        <p style="margin-top:10px;"><strong>步驟二 (紙本)：</strong> 初審通過後，請將正本郵寄至：</p>
+                        <p><strong>實體參加：</strong> 開放 50 名額，優先保留予本年度提案廠商。</p>
+                        <p style="margin-top:10px;"><strong>活動地點：</strong></p>
                         <div style="background:#eee; padding:10px; border-radius:4px; margin-top:5px;">
-                            24219 新北市新莊區中平路 439 號南棟 4 樓<br>
-                            收件人：創新場域實證計畫辦公室 收
+                            創新實證中心交流大廳<br>
+                            (新北市新莊區中平路 439 號南棟 4 樓)
                         </div>
                     </div>
                 </div>
 
-                <!-- 撥款資訊 -->
+                <!-- 報名對象 -->
                 <div class="spec-row">
-                    <div class="spec-label">撥款資訊</div>
+                    <div class="spec-label">報名資訊</div>
                     <div class="spec-content">
-                        <div><strong>撥款期數：</strong> 第二期 (尾款)</div>
-                        <div><strong>撥付比例：</strong> 70%</div>
-                        <div><strong>預計撥付時間：</strong> 結案驗收通過後 30 個工作天內。</div>
+                        <div><strong>報名費用：</strong> 免費參加</div>
+                        <div><strong>對象限制：</strong> 對政府場域實證、數位轉型有興趣之企業或新創團隊。</div>
                         
                         <div class="alert-box">
-                            <i class="fa-solid fa-triangle-exclamation"></i> <strong>發票開立注意事項：</strong><br>
-                            1. 買受人：勞動部勞動力發展署<br>
-                            2. 統一編號：12345678<br>
-                            3. 日期：請開立當月月份。
+                            <i class="fa-solid fa-circle-info"></i> <strong>報名提醒：</strong><br>
+                            1. 每個團隊最多報名 2 位。<br>
+                            2. 現場提供茶點，請響應環保自備水杯。<br>
+                            3. 全程參與者可領取「實證課程參與證明」電子證書。
                         </div>
                     </div>
                 </div>
 
-                <!-- 審核流程 -->
+                <!-- 報名流程 -->
                 <div class="spec-row">
-                    <div class="spec-label">審核流程</div>
+                    <div class="spec-label">報名與辦理流程</div>
                     <div class="spec-content">
                         <div class="flow-steps">
-                            <div class="step active">1. 廠商繳件</div>
+                            <div class="step active">1. 規劃中</div>
                             <div class="step-arrow"><i class="fa-solid fa-angle-right"></i></div>
-                            <div class="step">2. 書面初審 (5天)</div>
+                            <div class="step">2. 開放報名 (10/11)</div>
                             <div class="step-arrow"><i class="fa-solid fa-angle-right"></i></div>
-                            <div class="step">3. 驗收會議</div>
+                            <div class="step">3. 活動辦理</div>
                             <div class="step-arrow"><i class="fa-solid fa-angle-right"></i></div>
-                            <div class="step">4. 撥款作業</div>
+                            <div class="step">4. 講義下載</div>
                         </div>
                     </div>
                 </div>
@@ -287,8 +286,8 @@
                 <div class="spec-row">
                     <div class="spec-label">聯絡窗口</div>
                     <div class="spec-content">
-                        財務專員：陳小姐 (02-8995-6000 分機 888)<br>
-                        Email: finance@gov.tw
+                        推廣組：王先生 (02-8995-6000 分機 777)<br>
+                        Email: event@gov.tw
                     </div>
                 </div>
 
@@ -296,54 +295,54 @@
             
             <div style="text-align:right; margin-top:20px;">
                 <a href="#" style="color:#666; text-decoration:none; border:1px solid #ccc; padding:8px 15px; border-radius:4px; background:white;">
-                    <i class="fa-solid fa-reply"></i> 返回時程列表
+                    <i class="fa-solid fa-reply"></i> 返回活動列表
                 </a>
             </div>
         </main>
 
         <!-- Right Column: Sidebar -->
         <aside>
-            <!-- Card 1: Upload Action -->
+            <!-- Card 1: Registration Action -->
             <div class="sidebar-card">
-                <div class="card-title">繳件提醒</div>
+                <div class="card-title">活動提醒</div>
                 <div style="background:#f8f9fa; padding:15px; border-radius:6px; text-align:center; margin-bottom:15px;">
-                    <div style="font-size:0.9rem; color:#666;">活動截止時間為</div>
-                    <div style="font-size:2rem; font-weight:700; color:#333;">2025/11/30 <span style="font-size:1rem;">(星期日)</span></div>
+                    <div style="font-size:0.9rem; color:#666;">預計活動日期</div>
+                    <div style="font-size:2rem; font-weight:700; color:#333;">2025/10/25 <span style="font-size:1rem;">(星期六)</span></div>
                 </div>
                 
-                <a href="mailto:help@innovation.gov.tw?subject=【結案與請款繳件詢問】案號114-T058-Final-公司名稱&body=您好，%0D%0A%0D%0A我們是（請填寫公司名稱），關於「結案文件與第二期款請款單據繳交」有以下問題：%0D%0A1. 問題描述：%0D%0A2. 聯絡人/電話：%0D%0A%0D%0A謝謝您的協助。" class="btn-upload">
-                       <i class="fa-solid fa-envelope"></i> 發送 Email 提醒
+                <a href="mailto:service@spp.org.tw?subject=【活動詢問】20251025專題講座-公司名稱&body=您好，%0D%0A%0D%0A我們是（請填寫公司名稱），關於「從實證到商轉：成功案例分享」有以下問題：%0D%0A1. 問題描述：%0D%0A2. 聯絡人/電話：%0D%0A%0D%0A謝謝。" class="btn-upload">
+                       <i class="fa-solid fa-envelope"></i> 立即線上報名
                 </a>
                 <p style="font-size:0.8rem; color:#888; text-align:center; margin-top:10px;">
-                    點擊將自動開啟您的電子郵件軟體，或寄至：service@spp.org.tw
+                    開放報名時將第一時間 Email 通知您
                 </p>
             </div>
 
             <!-- Card 2: Downloads -->
             <div class="sidebar-card">
-                <div class="card-title">必備範本下載</div>
+                <div class="card-title">相關文件下載</div>
                 
-                <a href="#" class="download-item">
-                    <i class="fa-regular fa-file-word dl-icon"></i>
-                    <div>
-                        <div style="font-weight:500;">期末報告書範本_v2.docx</div>
-                        <div style="font-size:0.75rem; color:#999;">2.5 MB • 2025/10/01 更新</div>
-                    </div>
-                </a>
-
-                <a href="#" class="download-item">
-                    <i class="fa-regular fa-file-excel dl-icon"></i>
-                    <div>
-                        <div style="font-weight:500;">經費核銷明細表.xlsx</div>
-                        <div style="font-size:0.75rem; color:#999;">500 KB</div>
-                    </div>
-                </a>
-
                 <a href="#" class="download-item">
                     <i class="fa-regular fa-file-pdf dl-icon"></i>
                     <div>
-                        <div style="font-weight:500;">KPI 檢核說明書.pdf</div>
-                        <div style="font-size:0.75rem; color:#999;">1.2 MB</div>
+                        <div style="font-weight:500;">講座詳細簡章.pdf</div>
+                        <div style="font-size:0.75rem; color:#999;">1.1 MB • 2025/10/01 上架</div>
+                    </div>
+                </a>
+
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-word dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">諮詢問題預填表.docx</div>
+                        <div style="font-size:0.75rem; color:#999;">450 KB</div>
+                    </div>
+                </a>
+
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-powerpoint dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">往年案例分享精華.pptx</div>
+                        <div style="font-size:0.75rem; color:#999;">5.2 MB</div>
                     </div>
                 </a>
             </div>
@@ -352,9 +351,9 @@
             <div class="sidebar-card" style="border-top-color:#6c757d;">
                 <div class="card-title">常見問題</div>
                 <ul style="font-size:0.9rem; color:#0056b3; padding-left:20px;">
-                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">檔案超過 50MB 怎麼辦？</a></li>
-                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">如何確認上傳成功？</a></li>
-                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">經費變更申請流程</a></li>
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">可以線上參加嗎？</a></li>
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">如何索取參與證明？</a></li>
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">會後有錄影回放嗎？</a></li>
                 </ul>
             </div>
         </aside>

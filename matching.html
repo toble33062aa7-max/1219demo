@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>活動詳情 - 政府場域實證</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. 核心變數 (保持一致) --- */
+        :root {
+            --primary-teal: #008f95;      
+            --primary-dark: #006c70;      
+            --header-gray: #6c757d;       
+            --label-bg: #eef5f5;          
+            --row-even-bg: #fcfcfc;       
+            --border-color: #dee2e6;
+            --accent-orange: #e76f51;     
+            --status-gray: #6c757d;        /* 修改：未開放狀態使用灰色 */
+            --text-main: #333;
+            --bg-body: #f8f9fa;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            line-height: 1.6;
+        }
+
+        /* --- 2. 頂部導覽列 --- */
+        .top-bar { background: var(--primary-teal); color: white; padding: 8px 10%; font-size: 0.85rem; text-align: right; }
+        .site-header { background: white; padding: 15px 10%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
+        .logo { font-size: 1.4rem; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 10px; }
+        .nav-toolbar { background-color: var(--primary-dark); padding: 10px 10%; display: flex; gap: 25px; }
+        .nav-item { color: white; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
+        .nav-item:hover { color: #81e6d9; }
+
+        /* --- 3. 麵包屑 --- */
+        .breadcrumb-area { padding: 20px 10% 10px; font-size: 0.9rem; color: #666; }
+        .status-tag { background: var(--status-gray); color: white; padding: 2px 8px; font-size: 0.8rem; border-radius: 2px; margin-right: 8px; }
+        .case-id { background: #eee; color: #555; padding: 2px 8px; font-size: 0.8rem; border-radius: 2px; }
+
+        /* --- 4. 主版面 --- */
+        .container {
+            width: 80%; max-width: 1400px; margin: 20px auto 60px;
+            display: grid; grid-template-columns: 1fr 320px; gap: 30px;
+        }
+
+        /* --- 5. 左側表格樣式 --- */
+        .spec-container { background: white; border: 1px solid var(--border-color); }
+        .table-header-block { background: linear-gradient(to right, #6c757d, #5a6268); color: white; padding: 12px 20px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        
+        .spec-row { display: grid; grid-template-columns: 180px 1fr; border-bottom: 1px solid var(--border-color); }
+        .spec-row:last-child { border-bottom: none; }
+        .spec-row:nth-child(even) .spec-content { background-color: var(--row-even-bg); }
+
+        .spec-label { background-color: var(--label-bg); padding: 20px; font-weight: 700; color: #495057; border-right: 1px solid var(--border-color); }
+        .spec-content { padding: 20px; color: #212529; background: white; }
+
+        .highlight-title { color: var(--primary-dark); font-size: 1.2rem; font-weight: 700; margin-bottom: 5px; }
+        
+        /* 檢核清單/議程樣式 */
+        .checklist-group { display: flex; flex-direction: column; gap: 10px; }
+        .check-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px; border: 1px solid #eee; border-radius: 4px; background: #fff; }
+        .check-icon { color: var(--primary-teal); font-size: 1.1rem; margin-top: 2px; }
+        .item-title { font-weight: 700; display: block; }
+        .item-desc { font-size: 0.9rem; color: #666; }
+
+        /* 流程圖 */
+        .flow-steps { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+        .step { background: #f1f3f5; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; color: #555; }
+        .step.active { background: var(--primary-teal); color: white; font-weight: bold; }
+        .step-arrow { color: #ccc; }
+
+        .alert-box { background: #e9ecef; color: #495057; padding: 12px; border-radius: 4px; border-left: 5px solid #ced4da; font-size: 0.9rem; margin-top: 10px; }
+
+        /* --- 7. 右側側邊欄 --- */
+        .sidebar-card { background: white; border: 1px solid var(--border-color); padding: 20px; margin-bottom: 20px; border-top: 5px solid var(--status-gray); box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .card-title { font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 15px; }
+        
+        .btn-disabled {
+            display: block;
+            width: 100%;
+            background: #adb5bd;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: not-allowed;
+        }
+
+        .download-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+        .dl-icon { font-size: 1.5rem; color: var(--primary-teal); }
+
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+            .spec-row { grid-template-columns: 1fr; }
+            .spec-label { border-right: none; border-bottom: 1px solid #eee; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="site-header">
+    <a href="index.html" class="logo" style="text-decoration: none;">
+        <i class="fa-solid fa-layer-group"></i>
+        <div>
+            <div style="font-size:1.4rem; font-weight:bold; line-height:1.2;">政府場域實證</div>
+            <div style="font-size:0.8rem; color:#888;">Innovation Matchmaking Platform</div>
+        </div>
+    </a>
+    <div style="font-size:0.9rem; color:#666;">
+        使用者：Guest <a href="#" style="color:var(--primary-teal);">[登入]</a>
+    </div>
+</header>
+
+<nav class="nav-toolbar">
+    <a href="#" class="nav-item"><i class="fa-solid fa-magnifying-glass"></i> 挑戰查詢</a>
+    <a href="#" class="nav-item"><i class="fa-solid fa-pen-to-square"></i> 申請參加</a>
+    <a href="#" class="nav-item"><i class="fa-solid fa-file-contract"></i> 計畫說明</a>
+    <a href="#" class="nav-item"><i class="fa-solid fa-download"></i> 下載專區</a>
+</nav>
+
+<div class="breadcrumb-area">
+    首頁 > 計畫時程 > 媒合對接
+    <div style="margin-top:10px;">
+        <span class="status-tag">未開放</span>
+        <span class="case-id">案號：114-MATCH-005</span>
+    </div>
+</div>
+
+<div class="container">
+    <main>
+        <div class="spec-container">
+            <div class="table-header-block">
+                <span><i class="fa-solid fa-mug-hot"></i> 活動詳細資訊</span>
+                <button style="background:none; border:none; color:white; cursor:pointer;"><i class="fa-solid fa-print"></i> 列印</button>
+            </div>
+
+            <div class="spec-row">
+                <div class="spec-label">事項名稱</div>
+                <div class="spec-content">
+                    <div class="highlight-title">【交流會】產業技術對接與媒合茶會</div>
+                </div>
+            </div>
+
+            <div class="spec-row">
+                <div class="spec-label">活動日期</div>
+                <div class="spec-content">
+                    <strong>114年 09月 05日 (星期五) 14:00 - 17:00</strong>
+                    <div style="color:var(--status-gray); font-size:0.9rem; margin-top:5px;">
+                        (預計於 114年 08月 15日 開放系統預約報名)
+                    </div>
+                </div>
+            </div>
+
+            <div class="spec-row">
+                <div class="spec-label">活動重點議程</div>
+                <div class="spec-content">
+                    <div class="checklist-group">
+                        <div class="check-item">
+                            <i class="fa-solid fa-circle-info check-icon"></i>
+                            <div>
+                                <span class="item-title">1. 產業趨勢專題分享</span>
+                                <span class="item-desc">邀請領域專家針對 114 年度技術實證方向進行專題演說。</span>
+                            </div>
+                        </div>
+                        <div class="check-item">
+                            <i class="fa-solid fa-circle-info check-icon"></i>
+                            <div>
+                                <span class="item-title">2. 技術需求單位對接</span>
+                                <span class="item-desc">由需求機關設攤，提供廠商 1 對 1 諮詢與技術可行性交流。</span>
+                            </div>
+                        </div>
+                        <div class="check-item">
+                            <i class="fa-solid fa-circle-info check-icon"></i>
+                            <div>
+                                <span class="item-title">3. 交流茶敘時間</span>
+                                <span class="item-desc">自由交流環節，提供精緻茶點並促進跨域合作機會。</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="spec-row">
+                <div class="spec-label">活動地點</div>
+                <div class="spec-content">
+                    <p><strong>地點：</strong> 台北國際會議中心 (TICC) 201 會議室</p>
+                    <div style="background:#eee; padding:10px; border-radius:4px; margin-top:5px;">
+                        110 台北市信義區信義路五段 1 號<br>
+                        交通建議：捷運台北 101/世貿站 1 號出口。
+                    </div>
+                </div>
+            </div>
+
+            <div class="spec-row">
+                <div class="spec-label">參加資格</div>
+                <div class="spec-content">
+                    <div><strong>參與對象：</strong> 114 年度計畫申請廠商、各級政府機關需求單位。</div>
+                    <div><strong>名額限制：</strong> 預計 80 人 (每家廠商限額 2 名)。</div>
+                    
+                    <div class="alert-box">
+                        <i class="fa-solid fa-calendar-xmark"></i> <strong>報名提示：</strong><br>
+                        目前活動尚未開放報名，請持續關注平台公告。報名開放後，合格廠商將收到 Email 邀請函。
+                    </div>
+                </div>
+            </div>
+
+            <div class="spec-row">
+                <div class="spec-label">活動流程</div>
+                <div class="spec-content">
+                    <div class="flow-steps">
+                        <div class="step">1. 報到與領取手冊</div>
+                        <div class="step-arrow"><i class="fa-solid fa-angle-right"></i></div>
+                        <div class="step">2. 開場與專題演講</div>
+                        <div class="step-arrow"><i class="fa-solid fa-angle-right"></i></div>
+                        <div class="step">3. 1-on-1 媒合</div>
+                        <div class="step-arrow"><i class="fa-solid fa-angle-right"></i></div>
+                        <div class="step">4. 自由對接</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="spec-row">
+                <div class="spec-label">聯絡窗口</div>
+                <div class="spec-content">
+                    媒合專員：林先生 (02-8995-6000 分機 777)<br>
+                    Email: match@gov.tw
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align:right; margin-top:20px;">
+            <a href="#" style="color:#666; text-decoration:none; border:1px solid #ccc; padding:8px 15px; border-radius:4px; background:white;">
+                <i class="fa-solid fa-reply"></i> 返回活動列表
+            </a>
+        </div>
+    </main>
+
+    <aside>
+        <div class="sidebar-card">
+            <div class="card-title">活動提醒</div>
+            <div style="background:#f8f9fa; padding:15px; border-radius:6px; text-align:center; margin-bottom:15px;">
+                <div style="font-size:0.9rem; color:#666;">預計活動日期</div>
+                <div style="font-size:2rem; font-weight:700; color:#333;">2025/09/05 <span style="font-size:1rem;">(星期五)</span></div>
+            </div>
+            
+            <button class="btn-disabled">
+                   <i class="fa-solid fa-lock"></i> 尚未開放預約
+            </button>
+            <p style="font-size:0.8rem; color:#888; text-align:center; margin-top:10px;">
+                報名系統預計於活動前三週開放。
+            </p>
+        </div>
+
+        <div class="sidebar-card">
+            <div class="card-title">參考文件</div>
+            
+            <a href="#" class="download-item">
+                <i class="fa-regular fa-file-pdf dl-icon"></i>
+                <div>
+                    <div style="font-weight:500;">活動議程與簡介.pdf</div>
+                    <div style="font-size:0.75rem; color:#999;">1.2 MB</div>
+                </div>
+            </a>
+
+            <a href="#" class="download-item">
+                <i class="fa-regular fa-file-pdf dl-icon"></i>
+                <div>
+                    <div style="font-weight:500;">媒合單位需求清冊.pdf</div>
+                    <div style="font-size:0.75rem; color:#999;">3.5 MB</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="sidebar-card" style="border-top-color:#ced4da;">
+            <div class="card-title">常見問題</div>
+            <ul style="font-size:0.9rem; color:#0056b3; padding-left:20px;">
+                <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">沒收到報名代碼怎麼辦？</a></li>
+                <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">可以現場報名參加嗎？</a></li>
+                <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">如何取消已預約的席次？</a></li>
+            </ul>
+        </div>
+    </aside>
+</div>
+
+<footer style="background:#343a40; color:#adb5bd; padding:40px; text-align:center; font-size:0.9rem;">
+    <p>主辦單位：勞動力發展署 | 執行單位：創新實證中心</p>
+    <p>地址：24219 新北市新莊區中平路439號南棟4樓 | 電話：02-8995-6000</p>
+    <p>&copy; 2025 Innovation Matchmaking Platform.</p>
+</footer>
+
+</body>
+</html>

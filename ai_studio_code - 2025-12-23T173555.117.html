@@ -1,0 +1,229 @@
+--- START OF FILE activity-apply.html ---
+
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>活動參加申請 - 實證媒合平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 核心色彩系統 --- */
+        :root {
+            --primary-teal: #0089A7;       
+            --primary-dark: #005f73;       
+            --header-bg: #f8fcfc;          
+            --section-bg: #003366;         
+            --text-main: #333;
+            --border-color: #cfd8dc;
+            --white: #ffffff;
+            --bg-body: #f5f5f5;
+            --danger: #e74c3c;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.5; }
+        a { text-decoration: none; color: inherit; }
+
+        /* --- Header --- */
+        .site-header { background: var(--white); padding: 15px 5%; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.4rem; font-weight: 700; color: #003366; display: flex; align-items: center; gap: 10px; }
+
+        /* --- Layout --- */
+        .container { max-width: 1000px; margin: 30px auto 100px; padding: 0 20px; }
+
+        /* --- Context Card --- */
+        .context-card {
+            background: white;
+            border-left: 5px solid var(--primary-teal);
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        .context-title { font-size: 1.2rem; font-weight: 700; color: var(--primary-teal); margin-top: 5px; }
+
+        /* --- Form Structure --- */
+        .form-container { border: 1px solid var(--border-color); background: var(--white); border-radius: 4px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .form-top-bar { background-color: var(--primary-dark); color: white; padding: 12px 20px; font-weight: 500; display: flex; align-items: center; gap: 10px; }
+
+        .form-section-row { display: flex; border-bottom: 1px solid var(--border-color); }
+        .section-header-col { width: 140px; background-color: var(--section-bg); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; padding: 20px 10px; text-align: center; flex-shrink: 0; }
+        .section-content-col { flex-grow: 1; background: white; }
+
+        .input-grid { display: grid; grid-template-columns: 140px 1fr 140px 1fr; }
+        .input-grid-full { display: grid; grid-template-columns: 140px 1fr; }
+
+        .input-label { background-color: var(--header-bg); padding: 15px; font-weight: 500; border-bottom: 1px solid #eee; border-right: 1px solid #eee; display: flex; align-items: center; font-size: 0.95rem; }
+        .required::after { content: "*"; color: var(--danger); margin-left: 4px; }
+        .input-cell { padding: 12px 15px; border-bottom: 1px solid #eee; border-right: 1px solid #eee; }
+        .input-cell:last-child { border-right: none; }
+
+        .form-control { width: 100%; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.95rem; font-family: inherit; }
+        textarea.form-control { min-height: 120px; resize: vertical; line-height: 1.6; }
+        
+        .checkbox-group { display: flex; gap: 15px; flex-wrap: wrap; padding: 5px 0; }
+        .checkbox-label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.95rem; }
+        .checkbox-label input { width: 16px; height: 16px; accent-color: var(--primary-teal); }
+
+        .radio-group { display: flex; gap: 20px; }
+        .radio-label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+
+        .upload-hint { font-size: 0.85rem; color: #888; margin-top: 8px; }
+
+        /* --- Sticky Action Bar --- */
+        .action-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); padding: 15px; z-index: 1000; }
+        .action-container { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; }
+        
+        .btn { padding: 10px 25px; border-radius: 4px; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-cancel { background: #eee; color: #666; }
+        .btn-submit { background: var(--primary-teal); color: white; padding: 10px 40px; }
+        .btn-submit:hover { background: var(--primary-dark); }
+
+        @media (max-width: 800px) {
+            .form-section-row { flex-direction: column; }
+            .section-header-col { width: 100%; padding: 12px; }
+            .input-grid { grid-template-columns: 1fr; }
+            .input-label { background-color: #f1f8e9; border-right: none; }
+            .input-cell { border-right: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <a href="index.html" class="logo"><i class="fa-solid fa-calendar-check"></i> 實證媒合平台</a>
+        <div>
+            <a href="events.html" style="color:var(--primary-teal);">返回活動列表</a>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div class="context-card">
+            <div style="font-size:0.9rem; color:#666;">您正在報名的活動：</div>
+            <div class="context-title">【專題講座】從實證到商轉：成功案例分享</div>
+            <div style="font-size:0.85rem; color:#888; margin-top:5px;">活動時間：114年 10月 25日 (星期六) 14:00 - 17:00</div>
+        </div>
+
+        <form class="form-container">
+            <div class="form-top-bar">
+                <i class="fa-solid fa-file-signature"></i> 活動參加申請表
+            </div>
+
+            <!-- 1. 報名者基本資料 -->
+            <div class="form-section-row">
+                <div class="section-header-col">報名者<br>基本資料</div>
+                <div class="section-content-col">
+                    <div class="input-grid">
+                        <div class="input-label required">單位名稱</div>
+                        <div class="input-cell">
+                            <input type="text" class="form-control" placeholder="請輸入公司或機關全銜">
+                        </div>
+                        <div class="input-label required">產業類別</div>
+                        <div class="input-cell">
+                            <select class="form-control">
+                                <option>資訊科技/AI應用</option>
+                                <option>智慧製造</option>
+                                <option>綠能/環保</option>
+                                <option>政府機關</option>
+                                <option>學術/研究機構</option>
+                                <option>其他</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-label required">報名者姓名</div>
+                        <div class="input-cell">
+                            <input type="text" class="form-control" placeholder="請輸入姓名">
+                        </div>
+                        <div class="input-label required">職稱</div>
+                        <div class="input-cell">
+                            <input type="text" class="form-control" placeholder="例：專案經理">
+                        </div>
+
+                        <div class="input-label required">聯絡電話</div>
+                        <div class="input-cell">
+                            <input type="tel" class="form-control" placeholder="09xx-xxx-xxx">
+                        </div>
+                        <div class="input-label required">電子信箱</div>
+                        <div class="input-cell">
+                            <input type="email" class="form-control" placeholder="example@domain.com">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 參與細節 -->
+            <div class="form-section-row">
+                <div class="section-header-col">參與細節</div>
+                <div class="section-content-col">
+                    <div class="input-grid-full">
+                        <div class="input-label required">參加方式</div>
+                        <div class="input-cell">
+                            <div class="radio-group">
+                                <label class="radio-label"><input type="radio" name="mode" checked> 實體參與</label>
+                                <label class="radio-label"><input type="radio" name="mode"> 線上參與</label>
+                            </div>
+                        </div>
+
+                        <div class="input-label required">膳食需求</div>
+                        <div class="input-cell">
+                            <div class="radio-group">
+                                <label class="radio-label"><input type="radio" name="meal" checked> 葷食</label>
+                                <label class="radio-label"><input type="radio" name="meal"> 蛋奶素</label>
+                                <label class="radio-label"><input type="radio" name="meal"> 全素</label>
+                                <label class="radio-label"><input type="radio" name="meal"> 不需用餐</label>
+                            </div>
+                        </div>
+
+                        <div class="input-label">提問/交流需求</div>
+                        <div class="input-cell">
+                            <textarea class="form-control" placeholder="如果您對本講座主題有任何疑問或想要交流的議題，歡迎預先填寫，我們將於 Q&A 時間為您安排。"></textarea>
+                        </div>
+
+                        <div class="input-label">附件上傳<br>(公司簡介)</div>
+                        <div class="input-cell">
+                            <input type="file" class="form-control">
+                            <div class="upload-hint">
+                                提供公司簡介有助於媒合諮詢環節 (支援格式：PDF, PPTX, JPG)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 聲明事項 -->
+            <div class="form-section-row" style="border-bottom:none;">
+                <div class="section-header-col" style="background:#546e7a;">個資聲明</div>
+                <div class="section-content-col">
+                    <div style="padding: 20px;">
+                        <label class="checkbox-label" style="align-items: flex-start; line-height: 1.6; margin-bottom: 10px;">
+                            <input type="checkbox" style="margin-top: 5px;">
+                            <span>我已閱讀並同意 <strong>隱私權政策與活動告知事項</strong>，同意主辦單位將資料用於活動聯繫與後續媒合服務。</span>
+                        </label>
+                        <label class="checkbox-label" style="align-items: flex-start; line-height: 1.6;">
+                            <input type="checkbox" style="margin-top: 5px;">
+                            <span>我確認以上資料填寫屬實，並承諾如不克出席將於活動前 3 日主動通知執行團隊。</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div style="margin-top:20px; text-align:center; color:#666; font-size:0.9rem;">
+            <i class="fa-solid fa-circle-info"></i> 送出申請後，系統將寄發「報名受理通知」至您的信箱，最終錄取名單將以 Email 通知為準。
+        </div>
+    </div>
+
+    <!-- Sticky Bottom Action Bar -->
+    <div class="action-bar">
+        <div class="action-container">
+            <button type="button" class="btn btn-cancel" onclick="history.back()"><i class="fa-solid fa-xmark"></i> 取消返回</button>
+            <button type="button" class="btn btn-submit" onclick="location.href='activity-apply-check.html'"><i class="fa-solid fa-magnifying-glass"></i> 預覽報名資料</button>
+        </div>
+    </div>
+
+</body>
+</html>

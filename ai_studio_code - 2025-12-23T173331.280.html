@@ -1,0 +1,308 @@
+--- START OF FILE activity-apply-check.html ---
+
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>活動申請預覽確認 - 實證媒合平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-teal: #0089A7;       
+            --primary-dark: #005f73;       
+            --section-bg: #003366;         
+            --bg-body: #f4f6f9;
+            --border-color: #cbd5e0;
+            --text-main: #2d3748;
+            --text-label: #4a5568;
+            --white: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding-bottom: 80px;
+        }
+
+        /* Top Nav */
+        .site-header { 
+            background: var(--white); 
+            padding: 15px 5%; 
+            border-bottom: 1px solid #eee; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .logo { font-size: 1.4rem; font-weight: 700; color: #003366; display: flex; align-items: center; gap: 10px; text-decoration: none; }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .page-header h1 { font-size: 1.8rem; color: var(--text-main); margin-bottom: 5px; }
+        .page-header p { color: #718096; font-size: 0.9rem; }
+
+        /* --- Main Form Container --- */
+        .form-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border: 1px solid var(--primary-teal);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Top Strip */
+        .form-title-strip {
+            background-color: var(--primary-teal);
+            color: white;
+            padding: 12px 20px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* --- Grid Layout --- */
+        .form-section {
+            display: grid;
+            grid-template-columns: 80px 1fr; 
+            border-bottom: 1px solid var(--border-color);
+        }
+        .form-section:last-child { border-bottom: none; }
+
+        /* Left Vertical Label */
+        .section-label {
+            background-color: var(--section-bg);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            writing-mode: vertical-lr;
+            text-orientation: upright;
+            letter-spacing: 5px;
+            font-weight: 700;
+            padding: 20px 0;
+            font-size: 1rem;
+        }
+
+        /* Right Content Area */
+        .section-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: white;
+        }
+
+        .cell {
+            display: flex;
+            border-bottom: 1px solid #edf2f7;
+            border-right: 1px solid #edf2f7;
+        }
+        .cell.full-width { grid-column: 1 / -1; border-right: none; }
+        .cell:last-child { border-bottom: none; }
+        
+        .field-name {
+            background-color: #f8fcfc;
+            width: 140px;
+            padding: 15px;
+            font-weight: 500;
+            color: var(--text-label);
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            border-right: 1px solid #edf2f7;
+        }
+
+        .field-value {
+            padding: 15px 20px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+
+        /* Tags for categories */
+        .tag {
+            background: #e6f7ff;
+            color: #0050b3;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-right: 8px;
+            border: 1px solid #91d5ff;
+        }
+
+        .attachment-item {
+            display: inline-flex;
+            align-items: center;
+            background: #f5f5f5;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--primary-dark);
+        }
+
+        /* Action Bar */
+        .action-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .btn {
+            padding: 10px 35px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        .btn-outline { background: white; border-color: #cbd5e0; color: #666; }
+        .btn-submit { background: var(--primary-teal); color: white; }
+        .btn-submit:hover { background: var(--primary-dark); }
+
+        @media (max-width: 768px) {
+            .form-section { grid-template-columns: 45px 1fr; }
+            .section-content { grid-template-columns: 1fr; }
+            .field-name { width: 110px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <a href="index.html" class="logo"><i class="fa-solid fa-calendar-days"></i> 實證媒合平台</a>
+        <div style="font-size: 0.9rem; color: #666;">活動報名預覽模式</div>
+    </header>
+
+    <div class="page-header">
+        <p>首頁 > 活動專區 > 專題講座 > 報名資料預覽</p>
+        <h1>活動參加申請預覽表</h1>
+        <p>請確認以下報名內容填寫無誤，確認後點擊「確認送出申請」</p>
+    </div>
+
+    <div class="form-container">
+        
+        <!-- Strip Header -->
+        <div class="form-title-strip">
+            <span>申請活動：【專題講座】從實證到商轉：成功案例分享</span>
+            <span>申請日期：2025-10-25</span>
+        </div>
+
+        <!-- Section 1: 報名者基本資料 -->
+        <div class="form-section">
+            <div class="section-label">報名資料</div>
+            <div class="section-content">
+                <div class="cell">
+                    <div class="field-name">單位名稱</div>
+                    <div class="field-value">數位創能科技股份有限公司</div>
+                </div>
+                <div class="cell">
+                    <div class="field-name">產業類別</div>
+                    <div class="field-value">軟體開發 / AI 應用</div>
+                </div>
+                <div class="cell">
+                    <div class="field-name">報名者姓名</div>
+                    <div class="field-value">李小龍</div>
+                </div>
+                <div class="cell">
+                    <div class="field-name">職稱</div>
+                    <div class="field-value">產品經理</div>
+                </div>
+                <div class="cell">
+                    <div class="field-name">聯絡電話</div>
+                    <div class="field-value">0912-345-678</div>
+                </div>
+                <div class="cell">
+                    <div class="field-name">電子信箱</div>
+                    <div class="field-value">bruce.lee@digital-ai.com.tw</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: 參與需求 -->
+        <div class="form-section">
+            <div class="section-label">參與細節</div>
+            <div class="section-content">
+                <div class="cell">
+                    <div class="field-name">參加方式</div>
+                    <div class="field-value">
+                        <span class="tag">實體參與 (現場)</span>
+                    </div>
+                </div>
+                <div class="cell">
+                    <div class="field-name">膳食需求</div>
+                    <div class="field-value">
+                        <span class="tag">蛋奶素</span>
+                    </div>
+                </div>
+                <div class="cell full-width">
+                    <div class="field-name">想要提問的內容</div>
+                    <div class="field-value">
+                        想了解在政府實證過程中，關於軟體資訊安全規範（如資安檢測、弱點掃描）的報支項目，是否有相關的成功核銷範例可以參考？另外也想知道實證後與機關簽署後續商業採購契約的常見條款。
+                    </div>
+                </div>
+                <div class="cell full-width">
+                    <div class="field-name">附件(公司簡介)</div>
+                    <div class="field-value">
+                        <div class="attachment-item">
+                            <i class="fa-regular fa-file-powerpoint" style="margin-right:8px;"></i> 創能科技_公司簡介與實證意向.pptx
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: 聲明事項 -->
+        <div class="form-section">
+            <div class="section-label">聲明事項</div>
+            <div class="section-content">
+                <div class="cell full-width">
+                    <div class="field-name">個資與隱私</div>
+                    <div class="field-value">
+                        <i class="fa-solid fa-circle-check" style="color: #52c41a; margin-right: 8px;"></i>
+                        本人已閱讀並同意「活動個人資料蒐集處理利用告知事項」，並同意主辦單位於必要範圍內聯繫活動事宜。
+                    </div>
+                </div>
+                <div class="cell full-width">
+                    <div class="field-name">出席承諾</div>
+                    <div class="field-value">
+                        <i class="fa-solid fa-circle-check" style="color: #52c41a; margin-right: 8px;"></i>
+                        我確認當天會準時出席。若不克前往，將於活動前 3 日主動聯繫執行單位。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="action-bar">
+        <button type="button" class="btn btn-outline" onclick="history.back()">
+            <i class="fa-solid fa-pen-to-square"></i> 返回修改資料
+        </button>
+        <button type="button" class="btn btn-outline" onclick="window.print()">
+            <i class="fa-solid fa-print"></i> 列印預覽
+        </button>
+        <button type="button" class="btn btn-submit" onclick="alert('活動申請已成功送出！'); location.href='index.html'">
+            <i class="fa-solid fa-paper-plane"></i> 確認送出申請
+        </button>
+    </div>
+
+</body>
+</html>

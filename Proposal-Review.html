@@ -194,63 +194,51 @@
         .c-tag strong { color: var(--accent-orange); }
 
         /* --- 7. 右側側邊欄卡片 --- */
+/* --- 側邊欄新樣式 (必須補上這段) --- */
         .sidebar-card {
             background: white;
             border: 1px solid var(--border-color);
             padding: 20px;
             margin-bottom: 20px;
-            border-top: 5px solid var(--accent-orange); /* 橘色頂邊 */
+            border-top: 5px solid var(--accent-orange);
             box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
 
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--primary-dark);
-            margin-bottom: 15px;
-        }
-
-        .date-box {
-            text-align: center;
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        .date-big {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary-teal);
-        }
-        
-        .btn-sidebar {
+        /* 綠色/橘色大按鈕 */
+        .btn-upload {
             display: block;
             width: 100%;
             background: var(--accent-orange);
             color: white;
             text-align: center;
-            padding: 10px;
+            padding: 12px;
             border-radius: 4px;
             font-weight: 700;
             text-decoration: none;
             transition: 0.2s;
             border: none;
-            cursor: pointer;
         }
-        .btn-sidebar:hover { background: #d65f42; }
+        .btn-upload:hover { background: #d65f42; }
 
-        .download-link {
+        /* 下載清單樣式 */
+        .download-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            color: #0056b3;
+            gap: 12px;
             text-decoration: none;
-            padding: 8px 0;
-            border-bottom: 1px dashed #eee;
-            font-size: 0.95rem;
+            color: #333;
+            padding: 10px;
+            border-radius: 6px;
+            transition: background 0.2s;
+            margin-bottom: 5px;
         }
-        .download-link:last-child { border-bottom: none; }
-        .download-link:hover { color: var(--accent-orange); }
+        .download-item:hover { background: #f0f7f7; }
+        
+        /* 下載圖示 */
+        .dl-icon {
+            font-size: 1.5rem;
+            color: var(--primary-teal);
+        }
 
         /* --- 8. 底部返回按鈕 --- */
         .bottom-actions { text-align: right; margin-top: 20px; }
@@ -431,51 +419,62 @@
 
         <!-- Right Column: Sidebar -->
         <aside>
-            <!-- Card 1: Time Status -->
+            <!-- Card 1: Action (報名提醒) -->
             <div class="sidebar-card">
-                <div class="card-title">會議日期</div>
-                <div class="date-box">
-                    <div class="date-big">06/10</div>
-                    <div style="font-size:0.9rem; color:#666;">2025 (週二)</div>
+                <div class="card-title">報名提醒</div>
+                <div style="background:#f8f9fa; padding:15px; border-radius:6px; text-align:center; margin-bottom:15px;">
+                    <div style="font-size:0.9rem; color:#666;">報名截止時間為</div>
+                    <div style="font-size:2rem; font-weight:700; color:#333;">2025/05/13 <span style="font-size:1rem;">(星期二)</span></div>
                 </div>
                 
-                <div style="font-size:0.85rem; color:#666; margin-bottom:10px;">
-                    <i class="fa-solid fa-hourglass-half"></i> 狀態：資料繳交中
-                </div>
-                
-                <button class="btn-sidebar">
-                    <i class="fa-regular fa-calendar-plus"></i> 加入行事曆
-                </button>
-            </div>
-
-            <!-- Card 2: Downloads -->
-            <div class="sidebar-card">
-                <div class="card-title">文件下載</div>
-                <div>
-                    <a href="#" class="download-link">
-                        <i class="fa-regular fa-file-powerpoint"></i> 審查簡報範本.pptx
-                    </a>
-                    <a href="#" class="download-link">
-                        <i class="fa-regular fa-file-pdf"></i> 詳細議程表.pdf
-                    </a>
-                    <a href="#" class="download-link">
-                        <i class="fa-regular fa-file-word"></i> 交通資訊指引.docx
-                    </a>
-                </div>
-            </div>
-
-            <!-- Card 3: Upload Action -->
-            <div class="sidebar-card">
-                <div class="card-title">簡報上傳</div>
-                <p style="font-size:0.9rem; color:#d63031; margin-bottom:10px;">
-                    <i class="fa-solid fa-circle-exclamation"></i> 截止：06/08 23:59
+                <a href="mailto:help@innovation.gov.tw?subject=【徵案說明會報名詢問】114年度-公司名稱&body=您好，%0D%0A%0D%0A我們是（請填寫公司名稱），關於徵案說明會報名有以下問題：%0D%0A1. 問題描述：%0D%0A2. 聯絡人/電話：%0D%0A%0D%0A謝謝您的協助。" class="btn-upload">
+                       <i class="fa-solid fa-envelope"></i> 發送 Email 詢問
+                </a>
+                <p style="font-size:0.8rem; color:#888; text-align:center; margin-top:10px;">
+                    點擊將自動開啟您的電子郵件軟體，或寄至：service@spp.org.tw
                 </p>
-                <button class="btn-sidebar" style="background-color: var(--primary-dark);">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> 前往上傳系統
-                </button>
             </div>
 
+            <!-- Card 2: Downloads (必備範本) -->
+            <div class="sidebar-card">
+                <div class="card-title">必備資料下載</div>
+                
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-pdf dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">徵案須知與作業手冊.pdf</div>
+                        <div style="font-size:0.75rem; color:#999;">3.2 MB • 2025/05/01 更新</div>
+                    </div>
+                </a>
+
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-word dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">提案計畫書撰寫範本.docx</div>
+                        <div style="font-size:0.75rem; color:#999;">1.5 MB</div>
+                    </div>
+                </a>
+
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-excel dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">預算編列說明表.xlsx</div>
+                        <div style="font-size:0.75rem; color:#999;">800 KB</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card 3: Help (常見問題) -->
+            <div class="sidebar-card" style="border-top-color:#6c757d;">
+                <div class="card-title">說明會 FAQ</div>
+                <ul style="font-size:0.9rem; color:#0056b3; padding-left:20px;">
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">當天沒上線可以看錄影嗎？</a></li>
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">Teams 連結何時會發送？</a></li>
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">QA 時段如何進行線上提問？</a></li>
+                </ul>
+            </div>
         </aside>
+        <!-- --- 替換後的 Sidebar 結束 --- -->
 
     </div>
 

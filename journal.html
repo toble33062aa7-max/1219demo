@@ -104,33 +104,50 @@
         .mini-table td { border: 1px solid #dee2e6; padding: 8px; }
 
         /* --- 7. 右側側邊欄 --- */
-        .sidebar-card {
-            background: white;
-            border: 1px solid var(--border-color);
-            padding: 20px;
-            margin-bottom: 20px;
-            border-top: 5px solid var(--accent-orange);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-        }
+        /* --- 側邊欄樣式更新 --- */
+.sidebar-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-top: 5px solid var(--accent-orange);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
 
-        .card-title { font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 15px; }
+.card-title { font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 15px; }
 
-        .date-badge {
-            text-align: center; background: #fff3cd; color: #856404; padding: 10px; border-radius: 4px; font-weight: bold; margin-bottom: 15px; border: 1px solid #ffeeba;
-        }
+/* 這是您新片段缺少的樣式 */
+.btn-upload {
+    display: block; 
+    width: 100%; 
+    background: var(--primary-teal); 
+    color: white; 
+    text-align: center; 
+    padding: 12px; 
+    border-radius: 4px; 
+    font-weight: 700; 
+    text-decoration: none; 
+    border: none; 
+    cursor: pointer; 
+    transition: 0.2s;
+}
+.btn-upload:hover { background: var(--primary-dark); }
 
-        .btn-sidebar {
-            display: block; width: 100%; background: var(--primary-teal); color: white; text-align: center; padding: 12px; border-radius: 4px; font-weight: 700; text-decoration: none; border: none; cursor: pointer; transition: 0.2s;
-        }
-        .btn-sidebar:hover { background: var(--primary-dark); }
-        .btn-sidebar.outline { background: white; color: #555; border: 1px solid #ccc; }
-        .btn-sidebar.outline:hover { background: #f8f9fa; }
+.download-item {
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    text-decoration: none; 
+    color: #333; 
+    padding: 12px; 
+    border: 1px solid #eee; 
+    border-radius: 6px; 
+    margin-bottom: 10px; 
+    transition: 0.3s;
+}
+.download-item:hover { background: #f0f9f8; border-color: var(--primary-teal); }
 
-        .download-link { display: flex; align-items: center; gap: 10px; color: #0056b3; text-decoration: none; padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 0.95rem; }
-        .download-link:last-child { border-bottom: none; }
-        .download-link:hover { color: var(--accent-orange); }
-
-        .contact-info { font-size: 0.9rem; color: #666; margin-top: 10px; }
+.dl-icon { font-size: 1.5rem; color: var(--primary-teal); }
 
         /* RWD */
         @media (max-width: 900px) {
@@ -288,55 +305,64 @@
         </main>
 
         <!-- Right Column: Sidebar -->
+    <!-- Right Column: Sidebar (已經替換成您提供的內容) -->
+<!-- Right Column: Sidebar (Updated for Routine Work Records) -->
         <aside>
-            <!-- Card 1: Status & Action -->
+            <!-- Card 1: Submission Deadline -->
             <div class="sidebar-card">
-                <div class="card-title">本期填報狀態</div>
+                <div class="card-title">繳件提醒</div>
+                <div style="background:#fff4f2; padding:15px; border-radius:6px; text-align:center; margin-bottom:15px; border: 1px solid #ffccc7;">
+                    <div style="font-size:0.9rem; color:#c0392b; font-weight: bold;">每月 5 日前繳交</div>
+                    <div style="font-size:0.8rem; color:#666; margin-top:5px;">下一期（8月份）截止日</div>
+                    <div style="font-size:1.8rem; font-weight:700; color:#d63031;">2025/09/05 <span style="font-size:0.9rem;">(星期五)</span></div>
+                </div>
                 
-                <div class="date-badge">
-                    本次繳交期限<br>
-                    <span style="font-size:1.4rem; color:#d63031;">09/05 (五)</span>
-                </div>
-
-                <div style="margin-bottom:15px; font-size:0.9rem;">
-                    <div><span style="color:#888;">填報月份：</span> 114年 08月</div>
-                    <div><span style="color:#888;">目前狀態：</span> <span style="color:green; font-weight:bold;">開放填報中</span></div>
-                </div>
-
-                <button class="btn-sidebar">
-                    <i class="fa-solid fa-pen-to-square"></i> 立即填寫工作紀錄
-                </button>
-                <button class="btn-sidebar outline" style="margin-top:10px;">
-                    <i class="fa-solid fa-clock-rotate-left"></i> 查看歷史紀錄
-                </button>
+                <a href="mailto:help@innovation.gov.tw?subject=【工作紀錄填報詢問】案號114-T058-公司名稱&body=您好，%0D%0A%0D%0A我們是（請填寫公司名稱），關於（請填寫月份）的工作紀錄填報有以下問題：%0D%0A1. 問題描述：%0D%0A2. 聯絡人/電話：%0D%0A%0D%0A謝謝您的協助。" class="btn-upload">
+                       <i class="fa-solid fa-envelope"></i> 填報問題諮詢
+                </a>
+                <p style="font-size:0.8rem; color:#888; text-align:center; margin-top:10px;">
+                    遇假日順延至次一工作日<br>系統問題請寄至：service@spp.org.tw
+                </p>
             </div>
 
-            <!-- Card 2: Downloads -->
+            <!-- Card 2: Downloads (Context updated to Monthly Records) -->
             <div class="sidebar-card">
-                <div class="card-title">相關文件下載</div>
-                <div>
-                    <a href="#" class="download-link">
-                        <i class="fa-regular fa-file-word"></i> 工作紀錄表(線下草稿用).docx
-                    </a>
-                    <a href="#" class="download-link">
-                        <i class="fa-regular fa-file-excel"></i> KPI 統計表範本.xlsx
-                    </a>
-                    <a href="#" class="download-link">
-                        <i class="fa-regular fa-file-pdf"></i> 系統操作手冊.pdf
-                    </a>
-                </div>
+                <div class="card-title">填報必備範本</div>
+                
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-word dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">例行工作紀錄表_空白範本.docx</div>
+                        <div style="font-size:0.75rem; color:#999;">120 KB • 2025/01/15 更新</div>
+                    </div>
+                </a>
+
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-excel dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">KPI 執行進度追蹤表.xlsx</div>
+                        <div style="font-size:0.75rem; color:#999;">85 KB</div>
+                    </div>
+                </a>
+
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-pdf dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">線上填報系統操作手冊.pdf</div>
+                        <div style="font-size:0.75rem; color:#999;">2.1 MB</div>
+                    </div>
+                </a>
             </div>
 
-            <!-- Card 3: Contact -->
-            <div class="sidebar-card" style="background:#f8f9fa; border:none;">
-                <div class="card-title" style="font-size:1rem; margin-bottom:10px;">填報遇到問題？</div>
-                <div class="contact-info">
-                    系統操作客服：<br>
-                    <i class="fa-solid fa-phone"></i> 02-8995-1234 #99<br>
-                    <i class="fa-solid fa-envelope"></i> help@innovation.gov.tw
-                </div>
+            <!-- Card 3: Help -->
+            <div class="sidebar-card" style="border-top-color:#6c757d;">
+                <div class="card-title">常見問題</div>
+                <ul style="font-size:0.9rem; color:#0056b3; padding-left:20px;">
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">如何補件已繳交的紀錄？</a></li>
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">照片上傳失敗處理方式</a></li>
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">KPI 數值填寫規範說明</a></li>
+                </ul>
             </div>
-
         </aside>
 
     </div>

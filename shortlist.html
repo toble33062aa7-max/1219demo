@@ -79,6 +79,7 @@
         .badge-wait { background: rgba(241, 196, 15, 0.15); color: #f39c12; border: 1px solid #f39c12; }
 
         /* --- Sidebar Cards --- */
+/* --- Sidebar Style (確保新元件有樣式) --- */
         .sidebar-card {
             background: white; border: 1px solid var(--border-color);
             padding: 20px; margin-bottom: 20px;
@@ -87,24 +88,24 @@
         }
         .card-title { font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 15px; }
 
-        /* Stats Circle */
-        .stats-box { display: flex; justify-content: space-around; text-align: center; margin-bottom: 10px; }
-        .stat-item h3 { font-size: 1.8rem; color: var(--primary-teal); margin-bottom: 5px; }
-        .stat-item span { font-size: 0.85rem; color: #666; }
-
-        .btn-sidebar {
+        /* 新增：發送 Email 的按鈕樣式 */
+        .btn-upload {
             display: block; width: 100%; background: var(--accent-orange); color: white;
             text-align: center; padding: 10px; border-radius: 4px; font-weight: 700;
             text-decoration: none; border: none; cursor: pointer; transition: 0.2s;
         }
-        .btn-sidebar:hover { background: #d65f42; }
+        .btn-upload:hover { background: #d65f42; }
 
-        .download-link {
-            display: flex; align-items: center; gap: 10px; color: #0056b3;
-            text-decoration: none; padding: 10px 0; border-bottom: 1px dashed #eee;
+        /* 新增：下載項目的排版樣式 */
+        .download-item {
+            display: flex; align-items: center; gap: 12px; color: #333;
+            text-decoration: none; padding: 12px 0; border-bottom: 1px dashed #eee;
         }
-        .download-link:last-child { border-bottom: none; }
-        .download-link:hover { color: var(--accent-orange); }
+        .download-item:last-child { border-bottom: none; }
+        .download-item:hover { background: #fafafa; }
+        .download-item:hover .dl-icon { color: var(--accent-orange); }
+        
+        .dl-icon { font-size: 1.4rem; color: #6c757d; }
 
         /* --- RWD --- */
         @media (max-width: 900px) {
@@ -174,7 +175,7 @@
                 <div class="spec-row">
                     <div class="spec-label">依據</div>
                     <div class="spec-content">
-                        依據本計畫 114 年 9 月 15 日期中審查會議決議辦理。
+                        依據本計畫 115 年 6 月 10 日審查會議決議辦理。
                     </div>
                 </div>
 
@@ -182,7 +183,7 @@
                     <div class="spec-label">公告事項</div>
                     <div class="spec-content">
                         <p>一、本年度共計受理 58 件提案申請，經資格審查及專家學者委員會評選，核定獲選團隊共計 5 隊、備取 2 隊。</p>
-                        <p>二、正取團隊請於 <strong>114年10月15日 (五)</strong> 前，依規定辦理簽約手續，逾期視同放棄，由備取團隊依序遞補。</p>
+                        <p>二、正取團隊請於 <strong>114年6月21日 (五)</strong> 前，依規定辦理簽約手續，逾期視同放棄，由備取團隊依序遞補。</p>
                         <p>三、審查結果清單如下：</p>
                     </div>
                 </div>
@@ -291,55 +292,52 @@
         </main>
 
         <!-- Right Column: Sidebar -->
-        <aside>
-            <!-- Card 1: Review Stats -->
+<aside>
+            <!-- Card 1: Action -->
             <div class="sidebar-card">
-                <div class="card-title">審查統計數據</div>
-                <div class="stats-box">
-                    <div class="stat-item">
-                        <h3>58</h3>
-                        <span>申請件數</span>
-                    </div>
-                    <div style="border-right:1px solid #eee;"></div>
-                    <div class="stat-item">
-                        <h3>8.6%</h3>
-                        <span>錄取率</span>
-                    </div>
+                <div class="card-title">簽約提醒</div>
+                <div style="background:#f8f9fa; padding:15px; border-radius:6px; text-align:center; margin-bottom:15px;">
+                    <div style="font-size:0.9rem; color:#666;">簽約截止時間為</div>
+                    <!-- 配合說明會日期更換 -->
+                    <div style="font-size:2rem; font-weight:700; color:#333;">2025/06/21 <span style="font-size:1rem;">(星期五)</span></div>
                 </div>
-                <div style="background:#eee; height:6px; border-radius:3px; margin:15px 0 5px;">
-                    <div style="background:var(--primary-teal); width:8.6%; height:100%; border-radius:3px;"></div>
-                </div>
-                <div style="text-align:center; font-size:0.8rem; color:#888;">競爭激烈，請再接再厲！</div>
+                
+                <a href="mailto:service@spp.org.tw?subject=【徵案說明會詢問】公司名稱&body=您好，我們對114年度徵案說明會有以下問題：" class="btn-upload">
+                       <i class="fa-solid fa-envelope"></i> 發送 Email 詢問
+                </a>
+                <p style="font-size:0.8rem; color:#888; text-align:center; margin-top:10px;">
+                    點擊將自動開啟郵件軟體，或寄至：service@spp.org.tw
+                </p>
             </div>
 
             <!-- Card 2: Downloads -->
             <div class="sidebar-card">
-                <div class="card-title">正式公文下載</div>
-                <a href="#" class="download-link">
-                    <i class="fa-solid fa-file-pdf" style="color:#d63031;"></i> 
+                <div class="card-title">說明會資料下載</div>
+                
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-pdf dl-icon"></i>
                     <div>
-                        <div>正式公告公文.pdf</div>
-                        <div style="font-size:0.75rem; color:#888;">350 KB</div>
+                        <div style="font-weight:500;">114年徵案簡章.pdf</div>
+                        <div style="font-size:0.75rem; color:#999;">2.5 MB • 2025/05/01 更新</div>
                     </div>
                 </a>
-                <a href="#" class="download-link">
-                    <i class="fa-solid fa-file-excel" style="color:#27ae60;"></i>
+
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-word dl-icon"></i>
                     <div>
-                        <div>完整獲選名單清冊.xlsx</div>
-                        <div style="font-size:0.75rem; color:#888;">120 KB</div>
+                        <div style="font-weight:500;">提案計畫書範本.docx</div>
+                        <div style="font-size:0.75rem; color:#999;">1.2 MB</div>
                     </div>
                 </a>
             </div>
 
-            <!-- Card 3: Next Action -->
-            <div class="sidebar-card">
-                <div class="card-title">獲選團隊下一步</div>
-                <p style="font-size:0.9rem; color:#555; margin-bottom:15px;">
-                    恭喜獲選！請登入系統填寫簽約資料並上傳用印合約。
-                </p>
-                <button class="btn-sidebar">
-                    <i class="fa-solid fa-pen-nib"></i> 前往簽約系統
-                </button>
+            <!-- Card 3: FAQ -->
+            <div class="sidebar-card" style="border-top-color:#6c757d;">
+                <div class="card-title">常見問題</div>
+                <ul style="font-size:0.9rem; color:#0056b3; padding-left:20px;">
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">如何取得線上會議連結？</a></li>
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">沒收到報名確認信怎麼辦？</a></li>
+                </ul>
             </div>
         </aside>
 

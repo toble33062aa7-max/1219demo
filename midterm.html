@@ -269,6 +269,43 @@
             font-size: 0.9rem;
         }
         .btn-back:hover { background: #eee; }
+	/* --- 側邊欄新元件樣式 --- */
+.btn-upload {
+    display: block;
+    width: 100%;
+    background: var(--accent-orange);
+    color: white;
+    text-align: center;
+    padding: 12px;
+    border-radius: 4px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.2s;
+    border: none;
+    cursor: pointer;
+}
+.btn-upload:hover { background: #d65f42; color: white; }
+
+.download-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.2s;
+}
+.download-item:hover { 
+    background: #f0f7f7; 
+    border-color: var(--primary-teal); 
+}
+.dl-icon {
+    font-size: 1.5rem;
+    color: var(--primary-teal);
+}
 
         /* --- RWD --- */
         @media (max-width: 900px) {
@@ -442,55 +479,61 @@
         </main>
 
         <!-- Right Column: Sidebar (模仿圖片樣式) -->
-        <aside>
-            <!-- Card 1: Status -->
+                <aside>
+            <!-- Card 1: Upload Action -->
             <div class="sidebar-card">
-                <div class="card-title">會議倒數</div>
-                <div class="countdown-box">
-                    <div class="countdown-days">15</div>
-                    <div class="countdown-label">天後開始</div>
+                <div class="card-title">繳件提醒</div>
+                <div style="background:#f8f9fa; padding:15px; border-radius:6px; text-align:center; margin-bottom:15px;">
+                    <div style="font-size:0.9rem; color:#666;">簡報上傳截止時間為</div>
+                    <div style="font-size:2rem; font-weight:700; color:#333;">2025/09/12 <span style="font-size:1rem;">(星期五)</span></div>
                 </div>
                 
-                <div style="font-size:0.85rem; color:#666;">
-                    <i class="fa-regular fa-clock"></i> 時間：114/09/15 09:00
-                </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" style="width: 85%;"></div>
-                </div>
-                <div style="text-align:right; font-size:0.8rem; color:#888;">進度：準備中</div>
-
-                <button class="btn-sidebar" style="margin-top:15px;">
-                    <i class="fa-brands fa-google"></i> 加入行事曆
-                </button>
+                <a href="mailto:help@innovation.gov.tw?subject=【期中審查簡報繳交】案號114-T058-Review-公司名稱&body=您好，%0D%0A%0D%0A我們是（請填寫公司名稱），關於 114年度期中審查會議簡報繳交事宜有以下問題：%0D%0A1. 問題描述：%0D%0A2. 聯絡人/電話：%0D%0A%0D%0A謝謝您的協助。" class="btn-upload">
+                       <i class="fa-solid fa-envelope"></i> 發送 Email 詢問
+                </a>
+                <p style="font-size:0.8rem; color:#888; text-align:center; margin-top:10px;">
+                    點擊將自動開啟您的電子郵件軟體，或寄至：service@spp.org.tw
+                </p>
             </div>
 
             <!-- Card 2: Downloads -->
             <div class="sidebar-card">
-                <div class="card-title">相關文件下載</div>
-                <div>
-                    <a href="#" class="download-link">
-                        <i class="fa-regular fa-file-powerpoint"></i> 簡報範本.pptx
-                    </a>
-                    <a href="#" class="download-link">
-                        <i class="fa-regular fa-file-pdf"></i> 會議議程表.pdf
-                    </a>
-                    <a href="#" class="download-link">
-                        <i class="fa-regular fa-map"></i> 交通指引地圖.jpg
-                    </a>
-                </div>
+                <div class="card-title">必備範本下載</div>
+                
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-powerpoint dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">期中審查簡報範本_v1.pptx</div>
+                        <div style="font-size:0.75rem; color:#999;">3.2 MB • 2025/08/20 更新</div>
+                    </div>
+                </a>
+
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-excel dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">期中執行進度核銷表.xlsx</div>
+                        <div style="font-size:0.75rem; color:#999;">450 KB</div>
+                    </div>
+                </a>
+
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-pdf dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">評分指標說明書.pdf</div>
+                        <div style="font-size:0.75rem; color:#999;">1.1 MB</div>
+                    </div>
+                </a>
             </div>
 
-            <!-- Card 3: Upload -->
-            <div class="sidebar-card">
-                <div class="card-title">資料上傳</div>
-                <p style="font-size:0.9rem; color:#666; margin-bottom:10px;">
-                    請於截止日前上傳最終版簡報。
-                </p>
-                <button class="btn-sidebar" style="background:#006c70;">
-                    前往上傳系統
-                </button>
+            <!-- Card 3: Help -->
+            <div class="sidebar-card" style="border-top-color:#6c757d;">
+                <div class="card-title">常見問題</div>
+                <ul style="font-size:0.9rem; color:#0056b3; padding-left:20px;">
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">簡報檔案超過 50MB 怎麼辦？</a></li>
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">如何確認簡報上傳成功？</a></li>
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">當天可自行攜帶筆電嗎？</a></li>
+                </ul>
             </div>
-
         </aside>
 
     </div>
