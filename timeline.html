@@ -43,7 +43,7 @@
         .main-header {
             background: #fff;
             padding: 15px 10%;
-            border-bottom: 4px solid var(--primary-teal); /* 台灣就業通特徵：綠色底條 */
+            border-bottom: 4px solid var(--primary-teal); 
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -53,7 +53,7 @@
             background: var(--primary-teal);
             padding: 0 10%;
             display: flex;
-            gap: 1px; /* 模擬分隔線 */
+            gap: 1px;
         }
         .nav-item {
             color: white;
@@ -87,15 +87,16 @@
             margin: 0 auto 50px;
             padding: 0 20px;
             display: grid;
-            grid-template-columns: 280px 1fr; /* 左側固定，右側自適應 */
+            grid-template-columns: 280px 1fr;
             gap: 30px;
         }
 
         /* --- 5. 左側篩選欄 (Sidebar) --- */
         .sidebar-box {
-            border: 1px dashed var(--sidebar-border); /* 特徵：虛線邊框 */
+            border: 1px dashed var(--sidebar-border); 
             padding: 20px;
             background: #fff;
+            align-self: start;
         }
 
         .filter-title {
@@ -142,20 +143,27 @@
         .btn-search:hover { background: var(--teal-dark); }
 
         /* --- 6. 右側列表 (Table) --- */
-        .content-top-bar {
-            text-align: right;
-            font-size: 0.85rem;
-            color: #888;
-            margin-bottom: 10px;
+        
+        /* 新增：區塊標題樣式，保持與原版一致 */
+        .section-header {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--primary-teal);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
         }
 
         .data-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.95rem;
+            margin-bottom: 40px; /* 增加表格間距 */
         }
 
-        /* 表頭樣式 */
         .data-table thead th {
             background-color: var(--primary-teal);
             color: white;
@@ -164,12 +172,9 @@
             font-weight: 700;
             white-space: nowrap;
             border-right: 1px solid rgba(255,255,255,0.2);
-            cursor: pointer; /* 模擬排序 */
         }
         .data-table thead th:last-child { border-right: none; }
-        .sort-icon { font-size: 0.8rem; margin-left: 5px; }
 
-        /* 表格內容 */
         .data-table tbody td {
             padding: 15px 10px;
             border-bottom: 1px solid #eee;
@@ -179,7 +184,6 @@
 
         .data-table tbody tr:hover { background-color: var(--table-hover); }
 
-        /* 欄位特定樣式 */
         .col-action { text-align: center; width: 80px; }
         .btn-action {
             background: var(--primary-teal);
@@ -194,11 +198,11 @@
         .btn-action:hover { background: var(--teal-dark); }
 
         .col-name { font-weight: 500; color: #0056b3; cursor: pointer; }
+        .col-name a { color: inherit; text-decoration: none; }
         .col-name:hover { text-decoration: underline; }
         
         .col-center { text-align: center; }
         
-        /* 狀態標籤 */
         .status-badge {
             display: inline-block;
             padding: 2px 8px;
@@ -208,6 +212,7 @@
         .status-urgent { color: var(--status-red); background: #fdecea; border: 1px solid var(--status-red); }
         .status-normal { color: #333; }
         .status-done { color: #999; text-decoration: line-through; }
+        .status-highlight { color: var(--primary-teal); background: #eef9fb; border: 1px solid var(--primary-teal); } /* 用於活動報名 */
 
         /* --- 7. 底部 Pagination --- */
         .pagination-area {
@@ -220,9 +225,7 @@
         }
 
         .page-info { font-size: 0.9rem; color: #333; font-weight: 700; }
-        
         .pagination-controls { display: flex; gap: 5px; align-items: center; }
-        
         .page-btn {
             background: #eee;
             border: none;
@@ -233,12 +236,7 @@
         }
         .page-btn:hover { background: #ddd; }
         .page-btn.active { background: #333; color: white; }
-
-        .page-select {
-            padding: 5px;
-            border: 1px solid #ccc;
-            margin-left: 10px;
-        }
+        .page-select { padding: 5px; border: 1px solid #ccc; margin-left: 10px; }
 
         /* --- Footer --- */
         footer {
@@ -250,10 +248,9 @@
             margin-top: auto;
         }
 
-        /* --- RWD --- */
         @media (max-width: 992px) {
             .main-container { grid-template-columns: 1fr; }
-            .sidebar-box { margin-bottom: 20px; border: 1px solid #ddd; border-style: solid; /* 手機版改實線 */ }
+            .sidebar-box { margin-bottom: 20px; border: 1px solid #ddd; border-style: solid; }
             .data-table { display: block; overflow-x: auto; white-space: nowrap; }
         }
     </style>
@@ -267,12 +264,12 @@
 
     <!-- Main Header -->
     <header class="main-header">
-        <!-- 將標題與 Logo 包裹在連結中 -->
-        <a href="index.html" class="header-logo-link">
-        <div style="font-size:1.5rem; font-weight:700; color:#333; display:flex; align-items:center; gap:10px;">
-            <img src="https://www.taiwanjobs.gov.tw/internet/2021/images/logo.png" alt="Logo" style="height:40px;">
-            <span style="border-left:1px solid #ccc; padding-left:15px; color:#555; font-size:1.2rem;">實證媒合平台</span>
-        </div>
+        <a href="index.html" class="header-logo-link" style="text-decoration:none;">
+            <div style="font-size:1.5rem; font-weight:700; color:#333; display:flex; align-items:center; gap:10px;">
+                <img src="https://www.taiwanjobs.gov.tw/internet/2021/images/logo.png" alt="Logo" style="height:40px;">
+                <span style="border-left:1px solid #ccc; padding-left:15px; color:#555; font-size:1.2rem;">實證媒合平台</span>
+            </div>
+        </a>
     </header>
 
     <!-- Nav Bar -->
@@ -329,109 +326,146 @@
             <button class="btn-search"><i class="fa-solid fa-search"></i> 查詢</button>
         </aside>
 
-        <!-- Right Content: Table (仿參考圖右側列表) -->
+        <!-- Right Content -->
         <main>
-            <div class="content-top-bar">
-                <i class="fa-regular fa-clock"></i> 資料更新時間：每日 00:00 (Updated Time: 00:00)
-            </div>
 
+            <!-- 1. 既定行政議程 -->
+            <div class="section-header">
+                <i class="fa-solid fa-calendar-check"></i> 既定行政議程 (Fixed Schedule)
+            </div>
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th width="80">功能 <i class="fa-solid fa-sort sort-icon"></i></th>
-                        <th width="100">日期 <i class="fa-solid fa-sort sort-icon"></i></th>
-                        <th>事項名稱 <i class="fa-solid fa-sort sort-icon"></i></th>
-                        <th width="120">階段分類 <i class="fa-solid fa-sort sort-icon"></i></th>
-                        <th width="100">狀態 <i class="fa-solid fa-sort sort-icon"></i></th>
+                        <th width="80">功能</th>
+                        <th width="100">日期</th>
+                        <th>事項名稱</th>
+                        <th width="120">階段分類</th>
+                        <th width="100">狀態</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Row 1 -->
                     <tr>
                         <td class="col-action"><button class="btn-action">下載</button></td>
                         <td class="col-center">2025/06/06</td>
-                        <td class="col-name"><a href="proposal.html">備妥並提交申請文件截止 (Application Deadline)</td>
+                        <td class="col-name"><a href="proposal.html">備妥並提交申請文件截止 (Application Deadline)</a></td>
                         <td class="col-center">申請審查</td>
                         <td class="col-center"><span class="status-badge status-urgent">即將截止</span></td>
                     </tr>
-                    <!-- Row 2 -->
                     <tr>
                         <td class="col-action"><button class="btn-action">檢視</button></td>
                         <td class="col-center">2025/06/10</td>
-                        <td class="col-name"><a href="Proposal-Review.html">審查會議 (Review Meeting)</td>
+                        <td class="col-name"><a href="Proposal-Review.html">審查會議 (Review Meeting)</a></td>
                         <td class="col-center">申請審查</td>
                         <td class="col-center"><span class="status-badge status-normal">未開始</span></td>
                     </tr>
-                    <!-- Row 3 -->
                     <tr>
                         <td class="col-action"><button class="btn-action">下載</button></td>
                         <td class="col-center">2025/06/25</td>
-                        <td class="col-name"><a href="shortlist.html">公告審查結果與獲選名單</td>
+                        <td class="col-name"><a href="shortlist.html">公告審查結果與獲選名單</a></td>
                         <td class="col-center">申請審查</td>
                         <td class="col-center"><span class="status-badge status-normal">未開始</span></td>
                     </tr>
-                    <!-- Row 4 -->
                     <tr>
                         <td class="col-action"><button class="btn-action">下載</button></td>
                         <td class="col-center">2025/07/10</td>
-                        <td class="col-name"><a href="agreement.html">簽約文件繳交截止 (MOU & Contract)</td>
+                        <td class="col-name"><a href="agreement.html">簽約文件繳交截止 (MOU & Contract)</a></td>
                         <td class="col-center">簽約啟動</td>
                         <td class="col-center"><span class="status-badge status-normal">未開始</span></td>
                     </tr>
-                    <!-- Row 5 -->
                     <tr>
                         <td class="col-action"><button class="btn-action">檢視</button></td>
                         <td class="col-center">2025/07/30</td>
-                        <td class="col-name"><a href="1stinstallment.html">第一期款撥付 (30%)</td>
+                        <td class="col-name"><a href="1stinstallment.html">第一期款撥付 (30%)</a></td>
                         <td class="col-center">簽約啟動</td>
                         <td class="col-center"><span class="status-badge status-normal">未開始</span></td>
                     </tr>
-                    <!-- Row 6 -->
                     <tr>
                         <td class="col-action"><button class="btn-action">檢視</button></td>
                         <td class="col-center">每月 10號</td>
-                        <td class="col-name"><a href="journal.html">例行工作紀錄繳交 (Monthly Log)</td>
+                        <td class="col-name"><a href="journal.html">例行工作紀錄繳交 (Monthly Log)</a></td>
                         <td class="col-center">執行管考</td>
-                        <td class="col-center"><span class="status-badge status-normal">常態性</span></td>
+                        <td class="col-center"><span class="status-badge status-highlight">常態性</span></td>
                     </tr>
-                    <!-- Row 7 -->
                     <tr>
                         <td class="col-action"><button class="btn-action">檢視</button></td>
                         <td class="col-center">2025/09/15</td>
-                        <td class="col-name"><a href="midterm.html">期中審查會議 (Mid-term Review)</td>
+                        <td class="col-name"><a href="midterm.html">期中審查會議 (Mid-term Review)</a></td>
                         <td class="col-center">執行管考</td>
                         <td class="col-center"><span class="status-badge status-normal">未開始</span></td>
                     </tr>
-                    <!-- Row 8 -->
                     <tr>
                         <td class="col-action"><button class="btn-action">下載</button></td>
                         <td class="col-center">2025/11/10</td>
-                        <td class="col-name"><a href="final-report.html">期末報告初稿繳交截止</td>
+                        <td class="col-name"><a href="final-report.html">期末報告初稿繳交截止</a></td>
                         <td class="col-center">結案驗收</td>
                         <td class="col-center"><span class="status-badge status-normal">未開始</span></td>
                     </tr>
-                    <!-- Row 9 -->
                     <tr>
                         <td class="col-action"><button class="btn-action">下載</button></td>
                         <td class="col-center">2025/11/30</td>
-                        <td class="col-name"><a href="2ndinstallment.html">結案文件與請款單據繳交截止</td>
+                        <td class="col-name"><a href="2ndinstallment.html">結案文件與請款單據繳交截止</a></td>
                         <td class="col-center">結案驗收</td>
                         <td class="col-center"><span class="status-badge status-normal">未開始</span></td>
                     </tr>
-                    <!-- Row 10 (Past Event) -->
                     <tr style="background-color:#f9f9f9; color:#999;">
                         <td class="col-action"><button class="btn-action" style="background:#ccc; cursor:not-allowed;">結束</button></td>
                         <td class="col-center">2025/05/15</td>
-                        <td class="col-name" style="color:#666;"><a href="Info.html">計畫徵案說明會 (線上辦理)</td>
+                        <td class="col-name" style="color:#666;"><a href="Info.html">計畫徵案說明會 (線上辦理)</a></td>
                         <td class="col-center">申請審查</td>
                         <td class="col-center"><span class="status-badge status-done">已結束</span></td>
                     </tr>
                 </tbody>
             </table>
 
-            <!-- Pagination (仿參考圖底部) -->
+            <!-- 2. 臨時活動與增能工作坊 -->
+            <div class="section-header">
+                <i class="fa-solid fa-person-chalkboard"></i> 臨時活動與增能工作坊 (Ad-hoc Events)
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th width="80">功能</th>
+                        <th width="100">活動日期</th>
+                        <th>活動/工作坊名稱</th>
+                        <th width="120">性質分類</th>
+                        <th width="100">狀態</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-action"><button class="btn-action">報名</button></td>
+                        <td class="col-center">2025/07/20</td>
+                        <td class="col-name"><a href="#">【增能工作坊】計畫執行與KPI設定實務</a></td>
+                        <td class="col-center">輔導增能</td>
+                        <td class="col-center"><span class="status-badge status-highlight">受理報名</span></td>
+                    </tr>
+                    <tr>
+                        <td class="col-action"><button class="btn-action">報名</button></td>
+                        <td class="col-center">2025/08/15</td>
+                        <td class="col-name"><a href="#">【場域參訪】數位轉型示範基地參訪(北區)</a></td>
+                        <td class="col-center">場域觀摩</td>
+                        <td class="col-center"><span class="status-badge status-highlight">受理報名</span></td>
+                    </tr>
+                    <tr>
+                        <td class="col-action"><button class="btn-action">預約</button></td>
+                        <td class="col-center">2025/09/05</td>
+                        <td class="col-name"><a href="#">【交流會】產業技術對接與媒合茶會</a></td>
+                        <td class="col-center">媒合對接</td>
+                        <td class="col-center"><span class="status-badge status-normal">未開放</span></td>
+                    </tr>
+                    <tr>
+                        <td class="col-action"><button class="btn-action">下載</button></td>
+                        <td class="col-center">2025/10/25</td>
+                        <td class="col-name"><a href="#">【專題講座】從實證到商轉：成功案例分享</a></td>
+                        <td class="col-center">經驗分享</td>
+                        <td class="col-center"><span class="status-badge status-normal">規劃中</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
             <div class="pagination-area">
-                <div class="page-info">合計 10 筆</div>
+                <div class="page-info">合計 14 筆</div>
                 <div class="pagination-controls">
                     <button class="page-btn">最前頁</button>
                     <button class="page-btn">上一頁</button>
@@ -444,8 +478,8 @@
                 <div class="page-display">
                     顯示 
                     <select class="page-select">
-                        <option>10</option>
                         <option>20</option>
+                        <option>50</option>
                     </select>
                     筆
                 </div>
