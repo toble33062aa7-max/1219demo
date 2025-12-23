@@ -190,6 +190,7 @@
         .text-link:hover { color: var(--accent-orange); }
 
         /* --- 6. 右側側邊欄卡片 --- */
+        /* --- 側邊欄通用卡片 --- */
         .sidebar-card {
             background: white;
             border: 1px solid var(--border-color);
@@ -206,12 +207,8 @@
             margin-bottom: 15px;
         }
 
-        /* 報名狀態區 */
-        .status-box { text-align: center; margin-bottom: 15px; }
-        .status-text { font-size: 1.5rem; font-weight: 700; color: var(--status-green); }
-        .spots-text { font-size: 0.9rem; color: #666; margin-top: 5px; }
-
-        .btn-register {
+        /* 新增：發送 Email 按鈕樣式 */
+        .btn-upload {
             display: block;
             width: 100%;
             background: var(--accent-orange);
@@ -226,32 +223,27 @@
             cursor: pointer;
             font-size: 1rem;
         }
-        .btn-register:hover { background: #d65f42; }
+        .btn-upload:hover { background: #d65f42; color: white; }
 
-        .btn-disabled {
-            background: #ccc; cursor: not-allowed;
-        }
-
-        /* 下載連結 */
-        .download-link {
+        /* 新增：下載項目組合樣式 */
+        .download-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            color: #0056b3;
+            gap: 15px;
             text-decoration: none;
-            padding: 8px 0;
-            border-bottom: 1px dashed #eee;
-            font-size: 0.95rem;
+            color: #333;
+            padding: 12px 10px;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
         }
-        .download-link:last-child { border-bottom: none; }
-        .download-link:hover { color: var(--accent-orange); }
-
-        /* --- RWD --- */
-        @media (max-width: 900px) {
-            .container { grid-template-columns: 1fr; }
-            .spec-row { grid-template-columns: 1fr; }
-            .spec-label { background-color: #e9ecef; padding: 10px 20px; border-bottom: 1px solid #eee; border-right: none; }
-            .spec-content { padding: 15px 20px; }
+        .download-item:hover { background: #f8f9fa; }
+        .download-item:last-child { border-bottom: none; }
+        
+        .dl-icon { 
+            font-size: 1.5rem; 
+            color: var(--primary-teal); 
+            width: 30px; 
+            text-align: center; 
         }
     </style>
 </head>
@@ -415,53 +407,62 @@
         </main>
 
         <!-- Right Column: Sidebar -->
+<!-- Right Column: Sidebar -->
         <aside>
-            <!-- Card 1: Registration Status -->
+            <!-- Card 1: Action -->
             <div class="sidebar-card">
-                <div class="card-title">報名狀態</div>
-                <div class="status-box">
-                    <div class="status-text">開放報名中</div>
-                    <div class="spots-text">剩餘名額：<span style="color:#e67e22; font-weight:bold;">45</span> / 200</div>
+                <div class="card-title">報名提醒</div>
+                <div style="background:#f8f9fa; padding:15px; border-radius:6px; text-align:center; margin-bottom:15px;">
+                    <div style="font-size:0.9rem; color:#666;">報名截止時間為</div>
+                    <div style="font-size:2rem; font-weight:700; color:#333;">2025/05/13 <span style="font-size:1rem;">(星期二)</span></div>
                 </div>
                 
-                <div style="width:100%; background:#eee; height:8px; border-radius:4px; overflow:hidden; margin-bottom:15px;">
-                    <div style="width:78%; background:var(--status-green); height:100%;"></div>
-                </div>
-                <div style="font-size:0.85rem; color:#666; margin-bottom:15px;">
-                    <i class="fa-regular fa-clock"></i> 截止日期：114/05/13
-                </div>
-
-                <button class="btn-register">
-                    立即線上報名
-                </button>
+                <a href="mailto:help@innovation.gov.tw?subject=【徵案說明會報名詢問】案號114-T058-公司名稱&body=您好，%0D%0A%0D%0A我們是（請填寫公司名稱），關於徵案說明會報名有以下問題：%0D%0A1. 問題描述：%0D%0A2. 聯絡人/電話：%0D%0A%0D%0A謝謝您的協助。" class="btn-upload">
+                       <i class="fa-solid fa-envelope"></i> 發送 Email 詢問
+                </a>
+                <p style="font-size:0.8rem; color:#888; text-align:center; margin-top:10px;">
+                    點擊將自動開啟您的電子郵件軟體，或寄至：service@spp.org.tw
+                </p>
             </div>
 
-            <!-- Card 2: Meeting Link -->
+            <!-- Card 2: Downloads -->
             <div class="sidebar-card">
-                <div class="card-title">會議連結</div>
-                <div style="text-align:center; padding:10px; background:#f8f9fa; border:1px dashed #ccc; color:#888;">
-                    <i class="fa-solid fa-link" style="font-size:2rem; margin-bottom:10px; display:block;"></i>
-                    連結尚未開放<br>
-                    <span style="font-size:0.8rem;">(活動前 24 小時啟用)</span>
-                </div>
+                <div class="card-title">必備範本下載</div>
+                
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-word dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">徵案須知與作業手冊.docx</div>
+                        <div style="font-size:0.75rem; color:#999;">3.2 MB • 2025/05/01 更新</div>
+                    </div>
+                </a>
+
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-excel dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">經費編列明細表.xlsx</div>
+                        <div style="font-size:0.75rem; color:#999;">500 KB</div>
+                    </div>
+                </a>
+
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-pdf dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">線上系統操作說明書.pdf</div>
+                        <div style="font-size:0.75rem; color:#999;">1.2 MB</div>
+                    </div>
+                </a>
             </div>
 
-            <!-- Card 3: Resources -->
-            <div class="sidebar-card">
-                <div class="card-title">相關資料下載</div>
-                <div>
-                    <a href="#" class="download-link">
-                        <i class="fa-regular fa-file-pdf"></i> 徵案簡報檔(初版).pdf
-                    </a>
-                    <a href="#" class="download-link">
-                        <i class="fa-regular fa-circle-question"></i> 常見問題集 (QA).pdf
-                    </a>
-                    <a href="#" class="download-link">
-                        <i class="fa-brands fa-microsoft"></i> Teams 操作手冊.pdf
-                    </a>
-                </div>
+            <!-- Card 3: Help -->
+            <div class="sidebar-card" style="border-top-color:#6c757d;">
+                <div class="card-title">常見問題</div>
+                <ul style="font-size:0.9rem; color:#0056b3; padding-left:20px;">
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">當天沒上線可以看錄影嗎？</a></li>
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">Teams 連結何時會發送？</a></li>
+                    <li style="margin-bottom:5px;"><a href="#" style="text-decoration:none; color:inherit;">QA 時段如何進行線上提問？</a></li>
+                </ul>
             </div>
-
         </aside>
 
     </div>
