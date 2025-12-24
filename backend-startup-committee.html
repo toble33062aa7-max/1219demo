@@ -177,29 +177,41 @@
             <div class="case-meta">
                 <span>案號：114-RD-001</span>
                 <span>主辦單位：計畫管理組</span>
-                <span>剩餘天數：<span style="color:red; font-weight:bold;">85 天</span></span>
+                <span>入選廠商數量：<span style="color:var(--primary-color); font-weight:bold;">12 家</span></span>
+                <span>目前委員數：<span id="memberCount">4 名</span></span>
             </div>
         </div>
 
         <div class="stepper">
-            <div class="step complete" onclick="location.href='backend-challenge-management.html'" style="cursor: pointer;">
-    <i class="fa-solid fa-bullhorn"></i>出題公告
+    <!-- 點擊回到出題公告首頁 -->
+    <div class="step complete" onclick="location.href='backend-challenge-management.html'" style="cursor: pointer;">
+        <i class="fa-solid fa-bullhorn"></i>出題公告
+    </div>
+    <!-- 點擊回到解題徵件首頁 (入選廠商管理) -->
+    <div class="step active" onclick="location.href='backend-startup-management.html'" style="cursor: pointer;">
+        <i class="fa-solid fa-lightbulb"></i>解題徵件
+    </div>
+    <div class="step"><i class="fa-solid fa-file-signature"></i>評選簽約</div>
+    <div class="step"><i class="fa-solid fa-list-check"></i>期中管考</div>
+    <div class="step"><i class="fa-solid fa-clipboard-check"></i>期末驗收</div>
+    <div class="step"><i class="fa-solid fa-box-archive"></i>結案請款</div>
 </div>
-            <div class="step active"><i class="fa-solid fa-lightbulb"></i>解題徵件</div>
-            <div class="step"><i class="fa-solid fa-file-signature"></i>評選簽約</div>
-            <div class="step"><i class="fa-solid fa-list-check"></i>期中管考</div>
-            <div class="step"><i class="fa-solid fa-clipboard-check"></i>期末驗收</div>
-            <div class="step"><i class="fa-solid fa-box-archive"></i>結案請款</div>
-        </div>
 
         <div class="tabs">
-            <div class="tab active">解題徵件 (7-11)</div>
-            <div class="tab" onclick="location.href='backend-startup-list.html'">入選廠商列表</div>
-            <div class="tab" onclick="location.href='backend-startup-committee.html'">審查委員名單</div>
-        </div>
+    <!-- 假設解題徵件的詳細內容頁面是 backend-startup-management.html -->
+    <div class="tab" onclick="location.href='backend-startup-management.html'">解題徵件 (7-11)</div>
+    <div class="tab" onclick="location.href='backend-startup-list.html'">入選廠商列表</div>
+    <div class="tab active">審查委員名單</div>
+</div>
 
         <div class="content-box">
-            <button class="btn btn-add" onclick="addRow()"><i class="fa-solid fa-plus"></i> 新增工項</button>
+            <div style="display:flex; justify-content: space-between; align-items: center;">
+                <button class="btn btn-add" onclick="addRow()"><i class="fa-solid fa-user-plus"></i> 新增評選委員</button>
+                <div class="hint-box">
+                    <i class="fa-solid fa-circle-info" style="color: var(--primary-color);"></i> 
+                    提示：此名單將用於「解題評選會議」，系統將自動發送入選廠商之計畫書電子檔予已確認之委員。
+                </div>
+            </div>
             
             <table class="data-table">
                 <thead>
