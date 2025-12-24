@@ -68,14 +68,17 @@
         }
         .action-btn:hover { color: #81e6d9; }
 
-        /* --- Main Layout --- */
-        .container {
-            width: 85%;
-            margin: 30px auto;
-            display: grid;
-            grid-template-columns: 1fr 300px; /* 左側表格寬，右側資訊窄 */
-            gap: 30px;
-        }
+/* --- 調整 Layout 結構 --- */
+.container {
+    width: 90%; /* 增加整體寬度到 90% */
+    max-width: 1400px; /* 設定最大寬度防止在大螢幕太散 */
+    margin: 30px auto;
+    display: grid;
+    /* 改用 minmax，確保側邊欄最少 340px，最多 380px */
+    grid-template-columns: 1fr minmax(340px, 380px); 
+    gap: 40px; /* 增加左側與右側的間距 */
+    align-items: start; /* 確保左右對齊頂部 */
+}
 
         /* --- Table Style Layout (核心優化部分) --- */
         .spec-container {
@@ -189,7 +192,67 @@
             margin-top: 50px;
             font-size: 0.9rem;
         }
+/* --- Sidebar 新樣式 --- */
+        aside {
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* 增加卡片之間的垂直間距 */
+    position: sticky; /* 讓側邊欄跟隨捲動 */
+    top: 20px;
+}
+        
+        /* 側邊欄卡片基礎樣式 */
+        .sidebar-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--accent-orange);
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        /* 卡片標題 */
+        .card-title { 
+            font-weight: 700; 
+            margin-bottom: 15px; 
+            color: var(--primary-dark); 
+            font-size: 1.1rem; 
+            border-bottom: 1px solid #eee; 
+            padding-bottom: 10px; 
+        }
+        
+        /* 橘色報名按鈕 */
+        .btn-upload {
+            display: block;
+            width: 100%;
+            background: var(--accent-orange);
+            color: white !important;
+            text-align: center;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+        .btn-upload:hover { background: #d35400; }
 
+        /* 下載項目樣式 */
+        .download-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: background 0.2s;
+            text-decoration: none;
+            color: #333;
+        }
+        .download-item:hover { background: #f0f7f7; border-color: var(--primary-teal); }
+        .dl-icon { font-size: 1.5rem; color: var(--primary-teal); }
         /* --- RWD 手機版優化 (把表格變堆疊) --- */
         @media (max-width: 900px) {
             .container { grid-template-columns: 1fr; }
@@ -373,43 +436,64 @@
         </main>
 
         <!-- Right: Sidebar Action -->
-        <aside class="sidebar">
-            <!-- Action Box -->
-            <div class="info-card">
-                <div class="card-title">報名狀態</div>
-                <div style="text-align:center; margin-bottom:15px;">
-                    <div style="font-size:2rem; font-weight:700; color:var(--accent-orange);">250 萬</div>
-                    <div style="font-size:0.9rem; color:#666;">最高補助金額</div>
-                </div>
-                <div style="font-size:0.9rem; color:#555; margin-bottom:5px;">
-                    <i class="fa-regular fa-clock"></i> 截止：115/01/30
-                </div>
-                <div style="width:100%; background:#eee; height:8px; border-radius:4px; overflow:hidden;">
-                    <div style="width:60%; background:var(--primary-teal); height:100%;"></div>
-                </div>
-                <div style="text-align:right; font-size:0.8rem; color:#888;">進度：徵件中</div>
+        <!-- Right: Sidebar (更新部分) -->
+        <aside>
+            <!-- 報名行動 -->
+<!-- 提案徵件狀態 -->
+       <div class="sidebar-card" style="border-top-color: #6c757d;">
+    <div class="card-title">計畫進行階段</div>
+    <div class="sidebar-challenge-title">
+        挑戰題目：智慧路口：即時交通影像辨識與分析解決方案
+    </div>
+    
+    <!-- 灰色背景區塊：顯示目前狀態 -->
+    <div style="background:#f8f9fa; padding:15px; border-radius:6px; text-align:center; margin-bottom:15px; border: 1px solid #eee;">
+        <div style="font-size:0.9rem; color:#666;">目前計畫狀態</div>
+        <div style="font-size:2.2rem; font-weight:700; color:#008f95;">徵件中</div>
+    </div>
+    
+    <a href="startup-apply.html" class="btn-upload">
+        <i class="fa-solid fa-paper-plane"></i> 立即線上提案
+    </a>
+    
+    <p style="font-size:0.8rem; color:#888; text-align:center; margin-top:10px;">
+        <i class="fa-solid fa-arrow-right"></i> 下一階段：計畫書書面審查
+    </p>
+</div>
 
-                <a href="startup-apply.html" class="btn-primary">我要提案</a>
-            </div>
-
-            <!-- Download Box -->
-            <div class="info-card">
+            <!-- 檔案下載 -->
+            <div class="sidebar-card" style="border-top-color: #6c757d;">
                 <div class="card-title">相關文件下載</div>
-                <div style="display:flex; flex-direction:column; gap:10px;">
-                    <a href="#" style="display:flex; align-items:center; gap:10px; color:#0056b3;">
-                        <i class="fa-regular fa-file-pdf"></i> 徵件簡章.pdf
-                    </a>
-                    <a href="#" style="display:flex; align-items:center; gap:10px; color:#0056b3;">
-                        <i class="fa-regular fa-file-word"></i> 提案計畫書.docx
-                    </a>
-                    <a href="#" style="display:flex; align-items:center; gap:10px; color:#0056b3;">
-                        <i class="fa-regular fa-file-excel"></i> 預算表範本.xlsx
-                    </a>
-                </div>
+                
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-pdf dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">活動簡章與交通指南.pdf</div>
+                        <div style="font-size:0.75rem; color:#999;">1.8 MB</div>
+                    </div>
+                </a>
+
+                <a href="#" class="download-item">
+                    <i class="fa-regular fa-file-word dl-icon"></i>
+                    <div>
+                        <div style="font-weight:500;">場域安全切結書_範本.docx</div>
+                        <div style="font-size:0.75rem; color:#999;">450 KB</div>
+                    </div>
+                </a>
             </div>
 
-            <!-- Tags -->
-            <div class="info-card">
+            <!-- 常見問題 -->
+            <div class="sidebar-card" style="border-top-color:#e9ecef;">
+                <div class="card-title">常見問題</div>
+                <ul style="font-size:0.9rem; color:#0056b3; padding-left:20px;">
+                    <li style="margin-bottom:5px;"><a href="#">可以現場報名嗎？</a></li>
+                    <li style="margin-bottom:5px;"><a href="#">一家公司可以報名幾位？</a></li>
+                    <li style="margin-bottom:5px;"><a href="#">參訪基地可以拍照嗎？</a></li>
+                </ul>
+            </div>
+
+            <!-- 保留的相關標籤卡片 -->
+            <div class="sidebar-card" style="border-top-color: #dee2e6;">
                 <div class="card-title">相關標籤</div>
                 <div style="display:flex; flex-wrap:wrap; gap:5px;">
                     <span style="background:#eee; padding:3px 8px; font-size:0.85rem; color:#555; border-radius:3px;">#AI</span>
