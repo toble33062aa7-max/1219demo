@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政府場域實證 - 後台案件管理系統</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00796b;
+            --secondary-bg: #f4f7f6;
+            --text-main: #333;
+            --border-color: #e0e0e0;
+            --success-color: #28a745;
+            --warning-color: #ff9800;
+            --danger-color: #d32f2f;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", sans-serif;
+            margin: 0;
+            display: flex;
+            background-color: var(--secondary-bg);
+            color: var(--text-main);
+        }
+
+        /* 左側導覽列 */
+        .sidebar {
+            width: 240px;
+            background-color: #fff;
+            height: 100vh;
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            color: #555;
+            transition: 0.2s;
+        }
+
+        .menu-item i { width: 25px; margin-right: 10px; }
+        .menu-item:hover, .menu-item.active {
+            background-color: #e0f2f1;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* 主要內容區 */
+        .main-content {
+            margin-left: 240px;
+            width: calc(100% - 240px);
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* 案件卡片 */
+        .case-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-color);
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .case-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 8px; }
+        .case-meta { display: flex; gap: 20px; color: #666; font-size: 0.9rem; }
+        .badge-status { background: #e8f5e9; color: var(--primary-color); padding: 3px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85rem; }
+
+        /* Stepper 進度條 */
+        .stepper {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            padding: 25px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .step { text-align: center; flex: 1; color: #ccc; position: relative; font-size: 0.85rem; cursor: pointer;}
+        .step.active { color: var(--primary-color); font-weight: bold; }
+        .step.complete { color: var(--success-color); }
+        .step i { font-size: 1.4rem; margin-bottom: 8px; display: block; }
+
+        /* Tabs */
+        .tabs { display: flex; margin-bottom: 0px; border-bottom: 1px solid var(--border-color); }
+        .tab { padding: 12px 30px; cursor: pointer; border-radius: 8px 8px 0 0; background: #eee; margin-right: 4px; color: #666; transition: 0.3s; }
+        .tab.active { background: white; color: var(--primary-color); border: 1px solid var(--border-color); border-bottom: 2px solid white; font-weight: bold; }
+
+        /* 表格區塊 */
+        .content-box {
+            background: white;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .data-table th { background: #fcfcfc; color: #555; padding: 12px; text-align: left; border-bottom: 2px solid #eee; }
+        .data-table td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: top; }
+
+        /* 勾選項目樣式 */
+        .check-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; line-height: 1.4; }
+        .check-item input[type="checkbox"] { margin-top: 3px; cursor: pointer; }
+
+        /* 按鈕樣式 */
+        .btn { padding: 6px 14px; border-radius: 4px; cursor: pointer; border: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 5px; }
+        .btn-outline { border: 1px solid #ccc; background: white; color: #555; }
+        .btn-primary { background: var(--primary-color); color: white; }
+        .btn-edit { border: 1px solid var(--primary-color); color: var(--primary-color); background: white; }
+        .btn-save { background: var(--success-color); color: white; }
+        .btn-delete { background: #fff; color: var(--danger-color); border: 1px solid var(--danger-color); }
+        .btn-add { background: var(--primary-color); color: white; margin-bottom: 15px; }
+
+        /* 編輯中樣式 */
+        .editing-row { background-color: #fffde7 !important; }
+        input[type="text"], input[type="date"], select, textarea {
+            width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;
+        }
+        textarea { min-height: 80px; resize: vertical; }
+
+        .footer-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">計畫管理平台</div>
+        <div class="menu-item"><i class="fa-solid fa-house"></i> 首頁總覽</div>
+        <div class="menu-item active"><i class="fa-solid fa-folder-open"></i> 實證案件管理</div>
+        <div class="menu-item"><i class="fa-solid fa-file-contract"></i> 契約範本設定</div>
+        <div class="menu-item"><i class="fa-solid fa-chart-line"></i> 統計報表</div>
+        <div class="menu-item"><i class="fa-solid fa-gear"></i> 系統設定</div>
+    </nav>
+
+    <main class="main-content">
+        <header>
+            <div style="color: #666; font-size: 0.9rem;">實證案件 > 案件詳情</div>
+            <div>管理員：fangcy <i class="fa-solid fa-circle-user"></i></div>
+        </header>
+
+        <div class="case-card">
+            <div class="case-title">
+                114年度研發型補助計畫推動案
+                <span class="badge-status">出題公告階段</span>
+            </div>
+            <div class="case-meta">
+                <span>案號：114-RD-001</span>
+                <span>主辦單位：計畫管理組</span>
+                <span>剩餘天數：<span style="color:red; font-weight:bold;">120 天</span></span>
+            </div>
+        </div>
+
+        <div class="stepper">
+            <div class="step active"><i class="fa-solid fa-bullhorn"></i>出題公告</div>
+            <div class="step" onclick="location.href='backend-startup-management.html'" style="cursor: pointer;">
+    <i class="fa-solid fa-lightbulb"></i>解題徵件
+</div>
+            <div class="step"><i class="fa-solid fa-file-signature"></i>評選簽約</div>
+            <div class="step"><i class="fa-solid fa-list-check"></i>期中管考</div>
+            <div class="step"><i class="fa-solid fa-clipboard-check"></i>期末驗收</div>
+            <div class="step"><i class="fa-solid fa-box-archive"></i>結案請款</div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active">出題公告 (1-6)</div>
+            <div class="tab" onclick="location.href='backend-challenge-list.html'">機關出題列表</div>
+            <div class="tab" onclick="location.href='backend-challenge-committee'">審查委員名單</div>
+        </div>
+
+        <div class="content-box">
+            <button class="btn btn-add" onclick="addRow()"><i class="fa-solid fa-plus"></i> 新增工項</button>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th width="50">工項</th>
+                        <th width="150">作業內容與日期</th>
+                        <th>需求文件檢核 (勾選完成)</th>
+                        <th width="100">發文狀態</th>
+                        <th width="180">說明</th>
+                        <th width="140">動作</th>
+                    </tr>
+                </thead>
+                <tbody id="taskBody">
+                    <!-- 資料將由 JS 生成 -->
+                </tbody>
+            </table>
+
+            <div class="footer-btns">
+                <button class="btn btn-outline">匯出管考月報</button>
+                <button class="btn btn-primary">儲存當前進度</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 初始資料
+        let tasks = [
+            { id: 1, isEdit: false, cat: "實證", sDate: "2026-01-23", eDate: "2026-01-23", title: "出題須知與公告", type: "線上", docs: ["(公文)114年度作業手冊公告函v1", "研發型補助計畫推動作業手冊", "出題申請公告資料0331"], post: "TRUE", note: "需確認作業手冊及申請須知內容已定稿並完成公文簽核" },
+            { id: 2, isEdit: false, cat: "實證", sDate: "2026-01-23", eDate: "2026-02-20", title: "機關出題申請說明會宣傳", type: "實體", docs: ["114採購_新創政府資源說明簡報", "EDM、FB貼文(0602審核稿)", "活動X展架、Web Banner"], post: "FALSE", note: "於台大醫、北醫等場域進行實證推廣說明" },
+            { id: 3, isEdit: false, cat: "實證", sDate: "2026-01-23", eDate: "2026-02-27", title: "機關出題收件與資格審查", type: "線上", docs: ["114出題計畫書0425", "113評鑒合格公文證書"], post: "FALSE", note: "檢核申請文件是否齊全及機構資格" },
+            { id: 4, isEdit: false, cat: "實證", sDate: "2026-03-02", eDate: "2026-03-11", title: "出題審查會議籌備", type: "實體", docs: ["委員名單說明", "機關出題共識會簡報", "開會通知單、議程"], post: "TRUE", note: "確認外聘委員名單並寄送邀請信" }
+        ];
+
+        function renderTable() {
+            const tbody = document.getElementById('taskBody');
+            tbody.innerHTML = '';
+
+            tasks.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                if (item.isEdit) tr.className = 'editing-row';
+
+                if (item.isEdit) {
+                    // 編輯模式
+                    tr.innerHTML = `
+                        <td>${item.id}</td>
+                        <td>
+                            <input type="text" id="t-title-${index}" value="${item.title}" style="margin-bottom:5px">
+                            <input type="date" id="t-sDate-${index}" value="${item.sDate}">
+                            <input type="date" id="t-eDate-${index}" value="${item.eDate}">
+			<select id="t-type-${index}">
+        			<option value="線上" ${item.type==='線上'?'selected':''}>線上</option>
+        			<option value="實體" ${item.type==='實體'?'selected':''}>實體</option>
+    			</select>
+                        </td>
+                        <td>
+    <div id="edit-doc-list-${index}">
+        ${item.docs.map((doc, dIdx) => `
+            <div style="display:flex; gap:5px; margin-bottom:5px;">
+                <input type="text" class="t-doc-input-${index}" value="${doc}">
+                <button class="btn" style="color:red; padding:0 5px;" onclick="this.parentElement.remove()">×</button>
+            </div>
+        `).join('')}
+        <button class="btn btn-outline" style="font-size:0.7rem; padding:2px 5px;" onclick="addDocInput(${index})">+ 新增文件</button>
+    </div>
+</td>
+
+    
+                        <td>
+                            <select id="t-post-${index}">
+                                <option value="TRUE" ${item.post==='TRUE'?'selected':''}>TRUE</option>
+                                <option value="FALSE" ${item.post==='FALSE'?'selected':''}>FALSE</option>
+                            </select>
+                        </td>
+                        <td><textarea id="t-note-${index}">${item.note}</textarea></td>
+                        <td>
+                            <button class="btn btn-save" onclick="saveRow(${index})">儲存</button>
+                            <button class="btn btn-outline" onclick="toggleEdit(${index})">取消</button>
+                        </td>
+                    `;
+                } else {
+                    // 檢視模式
+                    let docsHtml = item.docs.map(doc => `
+                        <div class="check-item">
+                            <input type="checkbox"> <span>${doc}</span>
+                        </div>
+                    `).join('');
+
+                    tr.innerHTML = `
+                        <td>${item.id}</td>
+                        <td>
+                            <div style="font-weight:bold; color:var(--primary-color)">${item.title}</div>
+                            <div style="font-size:0.8rem; color:#888; margin-top:4px;">${item.sDate} ~ ${item.eDate}</div>
+                            <div style="font-size:0.8rem; margin-top:4px;"><i class="fa-solid fa-location-dot"></i> ${item.type}</div>
+                        </td>
+                        <td>${docsHtml}</td>
+                        <td>
+                            <span style="color:${item.post==='TRUE'?'green':'#ccc'}; font-weight:bold;">● ${item.post}</span>
+                        </td>
+                        <td style="font-size:0.8rem; color:#666;">${item.note}</td>
+                        <td>
+                            <button class="btn btn-edit" onclick="toggleEdit(${index})"><i class="fa-solid fa-pen"></i> 編輯</button>
+                            <button class="btn btn-delete" onclick="deleteRow(${index})"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    `;
+                }
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleEdit(index) {
+            tasks[index].isEdit = !tasks[index].isEdit;
+            renderTable();
+        }
+
+        function saveRow(index) {
+            tasks[index].title = document.getElementById(`t-title-${index}`).value;
+            tasks[index].sDate = document.getElementById(`t-sDate-${index}`).value;
+            tasks[index].eDate = document.getElementById(`t-eDate-${index}`).value;
+	tasks[index].type = document.getElementById(`t-type-${index}`).value; // 加入這行
+            const docInputs = document.querySelectorAll(`.t-doc-input-${index}`);
+tasks[index].docs = Array.from(docInputs).map(input => input.value).filter(d => d.trim() !== '');
+            tasks[index].post = document.getElementById(`t-post-${index}`).value;
+            tasks[index].note = document.getElementById(`t-note-${index}`).value;
+            tasks[index].isEdit = false;
+            renderTable();
+        }
+
+        function addRow() {
+            const nextId = tasks.length > 0 ? tasks[tasks.length - 1].id + 1 : 1;
+            tasks.push({
+                id: nextId,
+                isEdit: true,
+                cat: "實證",
+                sDate: "2026-01-01",
+                eDate: "2026-01-01",
+                title: "新增工作項目",
+                type: "線上",
+                docs: [],
+                post: "FALSE",
+                note: ""
+            });
+            renderTable();
+        }
+
+        function deleteRow(index) {
+            if (confirm("確定要刪除此工項嗎？")) {
+                tasks.splice(index, 1);
+                renderTable();
+            }
+        }
+
+        // 初始渲染
+        renderTable();
+function addDocInput(index) {
+    const container = document.getElementById(`edit-doc-list-${index}`);
+    const div = document.createElement('div');
+    div.style.display = 'flex';
+    div.style.gap = '5px';
+    div.style.marginBottom = '5px';
+    div.innerHTML = `
+        <input type="text" class="t-doc-input-${index}" value="">
+        <button class="btn" style="color:red; padding:0 5px;" onclick="this.parentElement.remove()">×</button>
+    `;
+    // 插入在「新增文件」按鈕之前
+    container.insertBefore(div, container.lastElementChild);
+}
+    </script>
+</body>
+</html>

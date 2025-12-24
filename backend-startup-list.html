@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政府場域實證 - 後台案件管理系統 (入選廠商列表)</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00796b;
+            --secondary-bg: #f4f7f6;
+            --text-main: #333;
+            --border-color: #e0e0e0;
+            --success-color: #28a745;
+            --warning-color: #ff9800;
+            --danger-color: #d32f2f;
+            --info-color: #1976d2;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", sans-serif;
+            margin: 0;
+            display: flex;
+            background-color: var(--secondary-bg);
+            color: var(--text-main);
+        }
+
+        /* 左側導覽列 */
+        .sidebar {
+            width: 240px;
+            background-color: #fff;
+            height: 100vh;
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            color: #555;
+            transition: 0.2s;
+        }
+
+        .menu-item i { width: 25px; margin-right: 10px; }
+        .menu-item:hover, .menu-item.active {
+            background-color: #e0f2f1;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* 主要內容區 */
+        .main-content {
+            margin-left: 240px;
+            width: calc(100% - 240px);
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* 案件卡片 */
+        .case-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-color);
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .case-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 8px; }
+        .case-meta { display: flex; gap: 20px; color: #666; font-size: 0.9rem; }
+        .badge-status { background: #fff3e0; color: var(--warning-color); padding: 3px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85rem; border: 1px solid var(--warning-color); }
+
+        /* Stepper 進度條 */
+        .stepper {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            padding: 25px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .step { text-align: center; flex: 1; color: #ccc; position: relative; font-size: 0.85rem; cursor: pointer;}
+        .step.active { color: var(--primary-color); font-weight: bold; }
+        .step.complete { color: var(--success-color); }
+        .step i { font-size: 1.4rem; margin-bottom: 8px; display: block; }
+
+        /* Tabs */
+        .tabs { display: flex; margin-bottom: 0px; border-bottom: 1px solid var(--border-color); }
+        .tab { padding: 12px 30px; cursor: pointer; border-radius: 8px 8px 0 0; background: #eee; margin-right: 4px; color: #666; transition: 0.3s; }
+        .tab.active { background: white; color: var(--primary-color); border: 1px solid var(--border-color); border-bottom: 2px solid white; font-weight: bold; }
+
+        /* 表格區塊 */
+        .content-box {
+            background: white;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .data-table th { background: #fcfcfc; color: #555; padding: 12px; text-align: left; border-bottom: 2px solid #eee; }
+        .data-table td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: middle; }
+
+        /* 標籤狀態 */
+        .tag { padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+        .tag-blue { background: #e3f2fd; color: #1976d2; border: 1px solid #1976d2; }
+
+        /* 詳情區塊樣式 */
+        .detail-info-grid {
+            display: grid;
+            grid-template-columns: 120px 1fr 120px 1fr;
+            gap: 10px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            border: 1px solid #eee;
+        }
+        .detail-label { font-weight: bold; color: #666; background: #eee; padding: 4px 8px; border-radius: 3px; text-align: right; }
+        .detail-value { padding: 4px 8px; border-bottom: 1px solid #eee; }
+        .full-width { grid-column: span 3; }
+
+        .attachment-link { color: var(--info-color); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; margin-right: 15px; font-size: 0.85rem; }
+        .attachment-link:hover { text-decoration: underline; }
+
+        /* 按鈕樣式 */
+        .btn { padding: 6px 14px; border-radius: 4px; cursor: pointer; border: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 5px; }
+        .btn-outline { border: 1px solid #ccc; background: white; color: #555; }
+        .btn-primary { background: var(--primary-color); color: white; }
+        .btn-info { background: var(--info-color); color: white; }
+
+        .footer-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+        
+        /* 展開動畫簡易設定 */
+        .hidden-row { display: none; background-color: #fafafa; }
+        .expanded { display: table-row; }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">計畫管理平台</div>
+        <div class="menu-item"><i class="fa-solid fa-house"></i> 首頁總覽</div>
+        <div class="menu-item active"><i class="fa-solid fa-folder-open"></i> 實證案件管理</div>
+        <div class="menu-item"><i class="fa-solid fa-file-contract"></i> 契約範本設定</div>
+        <div class="menu-item"><i class="fa-solid fa-chart-line"></i> 統計報表</div>
+        <div class="menu-item"><i class="fa-solid fa-gear"></i> 系統設定</div>
+    </nav>
+
+    <main class="main-content">
+        <header>
+            <div style="color: #666; font-size: 0.9rem;">實證案件 > 案件詳情 > 入選廠商管理</div>
+            <div>管理員：fangcy <i class="fa-solid fa-circle-user"></i></div>
+        </header>
+
+        <div class="case-card">
+            <div class="case-title">
+                114年度研發型補助計畫推動案
+                <span class="badge-status">解題徵件階段</span>
+            </div>
+            <div class="case-meta">
+                <span>案號：114-RD-001</span>
+                <span>主辦單位：計畫管理組</span>
+                <span>入選廠商數量：<span style="color:var(--primary-color); font-weight:bold;">12 家</span></span>
+            </div>
+        </div>
+
+        <div class="stepper">
+            <div class="step complete" onclick="location.href='backend-challenge-management.html'" style="cursor: pointer;">
+    <i class="fa-solid fa-bullhorn"></i>出題公告
+</div>
+            <div class="step active"><i class="fa-solid fa-lightbulb"></i>解題徵件</div>
+            <div class="step"><i class="fa-solid fa-file-signature"></i>評選簽約</div>
+            <div class="step"><i class="fa-solid fa-list-check"></i>期中管考</div>
+            <div class="step"><i class="fa-solid fa-clipboard-check"></i>期末驗收</div>
+            <div class="step"><i class="fa-solid fa-box-archive"></i>結案請款</div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab" onclick="location.href='backend-startup-management.html'">解題徵件 (7-11)</div>
+            <div class="tab active">入選廠商列表</div>
+            <div class="tab" onclick="location.href='backend-startup-management.html'">審查委員名單</div>
+        </div>
+
+        <div class="content-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin: 0; font-size: 1.1rem; color: var(--primary-color);">已投遞/入選廠商名冊</h3>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" placeholder="搜尋廠商名稱或編號..." style="padding: 6px; border: 1px solid #ccc; border-radius: 4px;">
+                    <button class="btn btn-outline"><i class="fa-solid fa-filter"></i> 篩選</button>
+                </div>
+            </div>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th width="140">提案編號</th>
+                        <th width="200">廠商名稱</th>
+                        <th>解決方案名稱</th>
+                        <th width="120">預估經費</th>
+                        <th width="100">狀態</th>
+                        <th width="120">動作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 智通科技資料行 -->
+                    <tr>
+                        <td>114-T058-003</td>
+                        <td><div style="font-weight:bold;">智通科技股份有限公司</div><div style="font-size:0.75rem; color:#888;">統編: 12345678</div></td>
+                        <td>AI Edge 智慧路口車流偵測系統</td>
+                        <td>NT$ 2,200,000</td>
+                        <td><span class="tag tag-blue">已入選</span></td>
+                        <td>
+                            <button class="btn btn-edit" onclick="toggleDetails('detail-1')"><i class="fa-solid fa-eye"></i> 詳情</button>
+                        </td>
+                    </tr>
+                    <!-- 詳情展開內容 -->
+                    <tr id="detail-1" class="hidden-row">
+                        <td colspan="6">
+                            <div style="padding: 10px 20px 20px 20px;">
+                                <h4 style="border-left: 4px solid var(--primary-color); padding-left: 10px; margin-bottom: 10px;">廠商完整提案資料</h4>
+                                
+                                <div class="detail-info-grid">
+                                    <div class="detail-label">負責人</div><div class="detail-value">王大明</div>
+                                    <div class="detail-label">成立日期</div><div class="detail-value">109年 05月 20日</div>
+                                    
+                                    <div class="detail-label">聯絡人</div><div class="detail-value">李小美 (專案經理)</div>
+                                    <div class="detail-label">聯絡電話</div><div class="detail-value">02-2655-1234</div>
+                                    
+                                    <div class="detail-label">電子郵件</div><div class="detail-value">contact@smart-tech.com.tw</div>
+                                    <div class="detail-label">公司網址</div><div class="detail-value">www.smart-tech.com.tw</div>
+                                    
+                                    <div class="detail-label">通訊地址</div><div class="detail-value full-width">台北市內湖區瑞光路999號10樓</div>
+                                    
+                                    <div class="detail-label">應用技術</div><div class="detail-value full-width">Edge AI, Computer Vision, 5G</div>
+                                    
+                                    <div class="detail-label">團隊實績</div>
+                                    <div class="detail-value full-width">
+                                        <strong>獲獎：</strong>2024 台北智慧城市黑客松 金獎、2023 經濟部新創事業獎 優選<br>
+                                        <strong>專利：</strong>發明專利 I123456 號 (邊緣運算車流計數)<br>
+                                        <strong>案例：</strong>新北市交通局(112)科技執法影像辨識、高雄市政府(111)5G AIoT智慧杆
+                                    </div>
+
+                                    <div class="detail-label">問題分析</div>
+                                    <div class="detail-value full-width" style="color:#555; line-height: 1.5;">
+                                        目前目標路口之感應線圈老舊，維護成本高，且無法分辨車種。傳統雲端方案延遲高，無法滿足即時號誌控制需求。
+                                    </div>
+
+                                    <div class="detail-label">技術架構</div>
+                                    <div class="detail-value full-width" style="color:#555; line-height: 1.5;">
+                                        採用 NVIDIA Jetson 輕量化 AI 模型部署於路側端。僅回傳去識別化數據（流量、車種、轉向）以保護個資，並提供標準 RESTful API 對接交控中心。
+                                    </div>
+
+                                    <div class="detail-label">預期效益</div>
+                                    <div class="detail-value full-width">
+                                        1. 辨識準確率 > 95% (日間) / 2. 資料延遲 < 1秒 / 3. 大幅降低影像傳輸頻寬成本。
+                                    </div>
+
+                                    <div class="detail-label">相關附件</div>
+                                    <div class="detail-value full-width">
+                                        <a href="#" class="attachment-link"><i class="fa-solid fa-file-pdf"></i> 完整提案計畫書.pdf</a>
+                                        <a href="#" class="attachment-link"><i class="fa-solid fa-file-powerpoint"></i> 簡報檔案.pptx</a>
+                                        <a href="#" class="attachment-link"><i class="fa-solid fa-file-excel"></i> 經費預算表.xlsx</a>
+                                        <a href="#" class="attachment-link"><i class="fa-solid fa-image"></i> 系統架構圖.png</a>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-top: 15px; text-align: right;">
+                                    <button class="btn btn-outline" onclick="toggleDetails('detail-1')">收合詳情</button>
+                                    <button class="btn btn-primary"><i class="fa-solid fa-download"></i> 下載全案壓縮包</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- 範例第二筆 -->
+                    <tr>
+                        <td>114-T058-005</td>
+                        <td><div style="font-weight:bold;">雲端數據應用實驗室</div><div style="font-size:0.75rem; color:#888;">統編: 87654321</div></td>
+                        <td>智慧路燈能耗監測平台</td>
+                        <td>NT$ 1,800,000</td>
+                        <td><span class="tag tag-blue">已入選</span></td>
+                        <td>
+                            <button class="btn btn-edit"><i class="fa-solid fa-eye"></i> 詳情</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="footer-btns">
+                <button class="btn btn-outline">匯出入選廠商總表</button>
+                <button class="btn btn-primary">進入評選簽約階段</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleDetails(id) {
+            const row = document.getElementById(id);
+            if (row.classList.contains('hidden-row')) {
+                row.classList.remove('hidden-row');
+                row.classList.add('expanded');
+            } else {
+                row.classList.remove('expanded');
+                row.classList.add('hidden-row');
+            }
+        }
+    </script>
+</body>
+</html>

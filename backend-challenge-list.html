@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政府場域實證 - 後台案件管理系統</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00796b;
+            --secondary-bg: #f4f7f6;
+            --text-main: #333;
+            --border-color: #e0e0e0;
+            --success-color: #28a745;
+            --warning-color: #ff9800;
+            --danger-color: #d32f2f;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", sans-serif;
+            margin: 0;
+            display: flex;
+            background-color: var(--secondary-bg);
+            color: var(--text-main);
+        }
+
+        /* 左側導覽列 */
+        .sidebar {
+            width: 240px;
+            background-color: #fff;
+            height: 100vh;
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            color: #555;
+            transition: 0.2s;
+        }
+
+        .menu-item i { width: 25px; margin-right: 10px; }
+        .menu-item:hover, .menu-item.active {
+            background-color: #e0f2f1;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* 主要內容區 */
+        .main-content {
+            margin-left: 240px;
+            width: calc(100% - 240px);
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* 案件卡片 */
+        .case-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-color);
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .case-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 8px; }
+        .case-meta { display: flex; gap: 20px; color: #666; font-size: 0.9rem; }
+        .badge-status { background: #e8f5e9; color: var(--primary-color); padding: 3px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85rem; }
+
+        /* Stepper 進度條 */
+        .stepper {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            padding: 25px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .step { text-align: center; flex: 1; color: #ccc; position: relative; font-size: 0.85rem; cursor: pointer;}
+        .step.active { color: var(--primary-color); font-weight: bold; }
+        .step.complete { color: var(--success-color); }
+        .step i { font-size: 1.4rem; margin-bottom: 8px; display: block; }
+
+        /* Tabs */
+        .tabs { display: flex; margin-bottom: 0px; border-bottom: 1px solid var(--border-color); }
+        .tab { padding: 12px 30px; cursor: pointer; border-radius: 8px 8px 0 0; background: #eee; margin-right: 4px; color: #666; transition: 0.3s; }
+        .tab.active { background: white; color: var(--primary-color); border: 1px solid var(--border-color); border-bottom: 2px solid white; font-weight: bold; }
+
+        /* 表格區塊 */
+        .content-box {
+            background: white;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .data-table th { background: #fcfcfc; color: #555; padding: 12px; text-align: left; border-bottom: 2px solid #eee; }
+        .data-table td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: top; }
+
+        /* 狀態標籤 */
+        .status-tag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .status-pass { background: #e8f5e9; color: var(--success-color); }
+        .status-review { background: #fff3e0; color: var(--warning-color); }
+        .status-reject { background: #ffebee; color: var(--danger-color); }
+
+        /* 按鈕樣式 */
+        .btn { padding: 6px 14px; border-radius: 4px; cursor: pointer; border: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 5px; }
+        .btn-outline { border: 1px solid #ccc; background: white; color: #555; }
+        .btn-primary { background: var(--primary-color); color: white; }
+        .btn-edit { border: 1px solid var(--primary-color); color: var(--primary-color); background: white; }
+        .btn-save { background: var(--success-color); color: white; }
+        .btn-delete { background: #fff; color: var(--danger-color); border: 1px solid var(--danger-color); }
+        .btn-add { background: var(--primary-color); color: white; margin-bottom: 15px; }
+
+        /* 編輯中樣式 */
+        .editing-row { background-color: #fffde7 !important; }
+        input[type="text"], input[type="date"], select, textarea {
+            width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;
+        }
+        textarea { min-height: 80px; resize: vertical; }
+
+        .footer-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+        /* 搜尋區塊 */
+        .search-bar {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            border: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">計畫管理平台</div>
+        <div class="menu-item"><i class="fa-solid fa-house"></i> 首頁總覽</div>
+        <div class="menu-item active"><i class="fa-solid fa-folder-open"></i> 實證案件管理</div>
+        <div class="menu-item"><i class="fa-solid fa-file-contract"></i> 契約範本設定</div>
+        <div class="menu-item"><i class="fa-solid fa-chart-line"></i> 統計報表</div>
+        <div class="menu-item"><i class="fa-solid fa-gear"></i> 系統設定</div>
+    </nav>
+
+    <main class="main-content">
+        <header>
+            <div style="color: #666; font-size: 0.9rem;">實證案件 > 案件詳情</div>
+            <div>管理員：fangcy <i class="fa-solid fa-circle-user"></i></div>
+        </header>
+
+        <div class="case-card">
+            <div class="case-title">
+                114年度研發型補助計畫推動案
+                <span class="badge-status">出題公告階段</span>
+            </div>
+            <div class="case-meta">
+                <span>案號：114-RD-001</span>
+                <span>主辦單位：計畫管理組</span>
+                <span>剩餘天數：<span style="color:red; font-weight:bold;">120 天</span></span>
+            </div>
+        </div>
+
+        <div class="stepper">
+            <div class="step active"><i class="fa-solid fa-bullhorn"></i>出題公告</div>
+            <div class="step" onclick="location.href='backend-startup-management.html'" style="cursor: pointer;">
+    <i class="fa-solid fa-lightbulb"></i>解題徵件
+</div>
+            <div class="step"><i class="fa-solid fa-file-signature"></i>評選簽約</div>
+            <div class="step"><i class="fa-solid fa-list-check"></i>期中管考</div>
+            <div class="step"><i class="fa-solid fa-clipboard-check"></i>期末驗收</div>
+            <div class="step"><i class="fa-solid fa-box-archive"></i>結案請款</div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab" onclick="location.href='backend-challenge-management.html'">出題公告 (1-6)</div>
+            <div class="tab active">機關出題列表</div>
+            <div class="tab" onclick="location.href='backend-challenge-committee.html'">審查委員名單</div>
+        </div>
+
+        <div class="content-box">
+            <div class="search-bar">
+                <div style="flex:1">
+                    <label style="font-size: 0.85rem; color:#666;">關鍵字搜尋：</label>
+                    <input type="text" placeholder="輸入機關名稱或題目關鍵字..." style="width: 250px;">
+                </div>
+                <div>
+                    <button class="btn btn-outline"><i class="fa-solid fa-magnifying-glass"></i> 查詢</button>
+                    <button class="btn btn-add" style="margin-bottom:0" onclick="addRow()"><i class="fa-solid fa-plus"></i> 新增機關出題</button>
+                </div>
+            </div>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th width="80">出題編號</th>
+                        <th width="200">機關資訊</th>
+                        <th>出題內容與摘要</th>
+                        <th width="120">分類/領域</th>
+                        <th width="100">審查狀態</th>
+                        <th width="140">動作</th>
+                    </tr>
+                </thead>
+                <tbody id="issueBody">
+                    <!-- 資料將由 JS 生成 -->
+                </tbody>
+            </table>
+
+            <div class="footer-btns">
+                <button class="btn btn-outline">匯出出題清單(Excel)</button>
+                <button class="btn btn-primary">批次發函確認</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 機關出題資料
+        let issues = [
+            { id: 1, isEdit: false, code: "114-T01", agency: "衛生福利部臺北醫院", contact: "王小明 / 02-2276-5566", title: "AI輔助急診檢傷分類系統實證", cat: "醫療健康", status: "已通過", note: "場域提供：急診室第一線。需求為降低護理師人工判斷誤差。" },
+            { id: 2, isEdit: false, code: "114-T02", agency: "臺北市政府交通局", contact: "李大同 / 02-2720-8889", title: "智慧感測號誌連鎖控制計畫", cat: "智慧交通", status: "審查中", note: "針對信義區主要幹道進行尖峰時段動態號誌調整實證。" },
+            { id: 3, isEdit: false, code: "114-T03", agency: "環境部環境管理署", contact: "張文華 / 02-2311-7722", title: "移動式水質自動檢測感測元件", cat: "環境永續", status: "待補件", note: "需具備NB-IoT通訊功能，能長期監測地下水污染指標。" }
+        ];
+
+        function renderTable() {
+            const tbody = document.getElementById('issueBody');
+            tbody.innerHTML = '';
+
+            issues.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                if (item.isEdit) tr.className = 'editing-row';
+
+                if (item.isEdit) {
+                    // 編輯模式
+                    tr.innerHTML = `
+                        <td><input type="text" id="i-code-${index}" value="${item.code}"></td>
+                        <td>
+                            <input type="text" id="i-agency-${index}" value="${item.agency}" placeholder="機關名稱" style="margin-bottom:5px">
+                            <input type="text" id="i-contact-${index}" value="${item.contact}" placeholder="聯絡人/電話">
+                        </td>
+                        <td>
+                            <input type="text" id="i-title-${index}" value="${item.title}" style="margin-bottom:5px; font-weight:bold;">
+                            <textarea id="i-note-${index}">${item.note}</textarea>
+                        </td>
+                        <td>
+                            <select id="i-cat-${index}">
+                                <option value="醫療健康" ${item.cat==='醫療健康'?'selected':''}>醫療健康</option>
+                                <option value="智慧交通" ${item.cat==='智慧交通'?'selected':''}>智慧交通</option>
+                                <option value="環境永續" ${item.cat==='環境永續'?'selected':''}>環境永續</option>
+                                <option value="其他" ${item.cat==='其他'?'selected':''}>其他</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select id="i-status-${index}">
+                                <option value="已通過" ${item.status==='已通過'?'selected':''}>已通過</option>
+                                <option value="審查中" ${item.status==='審查中'?'selected':''}>審查中</option>
+                                <option value="待補件" ${item.status==='待補件'?'selected':''}>待補件</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button class="btn btn-save" onclick="saveRow(${index})">儲存</button>
+                            <button class="btn btn-outline" onclick="toggleEdit(${index})">取消</button>
+                        </td>
+                    `;
+                } else {
+                    // 檢視模式
+                    let statusClass = 'status-review';
+                    if(item.status === '已通過') statusClass = 'status-pass';
+                    if(item.status === '待補件') statusClass = 'status-reject';
+
+                    tr.innerHTML = `
+                        <td>${item.code}</td>
+                        <td>
+                            <div style="font-weight:bold;">${item.agency}</div>
+                            <div style="font-size:0.8rem; color:#666; margin-top:4px;"><i class="fa-solid fa-user"></i> ${item.contact}</div>
+                        </td>
+                        <td>
+                            <div style="font-weight:bold; color:var(--primary-color); margin-bottom:5px;">${item.title}</div>
+                            <div style="font-size:0.8rem; color:#777; line-height:1.4;">${item.note}</div>
+                        </td>
+                        <td><span class="btn btn-outline" style="padding:2px 8px; cursor:default;">${item.cat}</span></td>
+                        <td><span class="status-tag ${statusClass}">${item.status}</span></td>
+                        <td>
+                            <button class="btn btn-edit" onclick="toggleEdit(${index})"><i class="fa-solid fa-pen"></i> 編輯</button>
+                            <button class="btn btn-delete" onclick="deleteRow(${index})"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    `;
+                }
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleEdit(index) {
+            issues[index].isEdit = !issues[index].isEdit;
+            renderTable();
+        }
+
+        function saveRow(index) {
+            issues[index].code = document.getElementById(`i-code-${index}`).value;
+            issues[index].agency = document.getElementById(`i-agency-${index}`).value;
+            issues[index].contact = document.getElementById(`i-contact-${index}`).value;
+            issues[index].title = document.getElementById(`i-title-${index}`).value;
+            issues[index].cat = document.getElementById(`i-cat-${index}`).value;
+            issues[index].status = document.getElementById(`i-status-${index}`).value;
+            issues[index].note = document.getElementById(`i-note-${index}`).value;
+            issues[index].isEdit = false;
+            renderTable();
+        }
+
+        function addRow() {
+            issues.unshift({
+                id: Date.now(),
+                isEdit: true,
+                code: "114-T新",
+                agency: "",
+                contact: "",
+                title: "請輸入題目名稱",
+                cat: "醫療健康",
+                status: "審查中",
+                note: ""
+            });
+            renderTable();
+        }
+
+        function deleteRow(index) {
+            if (confirm("確定要刪除這筆機關出題紀錄嗎？")) {
+                issues.splice(index, 1);
+                renderTable();
+            }
+        }
+
+        // 初始渲染
+        renderTable();
+    </script>
+</body>
+</html>
