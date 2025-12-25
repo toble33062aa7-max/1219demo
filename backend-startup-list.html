@@ -158,6 +158,13 @@
         /* 展開動畫簡易設定 */
         .hidden-row { display: none; background-color: #fafafa; }
         .expanded { display: table-row; }
+		.detail-value.editing {
+    background-color: #fff;
+    border: 1px solid var(--primary-color) !important;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    outline: none;
+    min-height: 1.5em;
+}
     </style>
 </head>
 <body>
@@ -290,9 +297,13 @@
                                 </div>
                                 
                                 <div style="margin-top: 15px; text-align: right;">
-                                    <button class="btn btn-outline" onclick="toggleDetails('detail-1')">收合詳情</button>
-                                    <button class="btn btn-primary"><i class="fa-solid fa-download"></i> 下載全案壓縮包</button>
-                                </div>
+    <button class="btn btn-outline" onclick="toggleDetails('detail-1')">收合詳情</button>
+    <!-- 新增編輯按鈕，注意 id 需與行號對應 -->
+    <button id="edit-btn-1" class="btn btn-info" onclick="toggleEditMode('detail-1')">
+        <i class="fa-solid fa-pen-to-square"></i> 編輯資料
+    </button>
+    <button class="btn btn-primary"><i class="fa-solid fa-download"></i> 下載全案壓縮包</button>
+</div>
                             </div>
                         </td>
                     </tr>
@@ -329,6 +340,40 @@
                 row.classList.add('hidden-row');
             }
         }
+		function toggleEditMode(rowId) {
+    const container = document.getElementById(rowId);
+    const editBtn = document.getElementById('edit-btn-' + rowId.split('-')[1]);
+    const values = container.querySelectorAll('.detail-value');
+    
+    // 檢查目前是否處於編輯狀態
+    const isEditing = editBtn.getAttribute('data-editing') === 'true';
+
+    if (!isEditing) {
+        // 進入編輯模式
+        values.forEach(el => {
+            // 排除附件連結不被編輯，或可根據需求決定是否讓連結文字也可改
+            if (!el.querySelector('.attachment-link')) {
+                el.contentEditable = "true";
+                el.classList.add('editing');
+            }
+        });
+        editBtn.innerHTML = '<i class="fa-solid fa-check"></i> 儲存修改';
+        editBtn.style.backgroundColor = 'var(--success-color)';
+        editBtn.setAttribute('data-editing', 'true');
+    } else {
+        // 結束編輯模式 / 儲存
+        values.forEach(el => {
+            el.contentEditable = "false";
+            el.classList.remove('editing');
+        });
+        editBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> 編輯資料';
+        editBtn.style.backgroundColor = ''; // 恢復原色
+        editBtn.setAttribute('data-editing', 'false');
+        
+        // 這裡可以加入 AJAX 或 API 呼叫來儲存資料至資料庫
+        alert('資料已更新！(此為前端展示效果)');
+    }
+}
     </script>
 </body>
 </html>
