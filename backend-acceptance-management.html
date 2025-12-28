@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>政府場域實證 - 後台案件管理系統 (解題徵件)</title>
+    <title>政府場域實證 - 後台案件管理系統 (期末驗收管考)</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -88,7 +88,7 @@
 
         .case-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 8px; }
         .case-meta { display: flex; gap: 20px; color: #666; font-size: 0.9rem; }
-        .badge-status { background: #fff3e0; color: var(--warning-color); padding: 3px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85rem; border: 1px solid var(--warning-color); }
+        .badge-status { background: #e3f2fd; color: #1976d2; padding: 3px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85rem; }
 
         /* Stepper 進度條 */
         .stepper {
@@ -102,8 +102,8 @@
         }
 
         .step { text-align: center; flex: 1; color: #ccc; position: relative; font-size: 0.85rem; cursor: pointer;}
-        .step.active { color: var(--primary-color); font-weight: bold; }
         .step.complete { color: var(--success-color); }
+        .step.active { color: var(--primary-color); font-weight: bold; }
         .step i { font-size: 1.4rem; margin-bottom: 8px; display: block; }
 
         /* Tabs */
@@ -160,19 +160,19 @@
 
     <main class="main-content">
         <header>
-            <div style="color: #666; font-size: 0.9rem;">實證案件 > 案件詳情</div>
+            <div style="color: #666; font-size: 0.9rem;">實證案件 > 案件詳情 > 期末驗收管考</div>
             <div>管理員：fangcy <i class="fa-solid fa-circle-user"></i></div>
         </header>
 
         <div class="case-card">
             <div class="case-title">
                 114年度研發型補助計畫推動案
-                <span class="badge-status">解題徵件階段</span>
+                <span class="badge-status">期末驗收階段</span>
             </div>
             <div class="case-meta">
                 <span>案號：114-RD-001</span>
-                <span>主辦單位：計畫管理組</span>
-                <span>剩餘天數：<span style="color:red; font-weight:bold;">85 天</span></span>
+                <span>剩餘天數：<span style="color:#d32f2f; font-weight:bold;">12 天</span></span>
+                <span>驗收對象：12 家廠商</span>
             </div>
         </div>
 
@@ -183,22 +183,22 @@
     </div>
 
     <!-- 解題徵件 (目前頁面) -->
-    <div class="step active" onclick="location.href='backend-startup-management.html'" style="cursor: pointer;">
+    <div class="step complete" onclick="location.href='backend-startup-management.html'" style="cursor: pointer;">
         <i class="fa-solid fa-lightbulb"></i>解題徵件
     </div>
 
     <!-- 評選簽約 -->
-    <div class="step" onclick="location.href='backend-contract-management.html'" style="cursor: pointer;">
+    <div class="step complete" onclick="location.href='backend-contract-management.html'" style="cursor: pointer;">
         <i class="fa-solid fa-file-signature"></i>評選簽約
     </div>
 
     <!-- 期中管考 -->
-    <div class="step" onclick="location.href='backend-midterm-management.html'" style="cursor: pointer;">
+    <div class="step complete" onclick="location.href='backend-midterm-management.html'" style="cursor: pointer;">
         <i class="fa-solid fa-list-check"></i>期中管考
     </div>
 
     <!-- 期末驗收 -->
-    <div class="step" onclick="location.href='backend-acceptance-management.html'" style="cursor: pointer;">
+    <div class="step active" onclick="location.href='backend-acceptance-management.html'" style="cursor: pointer;">
         <i class="fa-solid fa-clipboard-check"></i>期末驗收
     </div>
 
@@ -209,22 +209,25 @@
 </div>
 
         <div class="tabs">
-            <div class="tab active">解題徵件 (7-11)</div>
-            <div class="tab" onclick="location.href='backend-startup-list.html'">入選廠商列表</div>
-            <div class="tab" onclick="location.href='backend-startup-committee.html'">審查委員名單</div>
+            <div class="tab active">期末驗收管考工項 (21-23)</div>
+            <div class="tab" onclick="location.href='backend-acceptance-details.html'">實證驗收詳情</div>
+            
         </div>
 
         <div class="content-box">
-            <button class="btn btn-add" onclick="addRow()"><i class="fa-solid fa-plus"></i> 新增工項</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <button class="btn btn-add" onclick="addRow()"><i class="fa-solid fa-plus"></i> 新增驗收工項</button>
+                <span style="font-size: 0.85rem; color: #666;"><i class="fa-solid fa-circle-info"></i> 以下為 2026 年度期末驗收之標準標準作業流程 (SOP)。</span>
+            </div>
             
             <table class="data-table">
                 <thead>
                     <tr>
                         <th width="50">工項</th>
-                        <th width="160">作業內容與日期</th>
+                        <th width="200">作業內容與日期</th>
                         <th>需求文件檢核 (勾選完成)</th>
                         <th width="100">發文狀態</th>
-                        <th width="180">說明</th>
+                        <th width="220">說明</th>
                         <th width="140">動作</th>
                     </tr>
                 </thead>
@@ -234,93 +237,47 @@
             </table>
 
             <div class="footer-btns">
-                <button class="btn btn-outline">匯出管考月報</button>
-                <button class="btn btn-primary">儲存當前進度</button>
+                <button class="btn btn-outline">匯出期末工作時程表</button>
+                <button class="btn btn-primary">儲存並推播通知</button>
             </div>
         </div>
     </main>
 
     <script>
-        // 解題徵件階段資料
+        // 初始化工項資料 (21-23)
         let tasks = [
             { 
-                id: 7, 
+                id: 21, 
                 isEdit: false, 
-                title: "解題申請說明會", 
-                sDate: "2026-03-24", 
-                eDate: "2026-04-24", 
-                type: "線上", 
-                docs: [
-                    "解題補助申請須知", 
-                    "114解題計畫書格式範本(附件一基本資料、附件二計畫書)", 
-                    "114採購_0618解題說明會_簡報v2", 
-                    "經費預算編列注意事項說明會簡報"
-                ], 
-                post: "FALSE", 
-                note: "1. 包含案例分享(新創採購案例簡報)。\n2. 需準備相關說明會簡報與範本文件。" 
-            },
-            { 
-                id: 8, 
-                isEdit: false, 
-                title: "受理解題申請與收件", 
-                sDate: "2026-03-24", 
-                eDate: "2026-04-24", 
-                type: "線上", 
-                docs: [
-                    "申請資料(計畫書、營登、繳稅證明)", 
-                    "機關提案書(如:金門酒廠AI品檢案)", 
-                    "促案清單(0613v2)"
-                ], 
-                post: "FALSE", 
-                note: "1. 確認廠商資格文件齊全。\n2. 整理出題機關需求與新創解題對應規格。" 
-            },
-            { 
-                id: 9, 
-                isEdit: false, 
-                title: "解題審查會議(籌備)", 
-                sDate: "2026-04-27", 
-                eDate: "2026-05-04", 
-                type: "線上", 
-                docs: [
-                    "開會通知單(機關/委員)", 
-                    "114場域實證-解題審查會議議程", 
-                    "解題審查會出席名單", 
-                    "114年度新創採購解題廠商簡報_彙整"
-                ], 
+                sDate: "2026-10-01", 
+                eDate: "2026-10-20", 
+                title: "期末驗收會議籌備與邀約", 
+                type: "線上/實體", 
+                docs: ["期末實地訪查規劃表", "委員聯絡清冊", "正式開會通知單(機關/廠商/委員)", "期末審查時間調查表"], 
                 post: "TRUE", 
-                note: "1. 需發文通知機關出席。\n2. 聯繫委員確認時間(0707-0710調查)。\n3. 準備保密同意書。" 
+                note: "1. 逐案確認時間。 2. 規劃實地訪查路線(如：花蓮行程)。 3. 確認派車與訂票。" 
             },
             { 
-                id: 10, 
+                id: 22, 
                 isEdit: false, 
-                title: "解題審查會議(執行)", 
-                sDate: "2026-05-07", 
-                eDate: "2026-05-12", 
-                type: "實體", 
-                docs: [
-                    "簽到表", 
-                    "審查作業評審保密同意書", 
-                    "書面審查表(空白/個別委員)", 
-                    "工作小組簡報", 
-                    "新創解題審查會審查意見表", 
-                    "線上評分總表_連動"
-                ], 
+                sDate: "2026-10-26", 
+                eDate: "2026-11-15", 
+                title: "期末驗收與結案審查會議", 
+                type: "實體 (場域現場)", 
+                docs: ["簽到表", "結案簡報", "期末報告初稿", "委員個別審查意見表", "減價驗收結案審查表(視情況)", "期末結案影片"], 
                 post: "FALSE", 
-                note: "1. 現場需備座位圖、評分表。\n2. 針對出題機關預期功能進行對焦。" 
+                note: "1. 檢視系統Demo(如:AI辨速)。 2. 針對「減價驗收」案件需特別記錄於會議紀錄。" 
             },
             { 
-                id: 11, 
+                id: 23, 
                 isEdit: false, 
-                title: "解題審查結果與修正", 
-                sDate: "2026-05-13", 
-                eDate: "2026-05-18", 
+                sDate: "2026-11-16", 
+                eDate: "2026-12-03", 
+                title: "結案修正與會議紀錄核定", 
                 type: "線上", 
-                docs: [
-                    "修正對照表範例(附件2_8)", 
-                    "已確定入案之新創修正計畫書"
-                ], 
-                post: "TRUE", 
-                note: "1. 需核對廠商修正內容是否符合委員意見。\n2. 確認後續簽約文件準備。" 
+                docs: ["驗收結案會議紀錄", "修正後正式版期末報告", "結案送件函文", "委員綜合建議回覆表"], 
+                post: "FALSE", 
+                note: "需確認廠商針對「綜合建議」(如影像優化、肇因分析)之回覆說明已入報告書。" 
             }
         ];
 
@@ -337,12 +294,14 @@
                     tr.innerHTML = `
                         <td>${item.id}</td>
                         <td>
-                            <input type="text" id="t-title-${index}" value="${item.title}" style="margin-bottom:5px" placeholder="工項名稱">
+                            <input type="text" id="t-title-${index}" value="${item.title}" style="margin-bottom:5px; font-weight:bold;">
                             <input type="date" id="t-sDate-${index}" value="${item.sDate}">
                             <input type="date" id="t-eDate-${index}" value="${item.eDate}">
-                            <select id="t-type-${index}">
+                            <select id="t-type-${index}" style="margin-top:5px">
                                 <option value="線上" ${item.type==='線上'?'selected':''}>線上</option>
                                 <option value="實體" ${item.type==='實體'?'selected':''}>實體</option>
+                                <option value="實體 (場域現場)" ${item.type==='實體 (場域現場)'?'selected':''}>實體 (場域現場)</option>
+                                <option value="線上/實體" ${item.type==='線上/實體'?'selected':''}>線上/實體</option>
                             </select>
                         </td>
                         <td>
@@ -353,7 +312,7 @@
                                         <button class="btn" style="color:red; padding:0 5px;" onclick="this.parentElement.remove()">×</button>
                                     </div>
                                 `).join('')}
-                                <button class="btn btn-outline" style="font-size:0.7rem; padding:2px 5px;" onclick="addDocInput(${index})">+ 新增文件</button>
+                                <button class="btn btn-outline" style="font-size:0.7rem; padding:2px 5px;" onclick="addDocInput(${index})">+ 新增文件需求</button>
                             </div>
                         </td>
                         <td>
@@ -380,14 +339,16 @@
                         <td>${item.id}</td>
                         <td>
                             <div style="font-weight:bold; color:var(--primary-color)">${item.title}</div>
-                            <div style="font-size:0.8rem; color:#888; margin-top:4px;">${item.sDate} ~ ${item.eDate}</div>
+                            <div style="font-size:0.8rem; color:#888; margin-top:4px;"><i class="fa-regular fa-calendar-days"></i> ${item.sDate} ~ ${item.eDate}</div>
                             <div style="font-size:0.8rem; margin-top:4px;"><i class="fa-solid fa-location-dot"></i> ${item.type}</div>
                         </td>
                         <td>${docsHtml}</td>
                         <td>
-                            <span style="color:${item.post==='TRUE'?'green':'#ccc'}; font-weight:bold;">● ${item.post}</span>
+                            <span style="color:${item.post==='TRUE'?'#1b5e20':'#ccc'}; font-weight:bold;">
+                                ${item.post === 'TRUE' ? '<i class="fa-solid fa-paper-plane"></i> TRUE' : '● FALSE'}
+                            </span>
                         </td>
-                        <td style="font-size:0.8rem; color:#666; white-space: pre-line;">${item.note}</td>
+                        <td style="font-size:0.8rem; color:#666; line-height:1.5;">${item.note}</td>
                         <td>
                             <button class="btn btn-edit" onclick="toggleEdit(${index})"><i class="fa-solid fa-pen"></i> 編輯</button>
                             <button class="btn btn-delete" onclick="deleteRow(${index})"><i class="fa-solid fa-trash-can"></i></button>
@@ -417,13 +378,13 @@
         }
 
         function addRow() {
-            const nextId = tasks.length > 0 ? tasks[tasks.length - 1].id + 1 : 1;
+            const nextId = tasks.length > 0 ? tasks[tasks.length - 1].id + 1 : 21;
             tasks.push({
                 id: nextId,
                 isEdit: true,
-                sDate: "2026-01-01",
-                eDate: "2026-01-01",
-                title: "",
+                sDate: "2026-11-01",
+                eDate: "2026-11-30",
+                title: "新增期末管考工項",
                 type: "線上",
                 docs: [],
                 post: "FALSE",
@@ -433,7 +394,7 @@
         }
 
         function deleteRow(index) {
-            if (confirm("確定要刪除此工項嗎？")) {
+            if (confirm("確定要刪除此期末驗收管考工項嗎？")) {
                 tasks.splice(index, 1);
                 renderTable();
             }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>政府場域實證 - 後台案件管理系統</title>
+    <title>政府場域實證 - 後台案件管理系統 (期中管考工項)</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -88,7 +88,7 @@
 
         .case-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 8px; }
         .case-meta { display: flex; gap: 20px; color: #666; font-size: 0.9rem; }
-        .badge-status { background: #e8f5e9; color: var(--primary-color); padding: 3px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85rem; }
+        .badge-status { background: #e8f5e9; color: var(--success-color); padding: 3px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85rem; border: 1px solid var(--success-color); }
 
         /* Stepper 進度條 */
         .stepper {
@@ -124,16 +124,9 @@
         .data-table th { background: #fcfcfc; color: #555; padding: 12px; text-align: left; border-bottom: 2px solid #eee; }
         .data-table td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: top; }
 
-        /* 狀態標籤 */
-        .status-tag {
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-        .status-pass { background: #e8f5e9; color: var(--success-color); }
-        .status-review { background: #fff3e0; color: var(--warning-color); }
-        .status-reject { background: #ffebee; color: var(--danger-color); }
+        /* 勾選項目樣式 */
+        .check-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; line-height: 1.4; }
+        .check-item input[type="checkbox"] { margin-top: 3px; cursor: pointer; }
 
         /* 按鈕樣式 */
         .btn { padding: 6px 14px; border-radius: 4px; cursor: pointer; border: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 5px; }
@@ -147,23 +140,11 @@
         /* 編輯中樣式 */
         .editing-row { background-color: #fffde7 !important; }
         input[type="text"], input[type="date"], select, textarea {
-            width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;
+            width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; font-size: 0.85rem;
         }
         textarea { min-height: 80px; resize: vertical; }
 
         .footer-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
-
-        /* 搜尋區塊 */
-        .search-bar {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            border: 1px solid #eee;
-        }
     </style>
 </head>
 <body>
@@ -179,40 +160,40 @@
 
     <main class="main-content">
         <header>
-            <div style="color: #666; font-size: 0.9rem;">實證案件 > 案件詳情</div>
+            <div style="color: #666; font-size: 0.9rem;">實證案件 > 案件詳情 > 期中管考</div>
             <div>管理員：fangcy <i class="fa-solid fa-circle-user"></i></div>
         </header>
 
         <div class="case-card">
             <div class="case-title">
                 114年度研發型補助計畫推動案
-                <span class="badge-status">出題公告階段</span>
+                <span class="badge-status">期中管考階段</span>
             </div>
             <div class="case-meta">
                 <span>案號：114-RD-001</span>
-                <span>主辦單位：計畫管理組</span>
-                <span>剩餘天數：<span style="color:red; font-weight:bold;">120 天</span></span>
+                <span>當前重點：逐案訪視與進度審查</span>
+                <span>本月待辦：<span style="color:#d32f2f; font-weight:bold;">3 項工項執行中</span></span>
             </div>
         </div>
 
         <<div class="stepper">
 				<!-- 出題公告 -->
-			    <div class="step active" onclick="location.href='backend-challenge-management.html'" style="cursor: pointer;">
+			    <div class="step complete" onclick="location.href='backend-challenge-management.html'" style="cursor: pointer;">
 			        <i class="fa-solid fa-bullhorn"></i>出題公告
 			    </div>
 
  			   <!-- 解題徵件 (目前頁面) -->
- 			   <div class="step" onclick="location.href='backend-startup-management.html'" style="cursor: pointer;">
+ 			   <div class="step complete" onclick="location.href='backend-startup-management.html'" style="cursor: pointer;">
  			       <i class="fa-solid fa-lightbulb"></i>解題徵件
 			    </div>
 
 			    <!-- 評選簽約 -->
-			    <div class="step" onclick="location.href='backend-contract-management.html'" style="cursor: pointer;">
+			    <div class="step complete" onclick="location.href='backend-contract-management.html'" style="cursor: pointer;">
  			       <i class="fa-solid fa-file-signature"></i>評選簽約
  			   </div>
 
   			  <!-- 期中管考 -->
-  			  <div class="step" onclick="location.href='backend-midterm-management.html'" style="cursor: pointer;">
+  			  <div class="step active" onclick="location.href='backend-midterm-management.html'" style="cursor: pointer;">
 			        <i class="fa-solid fa-list-check"></i>期中管考
  			   </div>
 
@@ -228,112 +209,110 @@
 		</div>
 
         <div class="tabs">
-            <div class="tab" onclick="location.href='backend-challenge-management.html'">出題公告 (1-6)</div>
-            <div class="tab active">機關出題列表</div>
-            <div class="tab" onclick="location.href='backend-challenge-committee.html'">審查委員名單</div>
+            <div class="tab active">期中管考工項 (17-20)</div>
+            <div class="tab" onclick="location.href='backend-midterm-detail.html'">個案管考 (各廠商進度)</div>
+            <div class="tab" onclick="location.href='backend-midterm-exam.html'">訪視統整表</div>
         </div>
 
         <div class="content-box">
-            <div class="search-bar">
-                <div style="flex:1">
-                    <label style="font-size: 0.85rem; color:#666;">關鍵字搜尋：</label>
-                    <input type="text" placeholder="輸入機關名稱或題目關鍵字..." style="width: 250px;">
-                </div>
-                <div>
-                    <button class="btn btn-outline"><i class="fa-solid fa-magnifying-glass"></i> 查詢</button>
-                    <button class="btn btn-add" style="margin-bottom:0" onclick="addRow()"><i class="fa-solid fa-plus"></i> 新增機關出題</button>
-                </div>
-            </div>
+            <button class="btn btn-add" onclick="addRow()"><i class="fa-solid fa-plus"></i> 新增工項</button>
             
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th width="80">出題編號</th>
-                        <th width="200">機關資訊</th>
-                        <th>出題內容與摘要</th>
-                        <th width="120">分類/領域</th>
-                        <th width="100">審查狀態</th>
+                        <th width="50">工項</th>
+                        <th width="180">作業內容與日期</th>
+                        <th>需求文件檢核 (勾選完成)</th>
+                        <th width="100">發文狀態</th>
+                        <th width="200">說明</th>
                         <th width="140">動作</th>
                     </tr>
                 </thead>
-                <tbody id="issueBody">
-                    <!-- 資料將由 JS 生成 -->
+                <tbody id="taskBody">
+                    <!-- 由 JavaScript 渲染 -->
                 </tbody>
             </table>
 
             <div class="footer-btns">
-                <button class="btn btn-outline">匯出出題清單(Excel)</button>
-                <button class="btn btn-primary">批次發函確認</button>
+                <button class="btn btn-outline">匯出管考進度報告</button>
+                <button class="btn btn-primary">儲存工項變更</button>
             </div>
         </div>
     </main>
 
     <script>
-        // 機關出題資料
-        let issues = [
-            { id: 1, isEdit: false, code: "114-T01", agency: "衛生福利部臺北醫院", contact: "王小明 / 02-2276-5566", title: "AI輔助急診檢傷分類系統實證", cat: "醫療健康", status: "已通過", note: "場域提供：急診室第一線。需求為降低護理師人工判斷誤差。" },
-            { id: 2, isEdit: false, code: "114-T02", agency: "臺北市政府交通局", contact: "李大同 / 02-2720-8889", title: "智慧感測號誌連鎖控制計畫", cat: "智慧交通", status: "審查中", note: "針對信義區主要幹道進行尖峰時段動態號誌調整實證。" },
-            { id: 3, isEdit: false, code: "114-T03", agency: "環境部環境管理署", contact: "張文華 / 02-2311-7722", title: "移動式水質自動檢測感測元件", cat: "環境永續", status: "待補件", note: "需具備NB-IoT通訊功能，能長期監測地下水污染指標。" }
+        // 初始化工項資料 (17-20)
+        let tasks = [
+            { id: 17, isEdit: false, sDate: "2026-07-01", eDate: "2026-07-10", title: "逐案工作紀錄審查", type: "線上", docs: ["共創解題-【附件八】工作紀錄表", "佐證照片/影片", "進度異常說明書(非必填)"], post: "FALSE", note: "需確認廠商是否依合約進度執行，若有延遲需註記於訪視重點。" },
+            { id: 18, isEdit: false, sDate: "2026-08-03", eDate: "2026-08-21", title: "期中訪視邀約與排程", type: "線上", docs: ["訪視行程規劃初稿", "委員聯絡清冊", "單一案件議程表", "開會通知單", "交通指引(派車)"], post: "FALSE", note: "長官行程呈報，隨訪可備註實地訪視建議原因(e.g. 可看實際 DEMO)。" },
+            { id: 19, isEdit: false, sDate: "2026-08-03", eDate: "2026-08-21", title: "期中訪視執行與紀錄", type: "實體", docs: ["期中進度訪視紀錄表", "簽到表", "現場拍照/錄影存證紀錄", "訪視簡報資料"], post: "FALSE", note: "重點查核：機器路徑、系統運作；若有執行困難需引導廠商申請契約變更。" },
+            { id: 20, isEdit: false, sDate: "2026-08-24", eDate: "2026-09-11", title: "處理獲補助廠商辦理契約變更", type: "線上", docs: ["計畫變更申請公文函", "計畫變更申請表", "原計畫核定函影本", "變更對照表", "機關同意展延信件"], post: "FALSE", note: "須確認變更內容（如：展延、預算調整）是否符合規定，審查意見需回覆。" }
         ];
 
         function renderTable() {
-            const tbody = document.getElementById('issueBody');
+            const tbody = document.getElementById('taskBody');
             tbody.innerHTML = '';
 
-            issues.forEach((item, index) => {
+            tasks.forEach((item, index) => {
                 const tr = document.createElement('tr');
                 if (item.isEdit) tr.className = 'editing-row';
 
                 if (item.isEdit) {
-                    // 編輯模式
+                    // 編輯模式 HTML
                     tr.innerHTML = `
-                        <td><input type="text" id="i-code-${index}" value="${item.code}"></td>
+                        <td>${item.id}</td>
                         <td>
-                            <input type="text" id="i-agency-${index}" value="${item.agency}" placeholder="機關名稱" style="margin-bottom:5px">
-                            <input type="text" id="i-contact-${index}" value="${item.contact}" placeholder="聯絡人/電話">
-                        </td>
-                        <td>
-                            <input type="text" id="i-title-${index}" value="${item.title}" style="margin-bottom:5px; font-weight:bold;">
-                            <textarea id="i-note-${index}">${item.note}</textarea>
-                        </td>
-                        <td>
-                            <select id="i-cat-${index}">
-                                <option value="醫療健康" ${item.cat==='醫療健康'?'selected':''}>醫療健康</option>
-                                <option value="智慧交通" ${item.cat==='智慧交通'?'selected':''}>智慧交通</option>
-                                <option value="環境永續" ${item.cat==='環境永續'?'selected':''}>環境永續</option>
-                                <option value="其他" ${item.cat==='其他'?'selected':''}>其他</option>
+                            <input type="text" id="t-title-${index}" value="${item.title}" style="margin-bottom:5px" placeholder="任務名稱">
+                            <input type="date" id="t-sDate-${index}" value="${item.sDate}">
+                            <input type="date" id="t-eDate-${index}" value="${item.eDate}">
+                            <select id="t-type-${index}">
+                                <option value="線上" ${item.type==='線上'?'selected':''}>線上</option>
+                                <option value="實體" ${item.type==='實體'?'selected':''}>實體</option>
                             </select>
                         </td>
                         <td>
-                            <select id="i-status-${index}">
-                                <option value="已通過" ${item.status==='已通過'?'selected':''}>已通過</option>
-                                <option value="審查中" ${item.status==='審查中'?'selected':''}>審查中</option>
-                                <option value="待補件" ${item.status==='待補件'?'selected':''}>待補件</option>
+                            <div id="edit-doc-list-${index}">
+                                ${item.docs.map((doc, dIdx) => `
+                                    <div style="display:flex; gap:5px; margin-bottom:5px;">
+                                        <input type="text" class="t-doc-input-${index}" value="${doc}">
+                                        <button class="btn" style="color:red; padding:0 5px;" onclick="this.parentElement.remove()">×</button>
+                                    </div>
+                                `).join('')}
+                                <button class="btn btn-outline" style="font-size:0.7rem; padding:2px 5px;" onclick="addDocInput(${index})">+ 新增文件需求</button>
+                            </div>
+                        </td>
+                        <td>
+                            <select id="t-post-${index}">
+                                <option value="TRUE" ${item.post==='TRUE'?'selected':''}>TRUE</option>
+                                <option value="FALSE" ${item.post==='FALSE'?'selected':''}>FALSE</option>
                             </select>
                         </td>
+                        <td><textarea id="t-note-${index}">${item.note}</textarea></td>
                         <td>
                             <button class="btn btn-save" onclick="saveRow(${index})">儲存</button>
                             <button class="btn btn-outline" onclick="toggleEdit(${index})">取消</button>
                         </td>
                     `;
                 } else {
-                    // 檢視模式
-                    let statusClass = 'status-review';
-                    if(item.status === '已通過') statusClass = 'status-pass';
-                    if(item.status === '待補件') statusClass = 'status-reject';
+                    // 檢視模式 HTML
+                    let docsHtml = item.docs.map(doc => `
+                        <div class="check-item">
+                            <input type="checkbox"> <span>${doc}</span>
+                        </div>
+                    `).join('');
 
                     tr.innerHTML = `
-                        <td>${item.code}</td>
+                        <td>${item.id}</td>
                         <td>
-                            <div style="font-weight:bold;">${item.agency}</div>
-                            <div style="font-size:0.8rem; color:#666; margin-top:4px;"><i class="fa-solid fa-user"></i> ${item.contact}</div>
+                            <div style="font-weight:bold; color:var(--primary-color)">${item.title}</div>
+                            <div style="font-size:0.8rem; color:#888; margin-top:4px;">${item.sDate} ~ ${item.eDate}</div>
+                            <div style="font-size:0.8rem; margin-top:4px;"><i class="fa-solid fa-location-dot"></i> ${item.type}</div>
                         </td>
+                        <td>${docsHtml}</td>
                         <td>
-                            <div style="font-weight:bold; color:var(--primary-color); margin-bottom:5px;">${item.title}</div>
-                            <div style="font-size:0.8rem; color:#777; line-height:1.4;">${item.note}</div>
+                            <span style="color:${item.post==='TRUE'?'green':'#ccc'}; font-weight:bold;">● ${item.post}</span>
                         </td>
-                        <td><span class="btn btn-outline" style="padding:2px 8px; cursor:default;">${item.cat}</span></td>
-                        <td><span class="status-tag ${statusClass}">${item.status}</span></td>
+                        <td style="font-size:0.8rem; color:#666;">${item.note}</td>
                         <td>
                             <button class="btn btn-edit" onclick="toggleEdit(${index})"><i class="fa-solid fa-pen"></i> 編輯</button>
                             <button class="btn btn-delete" onclick="deleteRow(${index})"><i class="fa-solid fa-trash-can"></i></button>
@@ -345,42 +324,57 @@
         }
 
         function toggleEdit(index) {
-            issues[index].isEdit = !issues[index].isEdit;
+            tasks[index].isEdit = !tasks[index].isEdit;
             renderTable();
         }
 
         function saveRow(index) {
-            issues[index].code = document.getElementById(`i-code-${index}`).value;
-            issues[index].agency = document.getElementById(`i-agency-${index}`).value;
-            issues[index].contact = document.getElementById(`i-contact-${index}`).value;
-            issues[index].title = document.getElementById(`i-title-${index}`).value;
-            issues[index].cat = document.getElementById(`i-cat-${index}`).value;
-            issues[index].status = document.getElementById(`i-status-${index}`).value;
-            issues[index].note = document.getElementById(`i-note-${index}`).value;
-            issues[index].isEdit = false;
+            tasks[index].title = document.getElementById(`t-title-${index}`).value;
+            tasks[index].sDate = document.getElementById(`t-sDate-${index}`).value;
+            tasks[index].eDate = document.getElementById(`t-eDate-${index}`).value;
+            tasks[index].type = document.getElementById(`t-type-${index}`).value;
+            const docInputs = document.querySelectorAll(`.t-doc-input-${index}`);
+            tasks[index].docs = Array.from(docInputs).map(input => input.value).filter(d => d.trim() !== '');
+            tasks[index].post = document.getElementById(`t-post-${index}`).value;
+            tasks[index].note = document.getElementById(`t-note-${index}`).value;
+            tasks[index].isEdit = false;
             renderTable();
         }
 
         function addRow() {
-            issues.unshift({
-                id: Date.now(),
+            const nextId = tasks.length > 0 ? tasks[tasks.length - 1].id + 1 : 17;
+            tasks.push({
+                id: nextId,
                 isEdit: true,
-                code: "114-T新",
-                agency: "",
-                contact: "",
-                title: "請輸入題目名稱",
-                cat: "醫療健康",
-                status: "審查中",
+                sDate: "2026-09-01",
+                eDate: "2026-09-30",
+                title: "新增管考工項",
+                type: "線上",
+                docs: ["必要文件1"],
+                post: "FALSE",
                 note: ""
             });
             renderTable();
         }
 
         function deleteRow(index) {
-            if (confirm("確定要刪除這筆機關出題紀錄嗎？")) {
-                issues.splice(index, 1);
+            if (confirm("確定要刪除此期中管考工項嗎？")) {
+                tasks.splice(index, 1);
                 renderTable();
             }
+        }
+
+        function addDocInput(index) {
+            const container = document.getElementById(`edit-doc-list-${index}`);
+            const div = document.createElement('div');
+            div.style.display = 'flex';
+            div.style.gap = '5px';
+            div.style.marginBottom = '5px';
+            div.innerHTML = `
+                <input type="text" class="t-doc-input-${index}" value="" placeholder="新文件名稱">
+                <button class="btn" style="color:red; padding:0 5px;" onclick="this.parentElement.remove()">×</button>
+            `;
+            container.insertBefore(div, container.lastElementChild);
         }
 
         // 初始渲染

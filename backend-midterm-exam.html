@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政府場域實證 - 後台案件管理系統 (期中訪視統整)</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00796b;
+            --secondary-bg: #f4f7f6;
+            --text-main: #333;
+            --border-color: #e0e0e0;
+            --success-color: #28a745;
+            --warning-color: #ff9800;
+            --danger-color: #d32f2f;
+            --info-color: #1976d2;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", sans-serif;
+            margin: 0;
+            display: flex;
+            background-color: var(--secondary-bg);
+            color: var(--text-main);
+        }
+
+        /* 左側導覽列 */
+        .sidebar {
+            width: 240px;
+            background-color: #fff;
+            height: 100vh;
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            color: #555;
+            transition: 0.2s;
+        }
+
+        .menu-item i { width: 25px; margin-right: 10px; }
+        .menu-item:hover, .menu-item.active {
+            background-color: #e0f2f1;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* 主要內容區 */
+        .main-content {
+            margin-left: 240px;
+            width: calc(100% - 240px);
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* 案件卡片 */
+        .case-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-color);
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .case-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 8px; }
+        .case-meta { display: flex; gap: 20px; color: #666; font-size: 0.9rem; }
+        .badge-status { background: #e8f5e9; color: var(--success-color); padding: 3px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85rem; border: 1px solid var(--success-color); }
+
+        /* Stepper 進度條 */
+        .stepper {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            padding: 25px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .step { text-align: center; flex: 1; color: #ccc; position: relative; font-size: 0.85rem; cursor: pointer;}
+        .step.active { color: var(--primary-color); font-weight: bold; }
+        .step.complete { color: var(--success-color); }
+        .step i { font-size: 1.4rem; margin-bottom: 8px; display: block; }
+
+        /* Tabs */
+        .tabs { display: flex; margin-bottom: 0px; border-bottom: 1px solid var(--border-color); }
+        .tab { padding: 12px 30px; cursor: pointer; border-radius: 8px 8px 0 0; background: #eee; margin-right: 4px; color: #666; transition: 0.3s; }
+        .tab.active { background: white; color: var(--primary-color); border: 1px solid var(--border-color); border-bottom: 2px solid white; font-weight: bold; }
+
+        /* 表格區塊 */
+        .content-box {
+            background: white;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .data-table th { background: #fcfcfc; color: #555; padding: 10px; text-align: left; border-bottom: 2px solid #eee; border-right: 1px solid #f0f0f0; }
+        .data-table td { padding: 10px; border-bottom: 1px solid #eee; border-right: 1px solid #f0f0f0; vertical-align: top; }
+
+        /* 編輯中樣式 */
+        .editing-row { background-color: #fffde7 !important; }
+        input[type="text"], input[type="date"], input[type="time"], select, textarea {
+            width: 100%; padding: 5px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85rem; box-sizing: border-box;
+        }
+        textarea { min-height: 60px; resize: vertical; }
+
+        .btn { padding: 4px 10px; border-radius: 4px; cursor: pointer; border: none; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; }
+        .btn-primary { background: var(--primary-color); color: white; }
+        .btn-outline { border: 1px solid #ccc; background: white; color: #555; }
+        .btn-save { background: var(--success-color); color: white; }
+        
+        .logistics-status { font-size: 0.75rem; color: #777; line-height: 1.6; }
+        .logistics-status i { width: 16px; text-align: center; }
+        .status-yes { color: var(--success-color); }
+        .status-no { color: #ccc; }
+
+        .footer-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">計畫管理平台</div>
+        <div class="menu-item"><i class="fa-solid fa-house"></i> 首頁總覽</div>
+        <div class="menu-item active"><i class="fa-solid fa-folder-open"></i> 實證案件管理</div>
+        <div class="menu-item"><i class="fa-solid fa-file-contract"></i> 契約範本設定</div>
+        <a href="Statistical-reports.html" class="menu-item active"><i class="fa-solid fa-chart-line"></i> 統計報表</a>
+        <div class="menu-item"><i class="fa-solid fa-gear"></i> 系統設定</div>
+    </nav>
+
+    <main class="main-content">
+        <header>
+            <div style="color: #666; font-size: 0.9rem;">實證案件 > 案件詳情 > 期中訪視統整表</div>
+            <div>管理員：fangcy <i class="fa-solid fa-circle-user"></i></div>
+        </header>
+
+        <div class="case-card">
+            <div class="case-title">114年度研發型補助計畫推動案 <span class="badge-status">期中管考</span></div>
+            <div class="case-meta">
+                <span>訪視期間：2026/08/03 - 2026/08/21</span>
+                <span>已完成訪視：2 / 12 家</span>
+            </div>
+        </div>
+
+        <div class="stepper">
+				<!-- 出題公告 -->
+			    <div class="step complete" onclick="location.href='backend-challenge-management.html'" style="cursor: pointer;">
+			        <i class="fa-solid fa-bullhorn"></i>出題公告
+			    </div>
+
+ 			   <!-- 解題徵件 (目前頁面) -->
+ 			   <div class="step complete" onclick="location.href='backend-startup-management.html'" style="cursor: pointer;">
+ 			       <i class="fa-solid fa-lightbulb"></i>解題徵件
+			    </div>
+
+			    <!-- 評選簽約 -->
+			    <div class="step complete" onclick="location.href='backend-contract-management.html'" style="cursor: pointer;">
+ 			       <i class="fa-solid fa-file-signature"></i>評選簽約
+ 			   </div>
+
+  			  <!-- 期中管考 -->
+  			  <div class="step active" onclick="location.href='backend-midterm-management.html'" style="cursor: pointer;">
+			        <i class="fa-solid fa-list-check"></i>期中管考
+ 			   </div>
+
+ 			   <!-- 期末驗收 -->
+ 			   <div class="step" onclick="location.href='backend-acceptance-management.html'" style="cursor: pointer;">
+ 			       <i class="fa-solid fa-clipboard-check"></i>期末驗收
+ 			   </div>
+
+ 			   <!-- 結案請款 -->
+ 			   <div class="step" onclick="location.href='backend-2payment-management.html'" style="cursor: pointer;">
+  			      <i class="fa-solid fa-box-archive"></i>結案請款
+ 			   </div>
+		</div>
+
+        <div class="tabs">
+            <div class="tab" onclick="location.href='backend-midterm-management.html'">簽約管考工項</div>
+            <div class="tab" onclick="location.href='backend-midterm-detail.html'">個案管考</div>
+            <div class="tab active">期中訪視統整表</div>
+        </div>
+
+        <div class="content-box">
+            <div style="margin-bottom: 15px; background: #e0f2f1; padding: 10px; border-radius: 4px; font-size: 0.85rem; color: #00695c;">
+                <i class="fa-solid fa-circle-info"></i> 提示：本表用於工項 18-19 之行政統整，包含邀約、行政支援（餐盒/派車）及訪視結論彙總。
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th width="140">廠商名稱 / 案號</th>
+                        <th width="130">訪視時間 / 地點</th>
+                        <th width="140">出席委員 / 單位</th>
+                        <th width="130">行政物流狀態</th>
+                        <th>訪視紀錄彙整 (工項19)</th>
+                        <th width="120">後續追蹤</th>
+                        <th width="100">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="visitTableBody">
+                    <!-- JS will render rows here -->
+                </tbody>
+            </table>
+
+            <div class="footer-btns">
+                <button class="btn btn-outline"><i class="fa-solid fa-file-excel"></i> 匯出長官行程表 (工項18)</button>
+                <button class="btn btn-primary">儲存全表變更</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 初始資料
+        let visitData = [
+            {
+                id: 1, company: "智通科技", caseNo: "114-T058-003", 
+                date: "2026-08-15", time: "14:00", venue: "台北市信義路五段路口", 
+                committee: "林振興、張嘉玲", gov: "交通局王科長", 
+                noticeSent: true, catering: true, carService: true,
+                findings: "1. AI辨識率日間達標。\n2. 建議增加夜間補光設備測試。\n3. 進度超前5%。",
+                followUp: "正常執行", isEdit: false
+            },
+            {
+                id: 2, company: "雲端數據實驗室", caseNo: "114-T058-005", 
+                date: "2026-08-24", time: "10:30", venue: "板橋區新府路智慧路燈", 
+                committee: "陳學員、李家同", gov: "工務局李技正", 
+                noticeSent: true, catering: false, carService: false,
+                findings: "場域電力系統故障，無法進行實地DEMO，廠商說明已報修。",
+                followUp: "契約變更(展延)", isEdit: false
+            }
+        ];
+
+        function renderTable() {
+            const tbody = document.getElementById('visitTableBody');
+            tbody.innerHTML = '';
+
+            visitData.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                if (item.isEdit) {
+                    tr.className = 'editing-row';
+                    tr.innerHTML = `
+                        <td>
+                            <input type="text" value="${item.company}" style="font-weight:bold; margin-bottom:4px">
+                            <input type="text" value="${item.caseNo}">
+                        </td>
+                        <td>
+                            <input type="date" value="${item.date}" style="margin-bottom:4px">
+                            <input type="time" value="${item.time}" style="margin-bottom:4px">
+                            <input type="text" value="${item.venue}" placeholder="地點">
+                        </td>
+                        <td>
+                            <textarea placeholder="委員名單">${item.committee}</textarea>
+                            <input type="text" value="${item.gov}" placeholder="機關代表">
+                        </td>
+                        <td>
+                            <label style="display:block; font-size:0.75rem"><input type="checkbox" ${item.noticeSent?'checked':''}> 開會通知單(發文)</label>
+                            <label style="display:block; font-size:0.75rem"><input type="checkbox" ${item.catering?'checked':''}> 訂購餐盒</label>
+                            <label style="display:block; font-size:0.75rem"><input type="checkbox" ${item.carService?'checked':''}> 交通派車/接送</label>
+                        </td>
+                        <td>
+                            <textarea placeholder="填寫訪視意見彙整">${item.findings}</textarea>
+                        </td>
+                        <td>
+                            <select>
+                                <option ${item.followUp==='正常執行'?'selected':''}>正常執行</option>
+                                <option ${item.followUp==='契約變更(展延)'?'selected':''}>契約變更(展延)</option>
+                                <option ${item.followUp==='規格調整'?'selected':''}>規格調整</option>
+                                <option ${item.followUp==='終止契約'?'selected':''}>終止契約</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button class="btn btn-save" onclick="saveRow(${index})">儲存</button>
+                            <button class="btn btn-outline" style="margin-top:4px" onclick="toggleEdit(${index})">取消</button>
+                        </td>
+                    `;
+                } else {
+                    tr.innerHTML = `
+                        <td>
+                            <div style="font-weight:bold; color:var(--primary-color)">${item.company}</div>
+                            <div style="font-size:0.75rem; color:#888;">${item.caseNo}</div>
+                        </td>
+                        <td>
+                            <div><i class="fa-regular fa-calendar-days"></i> ${item.date}</div>
+                            <div><i class="fa-regular fa-clock"></i> ${item.time}</div>
+                            <div style="color:#666; font-size:0.75rem; margin-top:4px;"><i class="fa-solid fa-location-dot"></i> ${item.venue}</div>
+                        </td>
+                        <td>
+                            <div style="margin-bottom:4px"><span style="color:#666">委員：</span>${item.committee}</div>
+                            <div><span style="color:#666">機關：</span>${item.gov}</div>
+                        </td>
+                        <td class="logistics-status">
+                            <div class="${item.noticeSent?'status-yes':'status-no'}"><i class="fa-solid ${item.noticeSent?'fa-circle-check':'fa-circle'}"></i> 發文通知</div>
+                            <div class="${item.catering?'status-yes':'status-no'}"><i class="fa-solid ${item.catering?'fa-circle-check':'fa-circle'}"></i> 訂餐</div>
+                            <div class="${item.carService?'status-yes':'status-no'}"><i class="fa-solid ${item.carService?'fa-circle-check':'fa-circle'}"></i> 派車</div>
+                        </td>
+                        <td style="color:#444; line-height:1.5; font-size:0.8rem;">
+                            ${item.findings.replace(/\n/g, '<br>')}
+                        </td>
+                        <td>
+                            <span class="btn" style="background:#f0f0f0; border:1px solid #ddd; cursor:default;">${item.followUp}</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline" onclick="toggleEdit(${index})"><i class="fa-solid fa-pen"></i> 編輯</button>
+                        </td>
+                    `;
+                }
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleEdit(index) {
+            visitData[index].isEdit = !visitData[index].isEdit;
+            renderTable();
+        }
+
+        function saveRow(index) {
+            // 在實際應用中，這裡會從 DOM 抓取值並更新 visitData
+            // 這裡先簡單演示關閉編輯模式
+            visitData[index].isEdit = false;
+            renderTable();
+            // alert('該案訪視統整資料已暫存！');
+        }
+
+        // 初次渲染
+        renderTable();
+    </script>
+</body>
+</html>

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政府場域實證 - 後台案件管理系統 (個案管考)</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00796b;
+            --secondary-bg: #f4f7f6;
+            --text-main: #333;
+            --border-color: #e0e0e0;
+            --success-color: #28a745;
+            --warning-color: #ff9800;
+            --danger-color: #d32f2f;
+            --info-color: #1976d2;
+            --progress-bg: #e9ecef;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", sans-serif;
+            margin: 0;
+            display: flex;
+            background-color: var(--secondary-bg);
+            color: var(--text-main);
+        }
+
+        /* 左側導覽列 */
+        .sidebar {
+            width: 240px;
+            background-color: #fff;
+            height: 100vh;
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            color: #555;
+            transition: 0.2s;
+        }
+
+        .menu-item i { width: 25px; margin-right: 10px; }
+        .menu-item:hover, .menu-item.active {
+            background-color: #e0f2f1;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* 主要內容區 */
+        .main-content {
+            margin-left: 240px;
+            width: calc(100% - 240px);
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* 案件卡片 */
+        .case-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-color);
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .case-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 8px; }
+        .case-meta { display: flex; gap: 20px; color: #666; font-size: 0.9rem; }
+        .badge-status { background: #e8f5e9; color: var(--success-color); padding: 3px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85rem; border: 1px solid var(--success-color); }
+
+        /* Stepper 進度條 */
+        .stepper {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            padding: 25px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .step { text-align: center; flex: 1; color: #ccc; position: relative; font-size: 0.85rem; cursor: pointer;}
+        .step.active { color: var(--primary-color); font-weight: bold; }
+        .step.complete { color: var(--success-color); }
+        .step i { font-size: 1.4rem; margin-bottom: 8px; display: block; }
+
+        /* Tabs */
+        .tabs { display: flex; margin-bottom: 0px; border-bottom: 1px solid var(--border-color); }
+        .tab { padding: 12px 30px; cursor: pointer; border-radius: 8px 8px 0 0; background: #eee; margin-right: 4px; color: #666; transition: 0.3s; }
+        .tab.active { background: white; color: var(--primary-color); border: 1px solid var(--border-color); border-bottom: 2px solid white; font-weight: bold; }
+
+        /* 表格區塊 */
+        .content-box {
+            background: white;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .data-table th { background: #fcfcfc; color: #555; padding: 12px; text-align: left; border-bottom: 2px solid #eee; }
+        .data-table td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: middle; }
+
+        /* 進度條樣式 */
+        .progress-container { background-color: var(--progress-bg); border-radius: 10px; width: 100%; height: 8px; margin-top: 5px; }
+        .progress-bar { height: 8px; border-radius: 10px; background-color: var(--primary-color); }
+
+        /* 健康燈號 */
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .dot-green { background-color: var(--success-color); box-shadow: 0 0 5px var(--success-color); }
+        .dot-yellow { background-color: var(--warning-color); box-shadow: 0 0 5px var(--warning-color); }
+        .dot-red { background-color: var(--danger-color); box-shadow: 0 0 5px var(--danger-color); }
+
+        /* 詳情區塊樣式 (個案管考專用) */
+        .detail-info-grid {
+            display: grid;
+            grid-template-columns: 140px 1fr 140px 1fr;
+            gap: 12px;
+            background: #fdfdfd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #eef0f2;
+        }
+        .detail-section-title {
+            grid-column: span 4;
+            font-weight: bold;
+            color: var(--primary-color);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .detail-label { font-weight: bold; color: #555; background: #f0f4f4; padding: 6px 10px; border-radius: 4px; text-align: right; font-size: 0.85rem; }
+        .detail-value { padding: 6px 10px; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; min-height: 1.2em;}
+        .detail-value.editing { background-color: #fff; border: 1px solid var(--info-color); outline: none; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); }
+        .full-width { grid-column: span 3; }
+
+        .attachment-tag { display: inline-flex; align-items: center; gap: 5px; background: #e3f2fd; color: #1976d2; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; margin-right: 8px; text-decoration: none; border: 1px solid #bbdefb; }
+        
+        .btn { padding: 6px 14px; border-radius: 4px; cursor: pointer; border: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 5px; }
+        .btn-outline { border: 1px solid #ccc; background: white; color: #555; }
+        .btn-edit { border: 1px solid var(--primary-color); color: var(--primary-color); background: white; }
+        .btn-save { background: var(--success-color); color: white; display: none; }
+        .btn-info { background: var(--info-color); color: white; }
+
+        .hidden-row { display: none; }
+        .expanded { display: table-row; background-color: #f9fbfc; }
+        
+        .milestone-check { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; margin-bottom: 5px; }
+        .milestone-check input { cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">計畫管理平台</div>
+        <div class="menu-item"><i class="fa-solid fa-house"></i> 首頁總覽</div>
+        <div class="menu-item active"><i class="fa-solid fa-folder-open"></i> 實證案件管理</div>
+        <div class="menu-item"><i class="fa-solid fa-file-contract"></i> 契約範本設定</div>
+        <a href="Statistical-reports.html" class="menu-item active"><i class="fa-solid fa-chart-line"></i> 統計報表</a>
+        <div class="menu-item"><i class="fa-solid fa-gear"></i> 系統設定</div>
+    </nav>
+
+    <main class="main-content">
+        <header>
+            <div style="color: #666; font-size: 0.9rem;">實證案件 > 案件詳情 > 個案管考 (實施中)</div>
+            <div>管理員：fangcy <i class="fa-solid fa-circle-user"></i></div>
+        </header>
+
+        <div class="case-card">
+            <div class="case-title">
+                114年度研發型補助計畫推動案
+                <span class="badge-status">期中管考階段</span>
+            </div>
+            <div class="case-meta">
+                <span>案號：114-RD-001</span>
+                <span>總執行廠商：12 家</span>
+                <span>實證總進度：<span style="color:var(--primary-color); font-weight:bold;">45%</span></span>
+            </div>
+        </div>
+
+        <div class="stepper">
+				<!-- 出題公告 -->
+			    <div class="step complete" onclick="location.href='backend-challenge-management.html'" style="cursor: pointer;">
+			        <i class="fa-solid fa-bullhorn"></i>出題公告
+			    </div>
+
+ 			   <!-- 解題徵件 (目前頁面) -->
+ 			   <div class="step complete" onclick="location.href='backend-startup-management.html'" style="cursor: pointer;">
+ 			       <i class="fa-solid fa-lightbulb"></i>解題徵件
+			    </div>
+
+			    <!-- 評選簽約 -->
+			    <div class="step complete" onclick="location.href='backend-contract-management.html'" style="cursor: pointer;">
+ 			       <i class="fa-solid fa-file-signature"></i>評選簽約
+ 			   </div>
+
+  			  <!-- 期中管考 -->
+  			  <div class="step active" onclick="location.href='backend-midterm-management.html'" style="cursor: pointer;">
+			        <i class="fa-solid fa-list-check"></i>期中管考
+ 			   </div>
+
+ 			   <!-- 期末驗收 -->
+ 			   <div class="step" onclick="location.href='backend-acceptance-management.html'" style="cursor: pointer;">
+ 			       <i class="fa-solid fa-clipboard-check"></i>期末驗收
+ 			   </div>
+
+ 			   <!-- 結案請款 -->
+ 			   <div class="step" onclick="location.href='backend-2payment-management.html'" style="cursor: pointer;">
+  			      <i class="fa-solid fa-box-archive"></i>結案請款
+ 			   </div>
+		</div>
+
+        <div class="tabs">
+            <div class="tab" onclick="location.href='backend-midterm-management.html'">簽約管考工項 (13-16)</div>
+            <div class="tab active">個案管考 (各廠商進度)</div>
+            <div class="tab" onclick="location.href='backend-midterm-exam.html'">期中訪視統整表</div>
+        </div>
+		
+
+        <div class="content-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin: 0; font-size: 1.1rem; color: var(--primary-color);">解題廠商執行實況監控</h3>
+                <div style="display: flex; gap: 10px;">
+                    <select style="padding: 6px; border: 1px solid #ccc; border-radius: 4px;">
+                        <option>所有健康狀態</option>
+                        <option>正常 (綠燈)</option>
+                        <option>延遲風險 (黃燈)</option>
+                        <option>嚴重落後 (紅燈)</option>
+                    </select>
+                    <button class="btn btn-outline"><i class="fa-solid fa-file-export"></i> 匯出管考月報</button>
+                </div>
+            </div>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th width="180">廠商名稱</th>
+                        <th>當前實證進度</th>
+                        <th width="150">健康狀態</th>
+                        <th width="180">下次重要節點</th>
+                        <th width="120">動作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 廠商 1 -->
+                    <tr>
+                        <td>
+                            <div style="font-weight:bold;">智通科技股份有限公司</div>
+                            <div style="font-size:0.75rem; color:#888;">(114-T058-003)</div>
+                        </td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="progress-container"><div class="progress-bar" style="width: 65%;"></div></div>
+                                <span style="font-weight:bold; color:var(--primary-color);">65%</span>
+                            </div>
+                        </td>
+                        <td><span class="status-dot dot-green"></span> 正常執行中</td>
+                        <td>2026-08-15<br><span style="font-size:0.75rem; color:#666;">期中實地訪視</span></td>
+                        <td>
+                            <button class="btn btn-edit" onclick="toggleDetails('case-1')">詳情/管考</button>
+                        </td>
+                    </tr>
+                    <tr id="case-1" class="hidden-row">
+                        <td colspan="5">
+                            <div style="padding: 5px 15px 20px 15px;">
+                                <div class="detail-info-grid">
+                                    <!-- 區塊一：工項 17 工作紀錄審查 -->
+                                    <div class="detail-section-title">
+                                        <span><i class="fa-solid fa-calendar-check"></i> 工項 17：工作紀錄與實證進度 (7-8月)</span>
+                                        <button class="btn btn-outline" style="font-size: 0.7rem; padding: 2px 8px;" onclick="toggleEdit('case-1-content')">進入編輯</button>
+                                    </div>
+                                    <div id="case-1-content" style="display:contents;">
+                                        <div class="detail-label">8月工作紀錄審查</div>
+                                        <div class="detail-value">
+                                            已繳交 (08/01)。含工作紀錄表、佐證影片3則。
+                                        </div>
+                                        <div class="detail-label">補件紀錄</div>
+                                        <div class="detail-value">07/30 要求補正感測器路徑圖，08/02 已補件完成。</div>
+                                        
+                                        <div class="detail-label">當前查核點執行</div>
+                                        <div class="detail-value full-width">
+                                            <div class="milestone-check"><input type="checkbox" checked disabled> 硬體設備採購與清點 (100%)</div>
+                                            <div class="milestone-check"><input type="checkbox" checked disabled> 場域 5G 訊號測試與佈建 (100%)</div>
+                                            <div class="milestone-check"><input type="checkbox" disabled> AI 模型路口辨識優化 (進行中: 40%)</div>
+                                        </div>
+
+                                        <!-- 區塊二：工項 18-19 期中訪視管理 -->
+                                        <div class="detail-section-title">
+                                            <span><i class="fa-solid fa-eye"></i> 工項 18-19：期中訪視安排與紀錄</span>
+                                        </div>
+                                        <div class="detail-label">訪視預定日期</div>
+                                        <div class="detail-value">2026-08-15 (14:00 - 16:00)</div>
+                                        <div class="detail-label">訪視地點</div>
+                                        <div class="detail-value">台北市信義區忠孝東路五段 (實證路口 A)</div>
+                                        
+                                        <div class="detail-label">出席名單(擬)</div>
+                                        <div class="detail-value">林委員、張委員、計畫辦公室方經理、交通局王科長</div>
+                                        <div class="detail-label">發文/通知狀態</div>
+                                        <div class="detail-value">開會通知單已於 08/03 電子發文 (TRUE)</div>
+
+                                        <div class="detail-label">訪視重點紀錄</div>
+                                        <div class="detail-value full-width">
+                                            1. 需現場查看 Edge AI 盒子的防水防護措施。<br>
+                                            2. 驗證夜間辨識準確率是否達標 85%。<br>
+                                            3. 確認數據是否已成功介接至市府交控中心看板。
+                                        </div>
+
+                                        <!-- 區塊三：工項 20 契約變更 -->
+                                        <div class="detail-section-title">
+                                            <span><i class="fa-solid fa-file-pen"></i> 工項 20：契約變更/異常處理</span>
+                                        </div>
+                                        <div class="detail-label">契約變更需求</div>
+                                        <div class="detail-value">無</div>
+                                        <div class="detail-label">異常說明與建議</div>
+                                        <div class="detail-value full-width">
+                                            目前進度超前 5%，無須辦理展延。惟需注意近期颱風可能影響戶外施工安全，已提醒廠商注意。
+                                        </div>
+
+                                        <div class="detail-label">管考附件</div>
+                                        <div class="detail-value full-width">
+                                            <a href="#" class="attachment-tag"><i class="fa-solid fa-file-pdf"></i> 8月工作紀錄.pdf</a>
+                                            <a href="#" class="attachment-tag"><i class="fa-solid fa-image"></i> 現場佈建照片.zip</a>
+                                            <a href="#" class="attachment-tag"><i class="fa-solid fa-file-invoice"></i> 期中訪視議程.docx</a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="grid-column: span 4; text-align: right; margin-top: 10px;">
+                                        <button class="btn btn-outline" onclick="toggleDetails('case-1')">關閉</button>
+                                        <button class="btn btn-save" id="save-btn-case-1" onclick="saveEdit('case-1-content')">儲存變更</button>
+                                        <button class="btn btn-info"><i class="fa-solid fa-paper-plane"></i> 發送管考催告通知</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- 廠商 2 (異常案例) -->
+                    <tr>
+                        <td>
+                            <div style="font-weight:bold;">雲端數據應用實驗室</div>
+                            <div style="font-size:0.75rem; color:#888;">(114-T058-005)</div>
+                        </td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="progress-container"><div class="progress-bar" style="width: 20%; background-color: var(--danger-color);"></div></div>
+                                <span style="font-weight:bold; color:var(--danger-color);">20%</span>
+                            </div>
+                        </td>
+                        <td><span class="status-dot dot-red"></span> 嚴重落後 (需變更)</td>
+                        <td>2026-08-24<br><span style="font-size:0.75rem; color:#666;">契約變更審查</span></td>
+                        <td>
+                            <button class="btn btn-edit" onclick="toggleDetails('case-2')">詳情/管考</button>
+                        </td>
+                    </tr>
+                    <tr id="case-2" class="hidden-row">
+                        <td colspan="5">
+                            <div style="padding: 5px 15px 20px 15px;">
+                                <div class="detail-info-grid">
+                                    <div class="detail-section-title">
+                                        <span><i class="fa-solid fa-calendar-check"></i> 工項 17：工作紀錄與實證進度 (異常)</span>
+                                        <button class="btn btn-outline" style="font-size: 0.7rem; padding: 2px 8px;" onclick="toggleEdit('case-2-content')">進入編輯</button>
+                                    </div>
+                                    <div id="case-2-content" style="display:contents;">
+                                        <div class="detail-label">工作紀錄狀態</div>
+                                        <div class="detail-value">延遲未交 (應於 08/01 繳交)。已電話催促。</div>
+                                        <div class="detail-label">當前問題分析</div>
+                                        <div class="detail-value full-width">原定實證場域(智慧路燈)因道路拓寬工程，導致電力系統暫時切斷，廠商無法安裝監控設備。</div>
+
+                                        <div class="detail-section-title">
+                                            <span><i class="fa-solid fa-file-pen"></i> 工項 20：契約變更申請程序</span>
+                                        </div>
+                                        <div class="detail-label">變更類型</div>
+                                        <div class="detail-value">展延申請 / 場域變更</div>
+                                        <div class="detail-label">審核進度</div>
+                                        <div class="detail-value">待廠商送件。已於 08/05 發信告知流程。</div>
+                                        
+                                        <div class="detail-label">變更說明</div>
+                                        <div class="detail-value full-width">
+                                            廠商預計申請將實證場域移動至 B 區，並申請工期展延 30 天。需檢附機關同意書。
+                                        </div>
+                                    </div>
+
+                                    <div style="grid-column: span 4; text-align: right; margin-top: 10px;">
+                                        <button class="btn btn-outline" onclick="toggleDetails('case-2')">關閉</button>
+                                        <button class="btn btn-save" id="save-btn-case-2" onclick="saveEdit('case-2-content')">儲存變更</button>
+                                        <button class="btn btn-info" style="background-color: var(--danger-color);"><i class="fa-solid fa-triangle-exclamation"></i> 啟動異常督導程序</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="footer-btns">
+                <button class="btn btn-outline">列印所有案件進度卡</button>
+                <button class="btn btn-primary">批次核定 8 月份工作紀錄</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleDetails(id) {
+            const row = document.getElementById(id);
+            if (row.classList.contains('hidden-row')) {
+                row.classList.remove('hidden-row');
+                row.classList.add('expanded');
+            } else {
+                row.classList.remove('expanded');
+                row.classList.add('hidden-row');
+            }
+        }
+
+        function toggleEdit(containerId) {
+            const container = document.getElementById(containerId);
+            const values = container.querySelectorAll('.detail-value');
+            const saveBtnId = 'save-btn-' + containerId.split('-')[0] + '-' + containerId.split('-')[1];
+            const saveBtn = document.getElementById(saveBtnId);
+
+            values.forEach(val => {
+                // 排除附件區塊不編輯
+                if(!val.querySelector('.attachment-tag')){
+                    val.contentEditable = "true";
+                    val.classList.add('editing');
+                }
+            });
+
+            saveBtn.style.display = 'inline-flex';
+            alert('已進入編輯模式，請直接點擊文字進行修改。');
+        }
+
+        function saveEdit(containerId) {
+            const container = document.getElementById(containerId);
+            const values = container.querySelectorAll('.detail-value');
+            const saveBtnId = 'save-btn-' + containerId.split('-')[0] + '-' + containerId.split('-')[1];
+            const saveBtn = document.getElementById(saveBtnId);
+
+            values.forEach(val => {
+                val.contentEditable = "false";
+                val.classList.remove('editing');
+            });
+
+            saveBtn.style.display = 'none';
+            alert('個案管考資料已儲存更新！');
+        }
+    </script>
+</body>
+</html>

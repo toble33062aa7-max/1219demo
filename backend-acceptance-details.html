@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政府場域實證 - 後台案件管理系統 (驗收結案詳情)</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00796b;
+            --secondary-bg: #f4f7f6;
+            --text-main: #333;
+            --border-color: #e0e0e0;
+            --success-color: #28a745;
+            --warning-color: #ff9800;
+            --danger-color: #d32f2f;
+            --info-color: #1976d2;
+            --highlight-bg: #fffde7;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", sans-serif;
+            margin: 0;
+            display: flex;
+            background-color: var(--secondary-bg);
+            color: var(--text-main);
+        }
+
+        /* 左側導覽列 */
+        .sidebar {
+            width: 240px;
+            background-color: #fff;
+            height: 100vh;
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            color: #555;
+            transition: 0.2s;
+        }
+
+        .menu-item i { width: 25px; margin-right: 10px; }
+        .menu-item:hover, .menu-item.active {
+            background-color: #e0f2f1;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* 主要內容區 */
+        .main-content {
+            margin-left: 240px;
+            width: calc(100% - 240px);
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* 案件卡片 */
+        .case-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-color);
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .case-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 8px; }
+        .case-meta { display: flex; gap: 20px; color: #666; font-size: 0.9rem; }
+        .badge-status { background: #e8f5e9; color: var(--success-color); padding: 3px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85rem; border: 1px solid var(--success-color); }
+
+        /* Stepper 進度條 */
+        .stepper {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            padding: 25px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .step { text-align: center; flex: 1; color: #ccc; position: relative; font-size: 0.85rem; cursor: pointer;}
+        .step.complete { color: var(--success-color); }
+        .step.active { color: var(--primary-color); font-weight: bold; border-bottom: 3px solid var(--primary-color); padding-bottom: 5px; }
+        .step i { font-size: 1.4rem; margin-bottom: 8px; display: block; }
+
+        /* Tabs */
+        .tabs { display: flex; margin-bottom: 0px; border-bottom: 1px solid var(--border-color); }
+        .tab { padding: 12px 25px; cursor: pointer; border-radius: 8px 8px 0 0; background: #eee; margin-right: 4px; color: #666; transition: 0.3s; }
+        .tab.active { background: white; color: var(--primary-color); border: 1px solid var(--border-color); border-bottom: 2px solid white; font-weight: bold; }
+
+        /* 表格區塊 */
+        .content-box {
+            background: white;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .data-table th { background: #fcfcfc; color: #555; padding: 12px; text-align: left; border-bottom: 2px solid #eee; }
+        .data-table td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: middle; }
+
+        /* 標籤樣式 */
+        .tag { padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+        .tag-success { background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; }
+        .tag-warning { background: #fff3e0; color: #ef6c00; border: 1px solid #ef6c00; }
+        .tag-danger { background: #ffebee; color: #c62828; border: 1px solid #c62828; }
+
+        /* 詳情區塊佈局 - 極詳細版 */
+        .detail-info-grid {
+            display: grid;
+            grid-template-columns: 140px 1fr 140px 1fr;
+            gap: 1px;
+            background: var(--border-color);
+            border: 1px solid var(--border-color);
+            margin-top: 10px;
+        }
+        .detail-label { background: #f5f5f5; padding: 10px; font-weight: bold; color: #555; display: flex; align-items: center; }
+        .detail-value { background: #fff; padding: 10px; color: #333; min-height: 20px; }
+        .detail-value.editing { background-color: var(--highlight-bg); outline: 2px solid var(--primary-color); }
+        .full-width { grid-column: span 3; }
+        .section-header { 
+            grid-column: span 4; 
+            background: #e0f2f1; 
+            padding: 8px 12px; 
+            font-weight: bold; 
+            color: var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* KPI 表格專用樣式 */
+        .kpi-table { width: 100%; border-collapse: collapse; margin-top: 5px; background: white; }
+        .kpi-table th { background: #fafafa; border: 1px solid #eee; padding: 8px; font-size: 0.8rem; }
+        .kpi-table td { border: 1px solid #eee; padding: 8px; font-size: 0.8rem; }
+
+        .btn { padding: 6px 14px; border-radius: 4px; cursor: pointer; border: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 5px; }
+        .btn-outline { border: 1px solid #ccc; background: white; color: #555; }
+        .btn-primary { background: var(--primary-color); color: white; }
+        .btn-info { background: var(--info-color); color: white; }
+        .btn-success { background: var(--success-color); color: white; }
+
+        .hidden-row { display: none; }
+        .expanded { display: table-row; }
+
+        .editable-field { cursor: text; transition: 0.2s; }
+        .editable-field:hover { background-color: #fff9c4; }
+
+        .attachment-item { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; color: var(--info-color); text-decoration: none; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">計畫管理平台</div>
+        <div class="menu-item"><i class="fa-solid fa-house"></i> 首頁總覽</div>
+        <div class="menu-item active"><i class="fa-solid fa-folder-open"></i> 實證案件管理</div>
+        <div class="menu-item"><i class="fa-solid fa-file-contract"></i> 契約範本設定</div>
+        <a href="Statistical-reports.html" class="menu-item active"><i class="fa-solid fa-chart-line"></i> 統計報表</a>
+        <div class="menu-item"><i class="fa-solid fa-gear"></i> 系統設定</div>
+    </nav>
+
+    <main class="main-content">
+        <header>
+            <div style="color: #666; font-size: 0.9rem;">實證案件 > 案件詳情 > 驗收結案詳情</div>
+            <div>管理員：fangcy <i class="fa-solid fa-circle-user"></i></div>
+        </header>
+
+        <div class="case-card">
+            <div class="case-title">
+                114年度研發型補助計畫推動案
+                <span class="badge-status">期末驗收階段</span>
+            </div>
+            <div class="case-meta">
+                <span>案號：114-RD-001</span>
+                <span>總經費預算：NT$ 25,000,000</span>
+                <span>驗收完成度：<span style="color:var(--success-color); font-weight:bold;">85%</span></span>
+            </div>
+        </div>
+
+        <div class="stepper">
+    <!-- 出題公告 -->
+    <div class="step complete" onclick="location.href='backend-challenge-management.html'" style="cursor: pointer;">
+        <i class="fa-solid fa-bullhorn"></i>出題公告
+    </div>
+
+    <!-- 解題徵件 (目前頁面) -->
+    <div class="step complete" onclick="location.href='backend-startup-management.html'" style="cursor: pointer;">
+        <i class="fa-solid fa-lightbulb"></i>解題徵件
+    </div>
+
+    <!-- 評選簽約 -->
+    <div class="step complete" onclick="location.href='backend-contract-management.html'" style="cursor: pointer;">
+        <i class="fa-solid fa-file-signature"></i>評選簽約
+    </div>
+
+    <!-- 期中管考 -->
+    <div class="step complete" onclick="location.href='backend-midterm-management.html'" style="cursor: pointer;">
+        <i class="fa-solid fa-list-check"></i>期中管考
+    </div>
+
+    <!-- 期末驗收 -->
+    <div class="step active" onclick="location.href='backend-acceptance-management.html'" style="cursor: pointer;">
+        <i class="fa-solid fa-clipboard-check"></i>期末驗收
+    </div>
+
+    <!-- 結案請款 -->
+    <div class="step" onclick="location.href='backend-2payment-management.html'" style="cursor: pointer;">
+        <i class="fa-solid fa-box-archive"></i>結案請款
+    </div>
+</div>
+
+        <div class="tabs">
+            <div class="tab" onclick="location.href='backend-acceptance-management.html'">期末驗收管考工項 (21-23)</div>
+            <div class="tab active">實證驗收詳情 (12家廠商)</div>
+            
+        </div>
+
+        <div class="content-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin: 0; font-size: 1.1rem; color: var(--primary-color);">廠商期末實證驗收紀錄表</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-outline"><i class="fa-solid fa-file-export"></i> 匯出全案驗收總表</button>
+                    <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> 新增驗收對象</button>
+                </div>
+            </div>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th width="120">提案編號</th>
+                        <th width="180">實證廠商</th>
+                        <th>解決方案 / 實證場域</th>
+                        <th width="120">驗收日期</th>
+                        <th width="100">驗收結果</th>
+                        <th width="120">動作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 第一家：智通科技 (驗收通過) -->
+                    <tr>
+                        <td>114-T058-003</td>
+                        <td><div style="font-weight:bold;">智通科技</div><div style="font-size:0.75rem; color:#888;">AI智慧路口</div></td>
+                        <td>
+                            <div>AI Edge 智慧路口車流偵測系統</div>
+                            <div style="font-size:0.8rem; color: #1976d2;"><i class="fa-solid fa-location-dot"></i> 花蓮縣花蓮市中山路路口</div>
+                        </td>
+                        <td>2026-10-15</td>
+                        <td><span class="tag tag-success">驗收通過</span></td>
+                        <td>
+                            <button class="btn btn-edit" onclick="toggleDetails('acc-1')"><i class="fa-solid fa-magnifying-glass-chart"></i> 驗收詳情</button>
+                        </td>
+                    </tr>
+                    <!-- 詳情展開內容 1 -->
+                    <tr id="acc-1" class="hidden-row">
+                        <td colspan="6">
+                            <div style="padding: 15px; border: 1px solid #ddd; background: #fff;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                    <h4 style="margin:0; color:var(--primary-color);"><i class="fa-solid fa-clipboard-list"></i> 實證驗收清單 (可編輯)</h4>
+                                    <button class="btn btn-info btn-sm" onclick="toggleEditMode('acc-1', this)">
+                                        <i class="fa-solid fa-pen"></i> 進入編輯模式
+                                    </button>
+                                </div>
+
+                                <div class="detail-info-grid">
+                                    <!-- A. 基本與場域資訊 -->
+                                    <div class="section-header">A. 場域實證基本資訊</div>
+                                    <div class="detail-label">實證期程</div>
+                                    <div class="detail-value editable-field" data-field="period">2026/06/01 ~ 2026/10/31</div>
+                                    <div class="detail-label">實證場域地點</div>
+                                    <div class="detail-value editable-field" data-field="location">花蓮縣花蓮市中山路與國聯一路路口 (北向及西向)</div>
+                                    
+                                    <div class="detail-label">硬體部署清單</div>
+                                    <div class="detail-value full-width editable-field" data-field="hardware">
+                                        1. 高解析度路側攝影機 (Sony Sensor) x 4組<br>
+                                        2. 邊緣運算電腦盒 (NVIDIA Orin NX) x 2座<br>
+                                        3. 5G 工業級路由器 x 1台
+                                    </div>
+
+                                    <!-- B. KPI 達成狀況 (核心驗收指標) -->
+                                    <div class="section-header">B. 關鍵性能指標 (KPI) 驗收</div>
+                                    <div class="detail-value full-width" style="padding:0;">
+                                        <table class="kpi-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>指標項目</th>
+                                                    <th>契約要求門檻</th>
+                                                    <th>實測達成數值</th>
+                                                    <th>判定</th>
+                                                    <th>備註</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="editable-field">1. 日間車種辨識準確率</td>
+                                                    <td class="editable-field">> 95%</td>
+                                                    <td class="editable-field" style="color:var(--success-color); font-weight:bold;">97.8%</td>
+                                                    <td class="editable-field">合格</td>
+                                                    <td class="editable-field">抽測 1,000 樣本，誤判 22 筆</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="editable-field">2. 夜間/雨天辨識準確率</td>
+                                                    <td class="editable-field">> 85%</td>
+                                                    <td class="editable-field" style="color:var(--success-color); font-weight:bold;">89.2%</td>
+                                                    <td class="editable-field">合格</td>
+                                                    <td class="editable-field">光源充足下表現極佳</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="editable-field">3. 數據回傳延遲時間</td>
+                                                    <td class="editable-field">< 1,000 ms</td>
+                                                    <td class="editable-field" style="color:var(--success-color); font-weight:bold;">450 ms</td>
+                                                    <td class="editable-field">合格</td>
+                                                    <td class="editable-field">經5G網路傳輸至交控中心</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- C. 委員審查意見 -->
+                                    <div class="section-header">C. 期末審查委員綜合意見</div>
+                                    <div class="detail-label">出席委員</div>
+                                    <div class="detail-value full-width editable-field" data-field="committees">張嘉宏(召集人)、李明德、王小華、場域方代表(花蓮縣交通科)</div>
+                                    <div class="detail-label">審查總結意見</div>
+                                    <div class="detail-value full-width editable-field" data-field="review_opinion" style="line-height:1.6;">
+                                        1. 系統於路口實測數據穩定，建議可增加機車待轉區之車流軌跡分析。<br>
+                                        2. 廠商已針對期中建議之夜間反光問題進行紅外線優化，成效顯著。<br>
+                                        3. **同意結案驗收**，請廠商於結案報告補足 72 小時連續壓力測試紀錄。
+                                    </div>
+
+                                    <!-- D. 結案請款資料 -->
+                                    <div class="section-header">D. 經費核銷與結案文件</div>
+                                    <div class="detail-label">補助款總額</div>
+                                    <div class="detail-value editable-field" data-field="budget">NT$ 2,200,000</div>
+                                    <div class="detail-label">實付金額 (尾款)</div>
+                                    <div class="detail-value editable-field" data-field="final_pay">NT$ 1,540,000 (70%)</div>
+                                    
+                                    <div class="detail-label">必備文件檢核</div>
+                                    <div class="detail-value full-width">
+                                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                                            <a href="#" class="attachment-item"><i class="fa-solid fa-file-pdf"></i> 期末成果報告書 (修正版)_V2.pdf</a>
+                                            <a href="#" class="attachment-item"><i class="fa-solid fa-file-video"></i> 實證場景Demo影片_4K.mp4</a>
+                                            <a href="#" class="attachment-item"><i class="fa-solid fa-file-excel"></i> 經費支出憑證簿與單據掃描.pdf</a>
+                                            <a href="#" class="attachment-item"><i class="fa-solid fa-file-signature"></i> 委員審查意見總表(簽章本).jpg</a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="detail-label">減價驗收說明</div>
+                                    <div class="detail-value full-width editable-field" data-field="deduction" style="color:#888;">無 (本案全額通過驗收)</div>
+                                </div>
+
+                                <div style="margin-top: 15px; text-align: right;">
+                                    <button class="btn btn-outline" onclick="toggleDetails('acc-1')">關閉詳情</button>
+                                    <button class="btn btn-success"><i class="fa-solid fa-check-double"></i> 確定送出結案核定</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- 第二家：雲端數據 (驗收補件) -->
+                    <tr>
+                        <td>114-T058-005</td>
+                        <td><div style="font-weight:bold;">雲端數據實驗室</div><div style="font-size:0.75rem; color:#888;">智慧路燈</div></td>
+                        <td>
+                            <div>智慧路燈能耗監測平台</div>
+                            <div style="font-size:0.8rem; color: #1976d2;"><i class="fa-solid fa-location-dot"></i> 高雄市軟體園區</div>
+                        </td>
+                        <td>2026-10-20</td>
+                        <td><span class="tag tag-warning">待補件/修正</span></td>
+                        <td>
+                            <button class="btn btn-edit" onclick="toggleDetails('acc-2')"><i class="fa-solid fa-magnifying-glass-chart"></i> 驗收詳情</button>
+                        </td>
+                    </tr>
+                    <!-- 詳情展開內容 2 -->
+                    <tr id="acc-2" class="hidden-row">
+                        <td colspan="6">
+                            <div style="padding: 15px; border: 1px solid #ddd; background: #fff;">
+                                <div class="detail-info-grid">
+                                    <div class="section-header">期末驗收異常說明</div>
+                                    <div class="detail-label">主要缺漏項</div>
+                                    <div class="detail-value full-width editable-field" style="color:var(--danger-color); font-weight:bold;">
+                                        1. 缺少場域端「維護手冊」<br>
+                                        2. 經費報核部分，勞務費用與契約編列金額不符 (超出 5%)<br>
+                                        3. KPI 項目「異常通報準確度」實測數據不足 20 筆
+                                    </div>
+                                    <div class="detail-label">限期修正日</div>
+                                    <div class="detail-value editable-field">2026/11/05 前</div>
+                                    <div class="detail-label">負責管考人</div>
+                                    <div class="detail-value editable-field">王專員</div>
+                                </div>
+                                <div style="margin-top: 15px; text-align: right;">
+                                    <button class="btn btn-outline" onclick="toggleDetails('acc-2')">關閉詳情</button>
+                                    <button class="btn btn-primary">發送補件通知信</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="footer-btns">
+                <button class="btn btn-outline">預覽結案公告</button>
+                <button class="btn btn-primary">進入結案請款程序</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 展開/收合詳情
+        function toggleDetails(id) {
+            const row = document.getElementById(id);
+            if (row.classList.contains('hidden-row')) {
+                row.classList.remove('hidden-row');
+                row.classList.add('expanded');
+            } else {
+                row.classList.remove('expanded');
+                row.classList.add('hidden-row');
+            }
+        }
+
+        // 編輯模式切換
+        function toggleEditMode(rowId, btn) {
+            const container = document.getElementById(rowId);
+            const editableFields = container.querySelectorAll('.editable-field');
+            const isEditing = btn.getAttribute('data-editing') === 'true';
+
+            if (!isEditing) {
+                // 開啟編輯
+                editableFields.forEach(field => {
+                    field.contentEditable = "true";
+                    field.classList.add('editing');
+                });
+                btn.innerHTML = '<i class="fa-solid fa-save"></i> 儲存修改內容';
+                btn.classList.replace('btn-info', 'btn-success');
+                btn.setAttribute('data-editing', 'true');
+            } else {
+                // 儲存並關閉
+                editableFields.forEach(field => {
+                    field.contentEditable = "false";
+                    field.classList.remove('editing');
+                });
+                btn.innerHTML = '<i class="fa-solid fa-pen"></i> 進入編輯模式';
+                btn.classList.replace('btn-success', 'btn-info');
+                btn.setAttribute('data-editing', 'false');
+                
+                // 模擬儲存提示
+                const flash = document.createElement('div');
+                flash.style = "position:fixed; top:20px; right:20px; background:var(--success-color); color:white; padding:10px 20px; border-radius:5px; z-index:9999;";
+                flash.innerText = "驗收數據已更新存檔！";
+                document.body.appendChild(flash);
+                setTimeout(() => flash.remove(), 2000);
+            }
+        }
+    </script>
+</body>
+</html>

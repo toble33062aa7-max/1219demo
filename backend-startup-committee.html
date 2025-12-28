@@ -159,7 +159,7 @@
         <div class="menu-item"><i class="fa-solid fa-house"></i> 首頁總覽</div>
         <div class="menu-item active"><i class="fa-solid fa-folder-open"></i> 實證案件管理</div>
         <div class="menu-item"><i class="fa-solid fa-file-contract"></i> 契約範本設定</div>
-        <div class="menu-item"><i class="fa-solid fa-chart-line"></i> 統計報表</div>
+        <a href="Statistical-reports.html" class="menu-item active"><i class="fa-solid fa-chart-line"></i> 統計報表</a>
         <div class="menu-item"><i class="fa-solid fa-gear"></i> 系統設定</div>
     </nav>
 
@@ -183,18 +183,35 @@
         </div>
 
         <div class="stepper">
-    <!-- 點擊回到出題公告首頁 -->
+    <!-- 出題公告 -->
     <div class="step complete" onclick="location.href='backend-challenge-management.html'" style="cursor: pointer;">
         <i class="fa-solid fa-bullhorn"></i>出題公告
     </div>
-    <!-- 點擊回到解題徵件首頁 (入選廠商管理) -->
+
+    <!-- 解題徵件 (目前頁面) -->
     <div class="step active" onclick="location.href='backend-startup-management.html'" style="cursor: pointer;">
         <i class="fa-solid fa-lightbulb"></i>解題徵件
     </div>
-    <div class="step"><i class="fa-solid fa-file-signature"></i>評選簽約</div>
-    <div class="step"><i class="fa-solid fa-list-check"></i>期中管考</div>
-    <div class="step"><i class="fa-solid fa-clipboard-check"></i>期末驗收</div>
-    <div class="step"><i class="fa-solid fa-box-archive"></i>結案請款</div>
+
+    <!-- 評選簽約 -->
+    <div class="step" onclick="location.href='backend-contract-management.html'" style="cursor: pointer;">
+        <i class="fa-solid fa-file-signature"></i>評選簽約
+    </div>
+
+    <!-- 期中管考 -->
+    <div class="step" onclick="location.href='backend-midterm-management.html'" style="cursor: pointer;">
+        <i class="fa-solid fa-list-check"></i>期中管考
+    </div>
+
+    <!-- 期末驗收 -->
+    <div class="step" onclick="location.href='backend-acceptance-management.html'" style="cursor: pointer;">
+        <i class="fa-solid fa-clipboard-check"></i>期末驗收
+    </div>
+
+    <!-- 結案請款 -->
+    <div class="step" onclick="location.href='backend-2payment-management.html'" style="cursor: pointer;">
+        <i class="fa-solid fa-box-archive"></i>結案請款
+    </div>
 </div>
 
         <div class="tabs">
