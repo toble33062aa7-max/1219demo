@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政府場域實證 - 前台展示預覽與發佈</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            /* 後台系統配色 */
+            --primary-color: #00796b;
+            --secondary-bg: #f4f7f6;
+            --text-main: #333;
+            --border-color: #e0e0e0;
+            --success-color: #28a745;
+            --warning-color: #ff9800;
+            --danger-color: #d32f2f;
+            --info-color: #1976d2;
+            
+            /* 前台模擬專用顏色 (Portal Context) */
+            --portal-teal: #00796b;
+            --portal-orange: #ef6c00;
+            --portal-bg: #f5f7f9;
+            --portal-dark: #37474f;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", sans-serif;
+            margin: 0;
+            display: flex;
+            background-color: var(--secondary-bg);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        /* --- 左側導覽列 --- */
+        .sidebar {
+            width: 240px;
+            background-color: #fff;
+            height: 100vh;
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            color: #555;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .menu-item i { width: 25px; margin-right: 10px; }
+        .menu-item:hover, .menu-item.active {
+            background-color: #e0f2f1;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* --- 主要內容區 --- */
+        .main-content {
+            margin-left: 240px;
+            width: calc(100% - 240px);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* --- 案件卡片與進度條 --- */
+        .case-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-color);
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .case-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 8px; }
+        .badge-status { background: #e8f5e9; color: var(--primary-color); padding: 3px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85rem; border: 1px solid var(--primary-color); }
+
+        .stepper {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            padding: 20px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .step { text-align: center; flex: 1; color: #ccc; font-size: 0.85rem; }
+        .step.active { color: var(--primary-color); font-weight: bold; }
+        .step i { font-size: 1.2rem; margin-bottom: 5px; display: block; }
+
+        /* --- 頁籤 Tabs --- */
+        .tabs { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 0px; }
+        .tab { padding: 12px 25px; cursor: pointer; border-radius: 8px 8px 0 0; background: #eee; margin-right: 4px; color: #666; font-size: 0.9rem; border: 1px solid transparent; }
+        .tab.active { background: white; color: var(--primary-color); border: 1px solid var(--border-color); border-bottom: 2px solid white; font-weight: bold; }
+
+        /* --- 編輯器主架構 --- */
+        .editor-container {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            padding: 25px;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .mode-switcher {
+            display: inline-flex;
+            background: #eee;
+            padding: 5px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .mode-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #666;
+            background: transparent;
+            transition: 0.3s;
+        }
+        .mode-btn.active {
+            background: white;
+            color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .editor-grid {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 25px;
+            align-items: start;
+        }
+
+        /* --- 編輯表單樣式 --- */
+        .edit-pane { display: block; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 8px; color: #444; font-size: 0.95rem; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit; font-size: 0.95rem;
+        }
+        .form-group textarea:focus, .form-group input:focus {
+            border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 3px rgba(0,121,107,0.1);
+        }
+
+        .rich-editor-tools {
+            background: #f8f9fa; padding: 10px; border: 1px solid #ccc; border-bottom: none; border-radius: 6px 6px 0 0;
+            display: flex; gap: 10px; align-items: center;
+        }
+        .tool-btn { background: white; border: 1px solid #ddd; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-size: 0.85rem; }
+        .tool-btn:hover { background: #eee; }
+
+        /* --- 即時預覽面板 (模擬前台) --- */
+        .preview-pane {
+            display: none;
+            background: #333;
+            border-radius: 12px;
+            border: 1px solid #555;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.4s ease;
+        }
+        .preview-pane.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .browser-chrome {
+            background: #e0e0e0; padding: 12px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #ccc;
+        }
+        .chrome-dots { display: flex; gap: 8px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; background: #ff5f56; }
+        .chrome-address { 
+            background: white; flex: 1; border-radius: 20px; padding: 4px 15px; font-size: 13px; color: #666; 
+            display: flex; align-items: center; gap: 8px; border: 1px solid #d0d0d0;
+        }
+
+        /* 前台網站內容模擬容器 */
+        .portal-container {
+            background-color: var(--portal-bg);
+            color: #333;
+            font-size: 16px;
+            line-height: 1.6;
+            height: 750px;
+            overflow-y: auto;
+        }
+        
+        .portal-header { background: white; padding: 15px 8%; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .portal-logo { font-weight: bold; color: var(--portal-teal); display: flex; align-items: center; gap: 10px; font-size: 20px; }
+        .portal-nav { background: var(--portal-teal); color: white; padding: 12px 8%; display: flex; gap: 25px; font-size: 14px; }
+        
+        .portal-main { padding: 30px 8%; display: grid; grid-template-columns: 1fr 320px; gap: 30px; }
+        .portal-breadcrumb { font-size: 13px; color: #888; margin-bottom: 20px; grid-column: span 2; }
+        
+        .portal-spec-card { background: white; border-radius: 8px; border: 1px solid #e0e0e0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .spec-header { background: #546e7a; color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 1.1rem; }
+        
+        .spec-table { width: 100%; border-collapse: collapse; }
+        .spec-table th { width: 180px; background: #f8f9fa; padding: 18px 25px; text-align: left; border-bottom: 1px solid #eee; color: #455a64; font-weight: bold; vertical-align: top; }
+        .spec-table td { padding: 18px 25px; border-bottom: 1px solid #eee; vertical-align: top; font-size: 0.95rem; }
+        .spec-highlight { color: var(--portal-teal); font-weight: bold; font-size: 1.2rem; }
+        
+        .portal-sidebar-box { background: white; border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 25px; padding: 25px; border-top: 5px solid #546e7a; }
+        .sidebar-title { font-weight: bold; border-bottom: 2px solid #f0f0f0; padding-bottom: 12px; margin-bottom: 18px; color: #37474f; }
+        .status-box { background: #eceff1; text-align: center; padding: 25px; border-radius: 8px; margin-bottom: 20px; }
+        .status-text { font-size: 28px; color: var(--portal-teal); font-weight: bold; }
+        .apply-btn { width: 100%; background: #ff7043; color: white; padding: 15px; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .apply-btn:hover { background: #f4511e; }
+
+        /* --- 發佈控制台 (右側固定) --- */
+        .publish-console {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            position: sticky;
+            top: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .console-section { border-bottom: 1px solid #f0f0f0; padding: 15px 0; }
+        .console-section:last-child { border-bottom: none; }
+        .console-title { font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; color: var(--primary-color); }
+        
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .toggle-label { font-size: 0.9rem; color: #555; }
+
+        /* Switch UI */
+        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 22px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--success-color); }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        .btn-action { width: 100%; padding: 12px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; margin-top: 12px; font-size: 1rem; }
+        .btn-main { background: var(--primary-color); color: white; }
+        .btn-save { background: #f5f5f5; color: #666; border: 1px solid #ddd; }
+        .btn-main:hover { filter: brightness(1.1); }
+
+        .schedule-info { font-size: 11px; color: #ef6c00; background: #fff3e0; padding: 10px; border-radius: 6px; margin-top: 10px; line-height: 1.4; }
+	.history-list { font-size: 0.85rem; color: #888; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
+	/* --- 標籤編輯器樣式 (後台) --- */
+.tag-editor-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fafafa;
+    min-height: 45px;
+    align-items: center;
+}
+.backend-tag {
+    background: #e0f2f1;
+    color: var(--primary-color);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #b2dfdb;
+}
+.backend-tag i {
+    cursor: pointer;
+    color: #888;
+}
+.backend-tag i:hover { color: var(--danger-color); }
+
+.tag-input-wrapper {
+    display: flex;
+    gap: 5px;
+    flex: 1;
+    min-width: 150px;
+}
+.tag-input-wrapper input {
+    border: none !important;
+    background: transparent !important;
+    padding: 4px !important;
+    font-size: 13px !important;
+    width: 100%;
+}
+.tag-input-wrapper input:focus { box-shadow: none !important; }
+
+.btn-add-tag {
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* --- 前台展示標籤樣式 (預覽) --- */
+.portal-tag {
+    display: inline-block;
+    background: #f1f8e9;
+    color: #558b2f;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-right: 6px;
+    font-weight: bold;
+    border: 1px solid #dcedc8;
+}
+.portal-tag::before {
+    content: "#";
+    margin-right: 2px;
+}
+    </style>
+</head>
+<body>
+
+    <!-- 左側導覽列 -->
+    <nav class="sidebar">
+        <div class="sidebar-header">計畫管理平台</div>
+        <a href="#" class="menu-item"><i class="fa-solid fa-house"></i> 首頁總覽</a>
+        <a href="#" class="menu-item active"><i class="fa-solid fa-folder-open"></i> 實證案件管理</a>
+        <a href="#" class="menu-item"><i class="fa-solid fa-file-contract"></i> 評分記錄</a>
+        <a href="#" class="menu-item"><i class="fa-solid fa-chart-line"></i> 統計報表</a>
+        <a href="#" class="menu-item"><i class="fa-solid fa-gear"></i> 系統設定</a>
+    </nav>
+
+    <main class="main-content">
+        <!-- 頂部標頭 -->
+        <header>
+            <div style="color: #666; font-size: 0.9rem;">實證案件 > 案件詳情 > 前台展示發佈</div>
+            <div>管理員：fangcy <i class="fa-solid fa-circle-user"></i></div>
+        </header>
+
+        <!-- 案件資訊卡片 -->
+        <div class="case-card">
+            <div class="case-title">
+                114年度研發型補助計畫推動案
+                <span class="badge-status">出題公告階段</span>
+            </div>
+            <div style="display: flex; gap: 20px; color: #666; font-size: 0.9rem; margin-top: 5px;">
+                <span>案號：114-RD-001</span>
+                <span>主辦單位：計畫管理組</span>
+                <span>案件進度：15%</span>
+            </div>
+        </div>
+
+        <!-- 進度橫桿 Stepper -->
+        <<div class="stepper">
+				<!-- 出題公告 -->
+			    <div class="step active" onclick="location.href='backend-challenge-management.html'" style="cursor: pointer;">
+			        <i class="fa-solid fa-bullhorn"></i>出題公告
+			    </div>
+
+ 			   <!-- 解題徵件 (目前頁面) -->
+ 			   <div class="step" onclick="location.href='backend-startup-management.html'" style="cursor: pointer;">
+ 			       <i class="fa-solid fa-lightbulb"></i>解題徵件
+			    </div>
+
+			    <!-- 評選簽約 -->
+			    <div class="step" onclick="location.href='backend-contract-management.html'" style="cursor: pointer;">
+ 			       <i class="fa-solid fa-file-signature"></i>評選簽約
+ 			   </div>
+
+  			  <!-- 期中管考 -->
+  			  <div class="step" onclick="location.href='backend-midterm-management.html'" style="cursor: pointer;">
+			        <i class="fa-solid fa-list-check"></i>期中管考
+ 			   </div>
+
+ 			   <!-- 期末驗收 -->
+ 			   <div class="step" onclick="location.href='backend-acceptance-management.html'" style="cursor: pointer;">
+ 			       <i class="fa-solid fa-clipboard-check"></i>期末驗收
+ 			   </div>
+
+ 			   <!-- 結案請款 -->
+ 			   <div class="step" onclick="location.href='backend-2payment-management.html'" style="cursor: pointer;">
+  			      <i class="fa-solid fa-box-archive"></i>結案請款
+ 			   </div>
+		</div>
+
+
+        <!-- 頁籤 Tabs -->
+        <div class="tabs">
+            <div class="tab" onclick="location.href='backend-challenge-management.html'">出題公告 (1-6)</div>
+            <div class="tab" onclick="location.href='backend-challenge-list.html'">機關出題列表</div>
+            <div class="tab" onclick="location.href='backend-challenge-committee.html'">審查委員名單</div>
+            <div class="tab active">前台展示預覽與發佈</div>
+        </div>
+
+        <!-- 編輯器主內容區 -->
+        <div class="editor-container">
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                <div>
+                    <h3 style="margin: 0; color: var(--primary-color);">[編輯模式] 114-T058 智慧路口公告</h3>
+                    <p style="font-size: 13px; color: #888; margin: 5px 0 15px 0;">此處設定的內容將直接呈現於「政府場域實證入口網」挑戰詳情頁面。</p>
+                </div>
+                <!-- 模式切換 -->
+                <div class="mode-switcher">
+                    <button class="mode-btn active" id="btn-edit" onclick="switchMode('edit')"><i class="fa-solid fa-pen-to-square"></i> 內容編輯器</button>
+                    <button class="mode-btn" id="btn-preview" onclick="switchMode('preview')"><i class="fa-solid fa-desktop"></i> 前台即時預覽</button>
+                </div>
+            </div>
+
+            <div class="editor-grid">
+                <!-- 左側：編輯或預覽 -->
+                <div class="content-view-area">
+                    
+                    <!-- 內容編輯器 -->
+                    <div class="edit-pane" id="pane-edit">
+			<div class="form-group">
+    <label>分類標籤 (多選/新增)</label>
+    <div class="tag-editor-box" id="tag-editor-container">
+        <!-- 初始預設標籤 -->
+        <span class="backend-tag">AI <i class="fa-solid fa-xmark" onclick="removeTag(this)"></i></span>
+        <span class="backend-tag">交通 <i class="fa-solid fa-xmark" onclick="removeTag(this)"></i></span>
+        
+        <div class="tag-input-wrapper">
+            <input type="text" id="tag-input" placeholder="輸入標籤後按 Enter 或點擊新增..." onkeypress="handleTagKey(event)">
+            <button class="btn-add-tag" onclick="addNewTag()">新增</button>
+        </div>
+    </div>
+    <p style="font-size: 11px; color: #999; margin-top: 5px;">建議標籤：#遠距、#醫療、#物聯網、#大數據 (輸入後請按新增)</p>
+</div>
+                        <div class="form-group">
+                            <label>挑戰題目 (挑戰詳情標題)</label>
+                            <input type="text" id="in-title" value="智慧路口：即時交通影像辨識與分析解決方案" oninput="syncData()">
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label>出題機關</label>
+                                <input type="text" id="in-agency" value="臺北市政府交通局" oninput="syncData()">
+                            </div>
+                            <div class="form-group">
+                                <label>徵件截止日期顯示</label>
+                                <input type="text" id="in-date" value="115/01/30 (剩餘 42 天)" oninput="syncData()">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label>實證獎助金金額</label>
+                                <input type="text" id="in-money" value="新台幣 2,500,000 元 (含稅)" oninput="syncData()">
+                            </div>
+                            <div class="form-group">
+                                <label>預計執行期程</label>
+                                <input type="text" id="in-timeline" value="決標後 6 個月內完成 POC 驗證" oninput="syncData()">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>詳細需求與規格內容 (支援 HTML 語法)</label>
+                            <div class="rich-editor-tools">
+                                <button class="tool-btn"><b>B</b></button>
+                                <button class="tool-btn"><i>I</i></button>
+                                <button class="tool-btn"><u>U</u></button>
+                                <button class="tool-btn"><i class="fa-solid fa-list-ul"></i></button>
+                                <button class="tool-btn"><i class="fa-solid fa-link"></i></button>
+                                <span style="font-size: 11px; color: #999; margin-left: auto;">Last sync: Just now</span>
+                            </div>
+                            <textarea id="in-req" rows="12" oninput="syncData()">本計畫旨在解決尖峰時刻路口壅塞問題，徵求具備邊緣運算能力之 AI 影像辨識方案。
+<ul>
+  <li><b>辨識標題：</b>需能自動區分大客車、小客車、機車、自行車及行人。</li>
+  <li><b>辨識準確率：</b>日間辨識率需達 95% 以上，夜間需達 90% 以上。</li>
+  <li><b>系統介接：</b>需提供標準 RESTful API 介接本局交控中心戰情室。</li>
+  <li><b>環境適應：</b>需能耐受戶外高溫、降雨等氣候環境。</li>
+</ul></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>實證場域詳細地點說明</label>
+                            <textarea id="in-location" rows="3" oninput="syncData()">主要實證場域：臺北市信義區基隆路與忠孝東路交叉口。
+備用實證場域：內湖科學園區瑞光路沿線主要路口。</textarea>
+                        </div>
+                    </div>
+
+                    <!-- 高擬真預覽面板 -->
+                    <div class="preview-pane" id="pane-preview">
+                        <div class="browser-chrome">
+                            <div class="chrome-dots">
+                                <span class="dot"></span>
+                                <span class="dot" style="background:#febc2e"></span>
+                                <span class="dot" style="background:#28c840"></span>
+                            </div>
+                            <div class="chrome-address">
+                                <i class="fa-solid fa-lock" style="font-size: 11px;"></i>
+                                https://innovation.matchmaking.gov.tw/challenge/detail/114-T058
+                            </div>
+                        </div>
+
+                        <div class="portal-container">
+                            <!-- 模擬前台導覽 -->
+                            <div class="portal-header">
+                                <div class="portal-logo">
+                                    <i class="fa-solid fa-mountain-sun"></i> 政府場域實證平台
+                                    <span style="font-size: 12px; color: #888; font-weight: normal; margin-left: 10px;">IM Platform</span>
+                                </div>
+                                <div style="font-size: 13px;">Guest User | <a href="#" style="color:var(--portal-teal)">登入系統</a></div>
+				<div style="grid-column: span 2; margin-bottom: 15px;">
+    <!-- 這裡將由 JavaScript 動態填入標籤 -->
+    <div id="pv-tags-display">
+        <span class="portal-tag">AI</span>
+        <span class="portal-tag">交通</span>
+    </div>
+</div>
+                            </div>
+                            <div class="portal-nav">
+                                <span><i class="fa-solid fa-magnifying-glass"></i> 尋找挑戰</span>
+                                <span><i class="fa-solid fa-pen-to-square"></i> 線上提案</span>
+                                <span><i class="fa-solid fa-circle-info"></i> 計畫簡介</span>
+                                <span><i class="fa-solid fa-download"></i> 文件下載</span>
+                            </div>
+
+                            <!-- 模擬前台內容區 -->
+                            <div class="portal-main">
+                                <div class="portal-breadcrumb">首頁 > 挑戰專區 > 智慧交通領域 > 挑戰詳情</div>
+                                
+                                <div style="grid-column: span 2; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                                    <span style="background: var(--portal-teal); color: white; padding: 3px 10px; font-size: 12px; border-radius: 4px;">徵件中</span>
+                                    <span style="color: #888; font-size: 13px;">案號：114-T058</span>
+                                    <span style="color: #888; font-size: 13px; margin-left: auto;"><i class="fa-solid fa-eye"></i> 瀏覽人次：1,248</span>
+                                </div>
+
+                                <!-- 左側主表格 -->
+                                <div class="portal-spec-card">
+                                    <div class="spec-header">
+                                        <span><i class="fa-solid fa-list-check"></i> 挑戰規格與實證需求</span>
+                                        <button style="background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px; cursor: pointer;">
+                                            <i class="fa-solid fa-share-nodes"></i> 分享
+                                        </button>
+                                    </div>
+                                    <table class="spec-table">
+                                        <tr>
+                                            <th>挑戰題目</th>
+                                            <td id="pv-title" class="spec-highlight">智慧路口：即時交通影像辨識與分析解決方案</td>
+                                        </tr>
+                                        <tr>
+                                            <th>出題機關</th>
+                                            <td><span id="pv-agency">臺北市政府交通局</span> <i class="fa-solid fa-circle-check" style="color: #4caf50; margin-left: 5px;"></i></td>
+                                        </tr>
+                                        <tr>
+                                            <th>徵件截止時間</th>
+                                            <td id="pv-date" style="color: #d32f2f; font-weight: bold;">114/01/30 (剩餘 42 天)</td>
+                                        </tr>
+                                        <tr>
+                                            <th>實證獎助金</th>
+                                            <td id="pv-money">新台幣 2,500,000 元 (含稅)</td>
+                                        </tr>
+                                        <tr>
+                                            <th>預計執行期程</th>
+                                            <td id="pv-timeline">決標後 6 個月內完成 POC 驗證</td>
+                                        </tr>
+                                        <tr>
+                                            <th>實證場域地點</th>
+                                            <td id="pv-location">主要場域：臺北市信義區基隆路與忠孝東路交叉口。</td>
+                                        </tr>
+                                        <tr>
+                                            <th>需求描述與技術規格</th>
+                                            <td id="pv-req">
+                                                <!-- 同步自編輯器內容 -->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>聯絡窗口</th>
+                                            <td>
+                                                智慧運輸科 林專員<br>
+                                                電話：(02) 2720-8889 #1234<br>
+                                                Email：smart-transport@mail.taipei.gov.tw
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <!-- 右側側邊欄 -->
+                                <div class="portal-sidebar">
+                                    <div class="portal-sidebar-box">
+                                        <div class="sidebar-title">目前進度</div>
+                                        <div class="status-box">
+                                            <div style="font-size: 13px; color: #78909c; margin-bottom: 5px;">挑戰當前狀態</div>
+                                            <div class="status-text">徵件中</div>
+                                        </div>
+                                        <button class="apply-btn"><i class="fa-solid fa-paper-plane"></i> 立即線上提案</button>
+                                        <div style="text-align: center; font-size: 13px; color: #888; margin-top: 15px;">
+                                            已有 8 家企業計畫書審核中
+                                        </div>
+                                    </div>
+
+                                    <div class="portal-sidebar-box">
+                                        <div class="sidebar-title">相關附件下載</div>
+                                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                                            <a href="#" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #444; font-size: 14px; padding: 8px; border: 1px solid #eee; border-radius: 4px;">
+                                                <i class="fa-solid fa-file-pdf" style="color: #d32f2f; font-size: 18px;"></i> 徵案簡章說明文件.pdf
+                                            </a>
+                                            <a href="#" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #444; font-size: 14px; padding: 8px; border: 1px solid #eee; border-radius: 4px;">
+                                                <i class="fa-solid fa-file-word" style="color: #1976d2; font-size: 18px;"></i> 提案計畫書格式.docx
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 頁尾模擬 -->
+                            <div style="background: var(--portal-dark); color: #cfd8dc; padding: 40px 8%; text-align: center; font-size: 12px; line-height: 2;">
+                                主辦單位：國家發展委員會 | 執行單位：數位轉型推動中心<br>
+                                地址：100 台北市中正區寶慶路3號 | 電話：(02) 2316-5300<br>
+                                © 2025 Innovation Matchmaking Platform. 版權所有。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右側：發佈控制台 -->
+                <aside>
+                    <div class="publish-console">
+                        <div class="console-section">
+                            <div class="console-title"><i class="fa-solid fa-earth-asia"></i> 狀態控制</div>
+                            <div class="toggle-row">
+                                <span class="toggle-label">前台公開顯示</span>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-row">
+                                <span class="toggle-label">開啟線上投件功能</span>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-row">
+                                <span class="toggle-label">顯示剩餘天數倒數</span>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+			<div class="console-section">
+			    <div class="console-title"><i class="fa-solid fa-tags"></i> 快速標籤設定</div>
+			    <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+			        <label style="font-size: 12px; background: #eee; padding: 2px 8px; border-radius: 4px; cursor: pointer;">
+ 			           <input type="checkbox" onchange="toggleQuickTag('醫療', this.checked)"> #醫療
+ 			       </label>
+ 			       <label style="font-size: 12px; background: #eee; padding: 2px 8px; border-radius: 4px; cursor: pointer;">
+			            <input type="checkbox" onchange="toggleQuickTag('遠距', this.checked)"> #遠距
+			        </label>
+ 			       <label style="font-size: 12px; background: #eee; padding: 2px 8px; border-radius: 4px; cursor: pointer;">
+ 			           <input type="checkbox" onchange="toggleQuickTag('物聯網', this.checked)"> #IoT
+ 			       </label>
+ 			   </div>
+			</div>
+
+                        <div class="console-section">
+                            <div class="console-title"><i class="fa-solid fa-clock"></i> 自動排程設定</div>
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <label style="font-size: 12px;">預計上架時間</label>
+                                <input type="datetime-local" value="2025-01-20T09:00" style="padding: 6px; font-size: 13px;">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-size: 12px;">預計下架時間</label>
+                                <input type="datetime-local" value="2025-01-30T17:00" style="padding: 6px; font-size: 13px;">
+                            </div>
+                            <div class="schedule-info">
+                                <i class="fa-solid fa-circle-info"></i> 設定排程後，系統將於時間到達時自動變更前台顯示狀態。
+                            </div>
+                        </div>
+
+                        <div class="console-section">
+                            <div class="console-title"><i class="fa-solid fa-share-nodes"></i> 卡片展示設定</div>
+                            <div style="background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; margin-top: 10px;">
+                                <div style="height: 120px; background: #eee; display: flex; align-items: center; justify-content: center; position: relative;">
+                                    <i class="fa-regular fa-image" style="font-size: 2.5rem; color: #ccc;"></i>
+                                    <button style="position: absolute; bottom: 8px; right: 8px; font-size: 11px; padding: 4px 8px; cursor: pointer; border: 1px solid #ccc; background: white; border-radius: 4px;">更換封面圖</button>
+                                </div>
+                                <div style="padding: 10px;">
+                                    <div style="font-size: 13px; font-weight: bold; color: #333; margin-bottom: 5px;">智慧路口：即時交通影像辨識...</div>
+                                    <div style="font-size: 11px; color: #666;">出題機關：臺北市政府交通局</div>
+                                </div>
+                            </div>
+                            <p style="font-size: 11px; color: #999; margin-top: 8px;">這是此挑戰在列表頁（小卡）的呈現方式。</p>
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <button class="btn-action btn-save">儲存暫存草稿</button>
+                            <button class="btn-action btn-main" onclick="confirmPublish()"><i class="fa-solid fa-cloud-arrow-up"></i> 更新發佈至前台</button>
+                        </div>
+			<div class="history-list">
+                    	<div style="font-weight:bold; color:#555; margin-bottom:10px;">版本發佈紀錄</div>
+                   	 <div class="history-item">
+                        <span>v2.1 內容修正</span>
+                        <span>2025/11/20</span>
+                    	</div>
+                   	 <div class="history-item">
+                        <span>v1.0 初始草稿</span>
+                        <span>2025/11/15</span>
+                    </div>
+                </div>
+
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 切換編輯與預覽模式
+        function switchMode(mode) {
+            const paneEdit = document.getElementById('pane-edit');
+            const panePreview = document.getElementById('pane-preview');
+            const btnEdit = document.getElementById('btn-edit');
+            const btnPreview = document.getElementById('btn-preview');
+
+            if (mode === 'edit') {
+                paneEdit.style.display = 'block';
+                panePreview.classList.remove('active');
+                btnEdit.classList.add('active');
+                btnPreview.classList.remove('active');
+            } else {
+                paneEdit.style.display = 'none';
+                panePreview.classList.add('active');
+                btnEdit.classList.remove('active');
+                btnPreview.classList.add('active');
+                syncData(); // 進入預覽時強制同步
+            }
+        }
+
+        // 資料同步：將編輯器的值反映到模擬的前台中
+        function syncData() {
+            // 標題
+            document.getElementById('pv-title').innerText = document.getElementById('in-title').value;
+            // 出題機關
+            document.getElementById('pv-agency').innerText = document.getElementById('in-agency').value;
+            // 日期
+            document.getElementById('pv-date').innerText = document.getElementById('in-date').value;
+            // 獎助金
+            document.getElementById('pv-money').innerText = document.getElementById('in-money').value;
+            // 期程
+            document.getElementById('pv-timeline').innerText = document.getElementById('in-timeline').value;
+            // 地點
+            document.getElementById('pv-location').innerText = document.getElementById('in-location').value;
+            // 需求規格 (處理換行並支援 HTML)
+            const reqContent = document.getElementById('in-req').value;
+            document.getElementById('pv-req').innerHTML = reqContent.replace(/\n/g, '<br>');
+	    syncTagsToPreview();
+        }
+
+        function confirmPublish() {
+            if(confirm('確定要將目前的更改發佈到正式網站前台嗎？\n發佈後所有使用者皆可看見最新內容。')) {
+                alert('公告內容已成功發佈！');
+            }
+        }
+	// 處理標籤輸入框的 Enter 事件
+function handleTagKey(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        addNewTag();
+    }
+}
+
+// 新增標籤函數
+function addNewTag() {
+    const input = document.getElementById('tag-input');
+    const tagValue = input.value.trim().replace('#', ''); // 去掉使用者誤打的 #
+    
+    if (tagValue === '') return;
+
+    // 建立後台標籤元件
+    const container = document.getElementById('tag-editor-container');
+    const newTag = document.createElement('span');
+    newTag.className = 'backend-tag';
+    newTag.innerHTML = `${tagValue} <i class="fa-solid fa-xmark" onclick="removeTag(this)"></i>`;
+    
+    // 插入在輸入框之前
+    container.insertBefore(newTag, container.querySelector('.tag-input-wrapper'));
+    
+    input.value = '';
+    syncTagsToPreview(); // 同步到預覽
+}
+
+// 刪除標籤函數
+function removeTag(element) {
+    element.parentElement.remove();
+    syncTagsToPreview(); // 同步到預覽
+}
+
+// 同步標籤到前台預覽畫面
+function syncTagsToPreview() {
+    const backendTags = document.querySelectorAll('.backend-tag');
+    const previewContainer = document.getElementById('pv-tags-display');
+    
+    // 清空預覽容器
+    previewContainer.innerHTML = '';
+    
+    // 遍歷所有後台標籤並產出前台樣式
+    backendTags.forEach(tag => {
+        const text = tag.innerText.trim();
+        const portalTag = document.createElement('span');
+        portalTag.className = 'portal-tag';
+        portalTag.innerText = text;
+        previewContainer.appendChild(portalTag);
+    });
+}
+// 快速切換標籤的輔助函數
+function toggleQuickTag(tagName, isChecked) {
+    if (isChecked) {
+        // 檢查是否已存在
+        const existingTags = Array.from(document.querySelectorAll('.backend-tag')).map(t => t.innerText.trim());
+        if (!existingTags.includes(tagName)) {
+            const input = document.getElementById('tag-input');
+            input.value = tagName;
+            addNewTag();
+        }
+    } else {
+        // 移除標籤
+        const tags = document.querySelectorAll('.backend-tag');
+        tags.forEach(t => {
+            if (t.innerText.trim() === tagName) t.remove();
+        });
+        syncTagsToPreview();
+    }
+}
+        // 初始載入同步
+        window.onload = function() {
+            syncData();
+        };
+    </script>
+</body>
+</html>
