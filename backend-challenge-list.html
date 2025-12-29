@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>政府場域實證 - 後台案件管理系統</title>
+    <title>政府場域實證 - 後台案件管理系統 (機關出題清單)</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -14,6 +14,7 @@
             --success-color: #28a745;
             --warning-color: #ff9800;
             --danger-color: #d32f2f;
+            --info-color: #1976d2;
         }
 
         body {
@@ -88,7 +89,7 @@
 
         .case-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 8px; }
         .case-meta { display: flex; gap: 20px; color: #666; font-size: 0.9rem; }
-        .badge-status { background: #e8f5e9; color: var(--primary-color); padding: 3px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85rem; }
+        .badge-status { background: #e8f5e9; color: var(--primary-color); padding: 3px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85rem; border: 1px solid var(--primary-color); }
 
         /* Stepper 進度條 */
         .stepper {
@@ -122,47 +123,48 @@
 
         .data-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         .data-table th { background: #fcfcfc; color: #555; padding: 12px; text-align: left; border-bottom: 2px solid #eee; }
-        .data-table td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: top; }
+        .data-table td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: middle; }
 
-        /* 狀態標籤 */
-        .status-tag {
-            padding: 2px 8px;
+        /* 標籤狀態 */
+        .tag { padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+        .tag-pass { background: #e8f5e9; color: var(--success-color); border: 1px solid var(--success-color); }
+        .tag-review { background: #fff3e0; color: var(--warning-color); border: 1px solid var(--warning-color); }
+
+        /* 詳情區塊樣式 */
+        .detail-info-grid {
+            display: grid;
+            grid-template-columns: 140px 1fr 140px 1fr;
+            gap: 10px;
+            background: #f9f9f9;
+            padding: 15px;
             border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
+            margin-top: 10px;
+            border: 1px solid #eee;
         }
-        .status-pass { background: #e8f5e9; color: var(--success-color); }
-        .status-review { background: #fff3e0; color: var(--warning-color); }
-        .status-reject { background: #ffebee; color: var(--danger-color); }
+        .detail-label { font-weight: bold; color: #555; background: #eceff1; padding: 6px 10px; border-radius: 3px; text-align: right; display: flex; align-items: center; justify-content: flex-end; }
+        .detail-value { padding: 6px 10px; border-bottom: 1px solid #eee; background: #fff; line-height: 1.6; }
+        .full-width { grid-column: span 3; }
+
+        .attachment-link { color: var(--info-color); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; margin-right: 15px; font-size: 0.85rem; }
+        .attachment-link:hover { text-decoration: underline; }
 
         /* 按鈕樣式 */
         .btn { padding: 6px 14px; border-radius: 4px; cursor: pointer; border: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 5px; }
         .btn-outline { border: 1px solid #ccc; background: white; color: #555; }
         .btn-primary { background: var(--primary-color); color: white; }
-        .btn-edit { border: 1px solid var(--primary-color); color: var(--primary-color); background: white; }
-        .btn-save { background: var(--success-color); color: white; }
-        .btn-delete { background: #fff; color: var(--danger-color); border: 1px solid var(--danger-color); }
-        .btn-add { background: var(--primary-color); color: white; margin-bottom: 15px; }
-
-        /* 編輯中樣式 */
-        .editing-row { background-color: #fffde7 !important; }
-        input[type="text"], input[type="date"], select, textarea {
-            width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;
-        }
-        textarea { min-height: 80px; resize: vertical; }
+        .btn-info { background: var(--info-color); color: white; }
+        .btn-success { background: var(--success-color); color: white; }
 
         .footer-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
-
-        /* 搜尋區塊 */
-        .search-bar {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            border: 1px solid #eee;
+        
+        .hidden-row { display: none; }
+        .expanded { display: table-row; background-color: #fafafa; }
+        
+        .detail-value.editing {
+            background-color: #fffde7;
+            border: 1px solid var(--warning-color) !important;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            outline: none;
         }
     </style>
 </head>
@@ -173,13 +175,13 @@
         <div class="menu-item"><i class="fa-solid fa-house"></i> 首頁總覽</div>
         <div class="menu-item active"><i class="fa-solid fa-folder-open"></i> 實證案件管理</div>
         <div class="menu-item"><i class="fa-solid fa-file-contract"></i> 契約範本設定</div>
-        <a href="Statistical-reports.html" class="menu-item active"><i class="fa-solid fa-chart-line"></i> 統計報表</a>
+        <div class="menu-item"><i class="fa-solid fa-chart-line"></i> 統計報表</div>
         <div class="menu-item"><i class="fa-solid fa-gear"></i> 系統設定</div>
     </nav>
 
     <main class="main-content">
         <header>
-            <div style="color: #666; font-size: 0.9rem;">實證案件 > 案件詳情</div>
+            <div style="color: #666; font-size: 0.9rem;">實證案件 > 案件詳情 > 出題公告</div>
             <div>管理員：fangcy <i class="fa-solid fa-circle-user"></i></div>
         </header>
 
@@ -195,8 +197,8 @@
             </div>
         </div>
 
-        <<div class="stepper">
-				<!-- 出題公告 -->
+        <div class="stepper">
+            <!-- 出題公告 -->
 			    <div class="step active" onclick="location.href='backend-challenge-management.html'" style="cursor: pointer;">
 			        <i class="fa-solid fa-bullhorn"></i>出題公告
 			    </div>
@@ -225,7 +227,8 @@
  			   <div class="step" onclick="location.href='backend-2payment-management.html'" style="cursor: pointer;">
   			      <i class="fa-solid fa-box-archive"></i>結案請款
  			   </div>
-		</div>
+
+        </div>
 
         <div class="tabs">
             <div class="tab" onclick="location.href='backend-challenge-management.html'">出題公告 (1-6)</div>
@@ -233,158 +236,176 @@
             <div class="tab" onclick="location.href='backend-challenge-committee.html'">審查委員名單</div>
         </div>
 
+
         <div class="content-box">
-            <div class="search-bar">
-                <div style="flex:1">
-                    <label style="font-size: 0.85rem; color:#666;">關鍵字搜尋：</label>
-                    <input type="text" placeholder="輸入機關名稱或題目關鍵字..." style="width: 250px;">
-                </div>
-                <div>
-                    <button class="btn btn-outline"><i class="fa-solid fa-magnifying-glass"></i> 查詢</button>
-                    <button class="btn btn-add" style="margin-bottom:0" onclick="addRow()"><i class="fa-solid fa-plus"></i> 新增機關出題</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin: 0; font-size: 1.1rem; color: var(--primary-color);">機關出題需求資料表 (預覽與審核)</h3>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" placeholder="關鍵字搜尋..." style="padding: 6px; border: 1px solid #ccc; border-radius: 4px;">
+                    <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> 新增出題</button>
                 </div>
             </div>
             
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th width="80">出題編號</th>
-                        <th width="200">機關資訊</th>
-                        <th>出題內容與摘要</th>
-                        <th width="120">分類/領域</th>
-                        <th width="100">審查狀態</th>
-                        <th width="140">動作</th>
+                        <th width="140">挑戰編號</th>
+                        <th width="200">出題單位</th>
+                        <th>挑戰題目摘要</th>
+                        <th width="120">預算金額</th>
+                        <th width="100">狀態</th>
+                        <th width="120">動作</th>
                     </tr>
                 </thead>
-                <tbody id="issueBody">
-                    <!-- 資料將由 JS 生成 -->
+                <tbody>
+                    <!-- 臺北市交通局資料行 -->
+                    <tr>
+                        <td>114-T058-AGCY</td>
+                        <td><div style="font-weight:bold;">臺北市政府交通局</div><div style="font-size:0.75rem; color:#888;">智慧運輸科</div></td>
+                        <td>智慧路口：即時交通影像辨識與分析解決方案</td>
+                        <td>NT$ 2,500,000</td>
+                        <td><span class="tag tag-pass">審核通過</span></td>
+                        <td>
+                            <button class="btn btn-edit" onclick="toggleDetails('issue-1')"><i class="fa-solid fa-eye"></i> 詳情</button>
+                        </td>
+                    </tr>
+                    <!-- 展開內容 -->
+                    <tr id="issue-1" class="hidden-row">
+                        <td colspan="6">
+                            <div style="padding: 10px 20px 20px 20px;">
+                                <h4 style="border-left: 4px solid var(--primary-color); padding-left: 10px; margin-bottom: 10px; color: var(--primary-color);">
+                                    機關需求詳細規格書 (挑戰編號：114-T058-AGCY)
+                                </h4>
+                                
+                                <div class="detail-info-grid">
+                                    <!-- 基本資料區 -->
+                                    <div class="detail-label">出題單位全銜</div><div class="detail-value">臺北市政府交通局</div>
+                                    <div class="detail-label">承辦人/職稱</div><div class="detail-value">林小明 (專案技正)</div>
+                                    
+                                    <div class="detail-label">聯繫電話</div><div class="detail-value">02-2720-8889 #1234</div>
+                                    <div class="detail-label">電子郵件</div><div class="detail-value">lin.xm@gov.taipei</div>
+
+                                    <!-- 挑戰核心內容 -->
+                                    <div class="detail-label">挑戰題目</div>
+                                    <div class="detail-value full-width" style="font-weight:bold; color:var(--info-color);">智慧路口：即時交通影像辨識與分析解決方案</div>
+                                    
+                                    <div class="detail-label">技術領域分類</div><div class="detail-value">AI 影像辨識 / 5G IoT</div>
+                                    <div class="detail-label">建議實證場域</div><div class="detail-value">臺北市信義區 (基隆路與忠孝東路口)</div>
+
+                                    <div class="detail-label">現況問題痛點</div>
+                                    <div class="detail-value full-width">
+                                        目前本市主要幹道於上下班尖峰時刻，常因固定號誌時相無法應對突發性車流，導致路口回堵嚴重。現有之感應線圈維護成本高且數據單一，缺乏車種辨識與人流分析能力，無法作為動態號誌調整之依據。
+                                    </div>
+
+                                    <div class="detail-label">技術規格要求</div>
+                                    <div class="detail-value full-width">
+                                        1. 需利用路口現有 CCTV 影像進行分析，不額外架設大型硬體為原則。<br>
+                                        2. 辨識準確率：日間 > 95%，夜間 > 85% (需包含大客車、小客車、機車、行人)。<br>
+                                        3. 數據延遲：影像分析數據回傳至中控中心延遲需小於 2 秒。<br>
+                                        4. 介接規範：需提供標準 RESTful API 介接本局交控中心平台。
+                                    </div>
+
+                                    <div class="detail-label">評選與審查標準</div>
+                                    <div class="detail-value full-width">
+                                        技術創新性 (30%)、場域可行性 (30%)、團隊執行力 (20%)、經費編列合理性 (20%)。
+                                    </div>
+
+                                    <div class="detail-label">預期實證效益</div>
+                                    <div class="detail-value full-width">
+                                        1. 降低路口尖峰時段平均延滯時間 15% 以上。<br>
+                                        2. 節省人工車流調查人力成本約 50 萬元/年。<br>
+                                        3. 建立即時交通戰情儀表板，提供交通決策輔助。
+                                    </div>
+
+                                    <div class="detail-label">相關參考附件</div>
+                                    <div class="detail-value full-width">
+                                        <a href="#" class="attachment-link"><i class="fa-solid fa-file-pdf"></i> 114年智慧交通徵案簡章.pdf</a>
+                                        <a href="#" class="attachment-link"><i class="fa-solid fa-image"></i> 場域現況照片(基隆路口).jpg</a>
+                                        <a href="#" class="attachment-link"><i class="fa-solid fa-file-excel"></i> 經費預算表範本(機關版).xlsx</a>
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-top: 15px; text-align: right;">
+                                    <button class="btn btn-outline" onclick="toggleDetails('issue-1')">收合詳情</button>
+                                    <button id="edit-btn-1" class="btn btn-info" onclick="toggleEditMode('issue-1')">
+                                        <i class="fa-solid fa-pen-to-square"></i> 編輯出題內容
+                                    </button>
+                                    <button class="btn btn-success"><i class="fa-solid fa-paper-plane"></i> 正式發佈公告</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- 衛福部資料行 -->
+                    <tr>
+                        <td>114-H012-AGCY</td>
+                        <td><div style="font-weight:bold;">衛生福利部臺北醫院</div><div style="font-size:0.75rem; color:#888;">資訊室</div></td>
+                        <td>AI輔助急診檢傷分類系統實證</td>
+                        <td>NT$ 1,800,000</td>
+                        <td><span class="tag tag-review">審核中</span></td>
+                        <td>
+                            <button class="btn btn-edit"><i class="fa-solid fa-eye"></i> 詳情</button>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
 
             <div class="footer-btns">
-                <button class="btn btn-outline">匯出出題清單(Excel)</button>
-                <button class="btn btn-primary">批次發函確認</button>
+                <button class="btn btn-outline">匯出機關出題總表 (Excel)</button>
+                <button class="btn btn-primary">批次發佈出題公告</button>
             </div>
         </div>
     </main>
 
     <script>
-        // 機關出題資料
-        let issues = [
-            { id: 1, isEdit: false, code: "114-T01", agency: "衛生福利部臺北醫院", contact: "王小明 / 02-2276-5566", title: "AI輔助急診檢傷分類系統實證", cat: "醫療健康", status: "已通過", note: "場域提供：急診室第一線。需求為降低護理師人工判斷誤差。" },
-            { id: 2, isEdit: false, code: "114-T02", agency: "臺北市政府交通局", contact: "李大同 / 02-2720-8889", title: "智慧感測號誌連鎖控制計畫", cat: "智慧交通", status: "審查中", note: "針對信義區主要幹道進行尖峰時段動態號誌調整實證。" },
-            { id: 3, isEdit: false, code: "114-T03", agency: "環境部環境管理署", contact: "張文華 / 02-2311-7722", title: "移動式水質自動檢測感測元件", cat: "環境永續", status: "待補件", note: "需具備NB-IoT通訊功能，能長期監測地下水污染指標。" }
-        ];
-
-        function renderTable() {
-            const tbody = document.getElementById('issueBody');
-            tbody.innerHTML = '';
-
-            issues.forEach((item, index) => {
-                const tr = document.createElement('tr');
-                if (item.isEdit) tr.className = 'editing-row';
-
-                if (item.isEdit) {
-                    // 編輯模式
-                    tr.innerHTML = `
-                        <td><input type="text" id="i-code-${index}" value="${item.code}"></td>
-                        <td>
-                            <input type="text" id="i-agency-${index}" value="${item.agency}" placeholder="機關名稱" style="margin-bottom:5px">
-                            <input type="text" id="i-contact-${index}" value="${item.contact}" placeholder="聯絡人/電話">
-                        </td>
-                        <td>
-                            <input type="text" id="i-title-${index}" value="${item.title}" style="margin-bottom:5px; font-weight:bold;">
-                            <textarea id="i-note-${index}">${item.note}</textarea>
-                        </td>
-                        <td>
-                            <select id="i-cat-${index}">
-                                <option value="醫療健康" ${item.cat==='醫療健康'?'selected':''}>醫療健康</option>
-                                <option value="智慧交通" ${item.cat==='智慧交通'?'selected':''}>智慧交通</option>
-                                <option value="環境永續" ${item.cat==='環境永續'?'selected':''}>環境永續</option>
-                                <option value="其他" ${item.cat==='其他'?'selected':''}>其他</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select id="i-status-${index}">
-                                <option value="已通過" ${item.status==='已通過'?'selected':''}>已通過</option>
-                                <option value="審查中" ${item.status==='審查中'?'selected':''}>審查中</option>
-                                <option value="待補件" ${item.status==='待補件'?'selected':''}>待補件</option>
-                            </select>
-                        </td>
-                        <td>
-                            <button class="btn btn-save" onclick="saveRow(${index})">儲存</button>
-                            <button class="btn btn-outline" onclick="toggleEdit(${index})">取消</button>
-                        </td>
-                    `;
-                } else {
-                    // 檢視模式
-                    let statusClass = 'status-review';
-                    if(item.status === '已通過') statusClass = 'status-pass';
-                    if(item.status === '待補件') statusClass = 'status-reject';
-
-                    tr.innerHTML = `
-                        <td>${item.code}</td>
-                        <td>
-                            <div style="font-weight:bold;">${item.agency}</div>
-                            <div style="font-size:0.8rem; color:#666; margin-top:4px;"><i class="fa-solid fa-user"></i> ${item.contact}</div>
-                        </td>
-                        <td>
-                            <div style="font-weight:bold; color:var(--primary-color); margin-bottom:5px;">${item.title}</div>
-                            <div style="font-size:0.8rem; color:#777; line-height:1.4;">${item.note}</div>
-                        </td>
-                        <td><span class="btn btn-outline" style="padding:2px 8px; cursor:default;">${item.cat}</span></td>
-                        <td><span class="status-tag ${statusClass}">${item.status}</span></td>
-                        <td>
-                            <button class="btn btn-edit" onclick="toggleEdit(${index})"><i class="fa-solid fa-pen"></i> 編輯</button>
-                            <button class="btn btn-delete" onclick="deleteRow(${index})"><i class="fa-solid fa-trash-can"></i></button>
-                        </td>
-                    `;
-                }
-                tbody.appendChild(tr);
-            });
-        }
-
-        function toggleEdit(index) {
-            issues[index].isEdit = !issues[index].isEdit;
-            renderTable();
-        }
-
-        function saveRow(index) {
-            issues[index].code = document.getElementById(`i-code-${index}`).value;
-            issues[index].agency = document.getElementById(`i-agency-${index}`).value;
-            issues[index].contact = document.getElementById(`i-contact-${index}`).value;
-            issues[index].title = document.getElementById(`i-title-${index}`).value;
-            issues[index].cat = document.getElementById(`i-cat-${index}`).value;
-            issues[index].status = document.getElementById(`i-status-${index}`).value;
-            issues[index].note = document.getElementById(`i-note-${index}`).value;
-            issues[index].isEdit = false;
-            renderTable();
-        }
-
-        function addRow() {
-            issues.unshift({
-                id: Date.now(),
-                isEdit: true,
-                code: "114-T新",
-                agency: "",
-                contact: "",
-                title: "請輸入題目名稱",
-                cat: "醫療健康",
-                status: "審查中",
-                note: ""
-            });
-            renderTable();
-        }
-
-        function deleteRow(index) {
-            if (confirm("確定要刪除這筆機關出題紀錄嗎？")) {
-                issues.splice(index, 1);
-                renderTable();
+        // 切換詳情顯示
+        function toggleDetails(id) {
+            const row = document.getElementById(id);
+            if (row.classList.contains('hidden-row')) {
+                row.classList.remove('hidden-row');
+                row.classList.add('expanded');
+            } else {
+                row.classList.remove('expanded');
+                row.classList.add('hidden-row');
             }
         }
 
-        // 初始渲染
-        renderTable();
+        // 切換編輯模式 (針對展開內容中的 detail-value)
+        function toggleEditMode(rowId) {
+            const container = document.getElementById(rowId);
+            const btnId = 'edit-btn-' + rowId.split('-')[1];
+            const editBtn = document.getElementById(btnId);
+            const values = container.querySelectorAll('.detail-value');
+            
+            const isEditing = editBtn.getAttribute('data-editing') === 'true';
+
+            if (!isEditing) {
+                // 進入編輯模式
+                values.forEach(el => {
+                    // 排除附件下載區不給編輯
+                    if (!el.querySelector('.attachment-link')) {
+                        el.contentEditable = "true";
+                        el.classList.add('editing');
+                    }
+                });
+                editBtn.innerHTML = '<i class="fa-solid fa-check"></i> 儲存暫存';
+                editBtn.classList.remove('btn-info');
+                editBtn.classList.add('btn-success');
+                editBtn.setAttribute('data-editing', 'true');
+            } else {
+                // 結束編輯模式
+                values.forEach(el => {
+                    el.contentEditable = "false";
+                    el.classList.remove('editing');
+                });
+                editBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> 編輯出題內容';
+                editBtn.classList.remove('btn-success');
+                editBtn.classList.add('btn-info');
+                editBtn.setAttribute('data-editing', 'false');
+                
+                alert('出題需求內容已成功暫存！');
+            }
+        }
     </script>
 </body>
 </html>
