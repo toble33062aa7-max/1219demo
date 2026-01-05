@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>計畫管理平台 - 期中訪視統整表</title>
+    <!-- 引入 Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 引入 Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #00796b;
+            --accent-color: #00897b;
+            --bg-light: #f4f6f9;
+            --text-gray: #6c757d;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        /* 側邊欄與導航 (與上一頁一致) */
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary-color);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            padding-top: 0;
+            z-index: 1000;
+        }
+        .sidebar-header {
+            background-color: #00695c;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(0,0,0,0.1);
+            color: white;
+            border-left: 4px solid #b2dfdb;
+        }
+
+        /* 主內容區 */
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        /* 資訊卡 */
+        .info-card {
+            background: white;
+            border-top: 3px solid var(--accent-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* 流程圖標 */
+        .process-steps {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            color: #adb5bd;
+        }
+        .step-item.active {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        .step-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        /* 表格區塊 */
+        .table-card {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        /* 頁籤 */
+        .custom-tabs {
+            background-color: #e9ecef;
+            padding: 10px 10px 0 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .custom-tab {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #e9ecef;
+            color: var(--text-gray);
+            border: 1px solid transparent;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .custom-tab.active {
+            background-color: white;
+            border-color: var(--border-color);
+            border-bottom-color: white;
+            color: #333;
+            border-radius: 4px 4px 0 0;
+            margin-bottom: -1px;
+        }
+
+        /* 表格樣式 */
+        .table-custom th {
+            background-color: white;
+            border-bottom: 2px solid var(--border-color);
+            color: #495057;
+            font-weight: 600;
+            padding: 15px;
+        }
+        .table-custom td {
+            vertical-align: top;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            color: #333;
+        }
+        
+        /* 列表細節樣式 */
+        .checklist-item {
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+        }
+        /* 讓 Checkbox 看起來像唯讀或狀態指示 */
+        .checklist-item input[type="checkbox"] {
+            margin-right: 8px;
+            accent-color: var(--accent-color);
+            cursor: default;
+        }
+
+        .tag-location {
+            color: #666;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+        
+        /* 按鈕與標籤 */
+        .btn-teal {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+        }
+        .btn-teal:hover {
+            background-color: #00796b;
+            color: white;
+        }
+        .btn-outline-custom {
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            background: white;
+            padding: 4px 10px;
+            font-size: 13px;
+        }
+        .btn-outline-custom:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        /* 狀態 Badge */
+        .badge-outline-success {
+            border: 1px solid #198754;
+            color: #198754;
+            background: #f8fff9;
+            padding: 5px 8px;
+        }
+        .badge-outline-secondary {
+            border: 1px solid #6c757d;
+            color: #6c757d;
+            background: #f8f9fa;
+            padding: 5px 8px;
+        }
+        .alert-info-custom {
+            background-color: #e0f7fa;
+            border-color: #b2ebf2;
+            color: #006064;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 側邊欄 -->
+<div class="sidebar d-none d-md-block">
+    <div class="sidebar-header">
+        計畫管理平台
+    </div>
+    <nav class="nav flex-column mt-2">
+        <a class="nav-link" href="#"><i class="fas fa-home me-2"></i> 首頁總覽</a>
+        <a class="nav-link active" href="#"><i class="fas fa-folder-open me-2"></i> 實證案件管理</a>
+        <a class="nav-link" href="#"><i class="fas fa-file-contract me-2"></i> 評分記錄</a>
+        <a class="nav-link" href="#"><i class="fas fa-chart-line me-2"></i> 統計報表</a>
+        <a class="nav-link" href="#"><i class="fas fa-cog me-2"></i> 系統設定</a>
+    </nav>
+</div>
+
+<!-- 主內容 -->
+<div class="main-content">
+    
+    <!-- 麵包屑與使用者 -->
+    <div class="d-flex justify-content-between align-items-center mb-3 text-secondary" style="font-size: 13px;">
+        <div>實證案件 > 案件詳情 > 期中訪視統整表</div>
+        <div>管理員：fangcy <i class="fas fa-user-circle"></i></div>
+    </div>
+
+    <!-- 標題資訊區 -->
+    <div class="info-card">
+        <h4 class="mb-3">
+            114年度研發型補助計畫推動案 
+            <span class="badge bg-success text-light fw-normal rounded-pill" style="font-size: 12px; vertical-align: middle;">期中管考</span>
+        </h4>
+        <div class="row text-secondary" style="font-size: 14px;">
+            <div class="col-md-6">訪視期間：2026/08/03 - 2026/08/21</div>
+            <div class="col-md-6 text-md-end text-dark fw-bold">已完成訪視：2 / 12 家</div>
+        </div>
+    </div>
+
+    <!-- 流程步驟 (Icon) -->
+    <div class="process-steps">
+        <div class="step-item">
+            <div class="step-icon"><i class="fas fa-bullhorn"></i></div>
+            <div>出題公告</div>
+        </div>
+        <div class="step-item">
+            <div class="step-icon"><i class="fas fa-lightbulb"></i></div>
+            <div>解題徵件</div>
+        </div>
+        <div class="step-item">
+            <div class="step-icon"><i class="fas fa-file-signature"></i></div>
+            <div>評選簽約</div>
+        </div>
+        <div class="step-item active">
+            <div class="step-icon"><i class="fas fa-list-ol"></i></div>
+            <div>期中管考</div>
+        </div>
+        <div class="step-item">
+            <div class="step-icon"><i class="fas fa-clipboard-check"></i></div>
+            <div>期末驗收</div>
+        </div>
+        <div class="step-item">
+            <div class="step-icon"><i class="fas fa-box-archive"></i></div>
+            <div>結案請款</div>
+        </div>
+    </div>
+
+    <!-- 表格區塊 -->
+    <div class="table-card">
+        <!-- 頁籤 -->
+        <div class="custom-tabs">
+            <div class="custom-tab">簽約管考工項</div>
+            <div class="custom-tab">個案管考</div>
+            <div class="custom-tab active">期中訪視統整表</div>
+        </div>
+
+        <div class="p-3">
+            <!-- 提示訊息 -->
+            <div class="alert alert-info-custom d-flex align-items-center mb-3" role="alert">
+                <i class="fas fa-info-circle me-2"></i>
+                <div>
+                    提示：本表用於工項 18-19 之行政統整，包含邀約、行政支援（餐盒/派車）及訪視結論彙總。
+                </div>
+            </div>
+
+            <!-- 功能按鈕列 (選填) -->
+            <!-- <div class="d-flex justify-content-end mb-3">...</div> -->
+
+            <!-- 列表 (版型重製) -->
+            <div class="table-responsive">
+                <table class="table table-custom table-hover">
+                    <thead>
+                        <tr>
+                            <th width="5%">序號</th>
+                            <th width="25%">廠商與訪視資訊</th>
+                            <th width="15%">行政物流狀態 (工項18)</th>
+                            <th width="12%">後續追蹤</th>
+                            <th width="33%">訪視紀錄彙整 (工項19)</th>
+                            <th width="10%">動作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 項目 1: 智通科技 -->
+                        <tr>
+                            <td>1</td>
+                            <td>
+                                <div class="fw-bold text-primary mb-1" style="font-size: 15px;">智通科技</div>
+                                <div class="text-secondary small mb-2">案號: 114-T058-003</div>
+                                <div class="d-flex align-items-center text-dark mb-1">
+                                    <i class="far fa-calendar-alt me-2 text-secondary"></i> 2026-08-15
+                                    <span class="ms-2 badge bg-light text-dark border">14:00</span>
+                                </div>
+                                <div class="tag-location">
+                                    <i class="fas fa-map-marker-alt text-danger me-1"></i> 台北市信義路五段路口
+                                </div>
+                            </td>
+                            <td>
+                                <!-- 行政物流 (對應 Checkbox) -->
+                                <div class="checklist-item text-success">
+                                    <input type="checkbox" checked disabled> 
+                                    <label>發文通知</label>
+                                </div>
+                                <div class="checklist-item text-success">
+                                    <input type="checkbox" checked disabled>
+                                    <label>訂餐</label>
+                                </div>
+                                <div class="checklist-item text-success">
+                                    <input type="checkbox" checked disabled>
+                                    <label>派車</label>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-outline-success">正常執行</span>
+                            </td>
+                            <td>
+                                <div class="small mb-2">
+                                    <span class="fw-bold text-dark">出席委員/單位：</span><br>
+                                    林振興、張嘉玲 / 交通局王科長
+                                </div>
+                                <div class="small text-secondary bg-light p-2 rounded">
+                                    1. AI辨識率日間達標。<br>
+                                    2. 建議增加夜間補光設備測試。<br>
+                                    3. 進度超前5%。
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn btn-outline-custom mb-1 w-100"><i class="fas fa-edit"></i> 編輯</button>
+                            </td>
+                        </tr>
+
+                        <!-- 項目 2: 雲端數據實驗室 -->
+                        <tr>
+                            <td>2</td>
+                            <td>
+                                <div class="fw-bold text-primary mb-1" style="font-size: 15px;">雲端數據實驗室</div>
+                                <div class="text-secondary small mb-2">案號: 114-T058-005</div>
+                                <div class="d-flex align-items-center text-dark mb-1">
+                                    <i class="far fa-calendar-alt me-2 text-secondary"></i> 2026-08-24
+                                    <span class="ms-2 badge bg-light text-dark border">10:30</span>
+                                </div>
+                                <div class="tag-location">
+                                    <i class="fas fa-map-marker-alt text-danger me-1"></i> 板橋區新府路智慧路燈
+                                </div>
+                            </td>
+                            <td>
+                                <div class="checklist-item text-success">
+                                    <input type="checkbox" checked disabled> 
+                                    <label>發文通知</label>
+                                </div>
+                                <div class="checklist-item text-muted">
+                                    <input type="checkbox" disabled>
+                                    <label>訂餐</label>
+                                </div>
+                                <div class="checklist-item text-muted">
+                                    <input type="checkbox" disabled>
+                                    <label>派車</label>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-outline-secondary">契約變更(展延)</span>
+                            </td>
+                            <td>
+                                <div class="small mb-2">
+                                    <span class="fw-bold text-dark">出席委員/單位：</span><br>
+                                    陳學員、李家同 / 工務局李技正
+                                </div>
+                                <div class="small text-secondary bg-light p-2 rounded">
+                                    場域電力系統故障，無法進行實地DEMO，廠商說明已報修。
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn btn-outline-custom mb-1 w-100"><i class="fas fa-edit"></i> 編輯</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 底部按鈕區 -->
+            <div class="d-flex justify-content-end mt-3">
+                <button class="btn btn-outline-secondary me-2"><i class="fas fa-file-excel me-1"></i> 匯出長官行程表 (工項18)</button>
+                <button class="btn btn-teal">儲存全表變更</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
